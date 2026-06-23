@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\Testimonial;
+use App\Filament\Concerns\ConfiguresHeartWellForms;
+use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\Content\TestimonialResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +14,9 @@ use Filament\Tables\Table;
 
 class TestimonialResource extends Resource
 {
+    use ConfiguresHeartWellForms;
+    use ConfiguresHeartWellTables;
+
     protected static ?string $model = Testimonial::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
@@ -24,36 +29,43 @@ class TestimonialResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('author_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('quote')
-                    ->required()
-                    ->rows(4)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('attribution')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sort_order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_published')
-                    ->default(true),
+                static::formSection('Testimonial', 'heroicon-o-chat-bubble-left-right', [
+                    Forms\Components\TextInput::make('author_name')
+                        ->required()
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-user'),
+                    Forms\Components\FileUpload::make('image_path')
+                        ->label('Author photo')
+                        ->image()
+                        ->disk('public')
+                        ->directory('cms/testimonials'),
+                    Forms\Components\Textarea::make('quote')
+                        ->required()
+                        ->rows(4)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('attribution')
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-tag'),
+                ]),
+                static::formSection('Publishing', 'heroicon-o-eye', [
+                    Forms\Components\TextInput::make('sort_order')
+                        ->numeric()
+                        ->default(0)
+                        ->prefixIcon('heroicon-o-arrows-up-down'),
+                    Forms\Components\Toggle::make('is_published')
+                        ->default(true),
+                ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::configureHeartWellTable($table
             ->columns([
-                Tables\Columns\TextColumn::make('author_name')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('quote')
-                    ->limit(60),
-                Tables\Columns\IconColumn::make('is_published')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('author_name')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('quote')->limit(60),
+                Tables\Columns\IconColumn::make('is_published')->boolean(),
+                Tables\Columns\TextColumn::make('sort_order')->sortable(),
             ])
             ->defaultSort('sort_order')
             ->actions([
@@ -63,7 +75,7 @@ class TestimonialResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ]));
     }
 
     public static function getPages(): array

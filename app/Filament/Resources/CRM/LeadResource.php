@@ -7,6 +7,8 @@ use App\Domains\CRM\Enums\AvatarType;
 use App\Domains\CRM\Enums\LeadSource;
 use App\Domains\CRM\Enums\LeadStatus;
 use App\Domains\CRM\Models\Lead;
+use App\Filament\Concerns\ConfiguresHeartWellForms;
+use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\CRM\LeadResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -19,6 +21,9 @@ use Illuminate\Validation\ValidationException;
 
 class LeadResource extends Resource
 {
+    use ConfiguresHeartWellForms;
+    use ConfiguresHeartWellTables;
+
     protected static ?string $model = Lead::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
@@ -31,56 +36,62 @@ class LeadResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Contact')
-                    ->schema([
-                        Forms\Components\TextInput::make('first_name')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('last_name')
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('email')
-                            ->email()
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('phone')
-                            ->tel()
-                            ->maxLength(50),
-                    ])
-                    ->columns(2),
-                Forms\Components\Section::make('CRM')
-                    ->schema([
-                        Forms\Components\Select::make('source')
-                            ->options(collect(LeadSource::cases())->mapWithKeys(
-                                fn (LeadSource $source) => [$source->value => $source->label()]
-                            ))
-                            ->required(),
-                        Forms\Components\Select::make('avatar_type')
-                            ->options(collect(AvatarType::cases())->mapWithKeys(
-                                fn (AvatarType $type) => [$type->value => $type->label()]
-                            )),
-                        Forms\Components\Select::make('status')
-                            ->options(collect(LeadStatus::cases())->mapWithKeys(
-                                fn (LeadStatus $status) => [$status->value => $status->label()]
-                            ))
-                            ->required()
-                            ->disabled(fn (?Model $record) => $record !== null)
-                            ->dehydrated(fn (?Model $record) => $record === null)
-                            ->helperText('Use the status transition action on the edit page for existing leads.'),
-                        Forms\Components\Select::make('assigned_to')
-                            ->relationship('assignedUser', 'name')
-                            ->searchable()
-                            ->preload(),
-                        Forms\Components\Textarea::make('notes')
-                            ->rows(4)
-                            ->columnSpanFull(),
-                    ])
-                    ->columns(2),
+                static::formSection('Contact', 'heroicon-o-user', [
+                    Forms\Components\TextInput::make('first_name')
+                        ->required()
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-user'),
+                    Forms\Components\TextInput::make('last_name')
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-user'),
+                    Forms\Components\TextInput::make('email')
+                        ->email()
+                        ->required()
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-envelope'),
+                    Forms\Components\TextInput::make('phone')
+                        ->tel()
+                        ->maxLength(50)
+                        ->prefixIcon('heroicon-o-phone'),
+                ]),
+                static::formSection('CRM', 'heroicon-o-funnel', [
+                    Forms\Components\Select::make('source')
+                        ->options(collect(LeadSource::cases())->mapWithKeys(
+                            fn (LeadSource $source) => [$source->value => $source->label()]
+                        ))
+                        ->required()
+                        ->prefixIcon('heroicon-o-arrow-path'),
+                    Forms\Components\Select::make('avatar_type')
+                        ->options(collect(AvatarType::cases())->mapWithKeys(
+                            fn (AvatarType $type) => [$type->value => $type->label()]
+                        ))
+                        ->prefixIcon('heroicon-o-heart'),
+                    Forms\Components\Select::make('status')
+                        ->options(collect(LeadStatus::cases())->mapWithKeys(
+                            fn (LeadStatus $status) => [$status->value => $status->label()]
+                        ))
+                        ->required()
+                        ->disabled(fn (?Model $record) => $record !== null)
+                        ->dehydrated(fn (?Model $record) => $record === null)
+                        ->helperText('Use the status transition action on the edit page for existing leads.')
+                        ->prefixIcon('heroicon-o-flag'),
+                    Forms\Components\Select::make('assigned_to')
+                        ->relationship('assignedUser', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->prefixIcon('heroicon-o-user-circle'),
+                ]),
+                static::formSection('Notes', 'heroicon-o-document-text', [
+                    Forms\Components\Textarea::make('notes')
+                        ->rows(4)
+                        ->columnSpanFull(),
+                ], 1),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::configureHeartWellTable($table
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
                     ->label('Name')
@@ -109,7 +120,8 @@ class LeadResource extends Resource
                     ->label('Assigned to')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->since()
+                    ->dateTimeTooltip()
                     ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
@@ -166,7 +178,7 @@ class LeadResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ]), poll: true);
     }
 
     public static function getPages(): array

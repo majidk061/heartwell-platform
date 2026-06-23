@@ -1,0 +1,279 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+/* HeartWell Enterprise Admin Theme */
+
+:root {
+    --hw-navy: #1b2b4b;
+    --hw-navy-light: #243656;
+    --hw-dusty-blue: #7ba7bc;
+    --hw-dusty-blue-light: #e8f0f4;
+    --hw-surface: #f4f5f7;
+    --hw-border: #e2e8f0;
+}
+
+/* Layout & page background */
+.fi-body {
+    @apply bg-[#f4f5f7];
+}
+
+.fi-main-ctn {
+    @apply bg-[#f4f5f7];
+}
+
+.fi-topbar nav {
+    @apply border-b border-gray-200 bg-white shadow-sm;
+}
+
+/* Sidebar — dark navy enterprise style */
+.fi-sidebar {
+    @apply !bg-[#1b2b4b] lg:!bg-[#1b2b4b];
+}
+
+.fi-sidebar-header {
+    @apply !bg-[#1b2b4b] !ring-0 lg:!shadow-none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fi-sidebar-nav {
+    @apply py-6;
+}
+
+.fi-sidebar-group-label {
+    @apply text-[0.65rem] font-semibold uppercase tracking-wider text-white/40;
+}
+
+.fi-sidebar-item-button {
+    @apply px-2.5 py-2 text-white/75 transition-colors duration-150;
+}
+
+.fi-sidebar .fi-sidebar-item-label {
+    @apply !text-white/80;
+}
+
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    @apply !text-white;
+}
+
+.fi-sidebar .fi-sidebar-item-icon {
+    @apply !text-white/60;
+}
+
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    @apply !text-[#7ba7bc];
+}
+
+.fi-sidebar .fi-sidebar-item-button:hover,
+.fi-sidebar .fi-sidebar-item-button:focus-visible {
+    @apply !bg-white/10 !text-white;
+}
+
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-button {
+    @apply !bg-white/10 !text-white;
+    border-left: 3px solid #7ba7bc;
+    padding-left: calc(0.625rem - 3px);
+}
+
+.fi-sidebar-item-button:hover {
+    @apply bg-white/10 text-white;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-button {
+    @apply bg-white/10 text-white;
+    border-left: 3px solid #7ba7bc;
+    padding-left: calc(0.625rem - 3px);
+}
+
+.fi-sidebar-item-icon {
+    @apply text-white/60;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    @apply text-[#7ba7bc];
+}
+
+.fi-sidebar-group-collapse-button {
+    @apply text-white/40 hover:text-white/70;
+}
+
+/* Collapsed sidebar */
+.fi-sidebar.fi-sidebar-open .fi-sidebar-item-label,
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-group-label {
+    /* labels hidden when collapsed — handled by Filament */
+}
+
+/* Page headers */
+.fi-header-heading {
+    @apply text-[#1b2b4b];
+}
+
+.fi-header-subheading {
+    @apply text-gray-500;
+}
+
+/* Tables */
+.fi-ta-ctn {
+    @apply rounded-xl border border-gray-200/80 bg-white shadow-sm ring-0;
+}
+
+.fi-ta-header-cell {
+    @apply bg-gray-50/80;
+}
+
+.fi-ta-header-cell-label {
+    @apply text-xs font-semibold uppercase tracking-wide text-[#1b2b4b];
+}
+
+.fi-ta-row:nth-child(even) {
+    @apply bg-gray-50/50;
+}
+
+.fi-ta-row:hover {
+    @apply bg-[#e8f0f4]/60;
+}
+
+.fi-ta-cell {
+    @apply text-sm text-gray-700;
+}
+
+.fi-ta-empty-state {
+    @apply py-16;
+}
+
+.fi-ta-empty-state-icon-ctn {
+    @apply bg-[#e8f0f4];
+}
+
+.fi-ta-empty-state-icon {
+    @apply text-[#7ba7bc];
+}
+
+/* Tabs on list pages */
+.fi-tabs-item {
+    @apply text-sm font-medium;
+}
+
+.fi-tabs-item-active {
+    @apply text-[#1b2b4b];
+}
+
+/* Forms & sections */
+.fi-section,
+.fi-fo-section {
+    @apply rounded-xl border border-gray-200/80 bg-white shadow-sm ring-0;
+}
+
+.fi-section-header-heading,
+.fi-fo-section-header-heading {
+    @apply text-[#1b2b4b] font-semibold;
+}
+
+.fi-fo-section-header-icon {
+    @apply text-[#7ba7bc];
+}
+
+.fi-fo-field-wrp label {
+    @apply text-sm font-medium text-gray-700;
+}
+
+.fi-form-actions {
+    @apply rounded-xl border border-gray-200/80 bg-white px-4 py-3 shadow-sm;
+}
+
+/* Dashboard stats widgets */
+.fi-wi-stats-overview-stat {
+    @apply rounded-xl border border-gray-200/80 bg-white shadow-sm ring-0;
+}
+
+.fi-wi-stats-overview-stat-value {
+    @apply text-[#1b2b4b];
+}
+
+.fi-wi-stats-overview-stat-label {
+    @apply text-xs font-semibold uppercase tracking-wide text-gray-500;
+}
+
+.fi-wi-stats-overview-stat-description {
+    @apply text-gray-400;
+}
+
+.fi-wi-stats-overview-stat-icon {
+    @apply text-[#7ba7bc];
+}
+
+/* Widget table on dashboard */
+.fi-wi-table {
+    @apply rounded-xl border border-gray-200/80 bg-white shadow-sm;
+}
+
+/* Login page */
+.fi-simple-layout {
+    @apply bg-gradient-to-br from-[#1b2b4b] via-[#243656] to-[#1b2b4b];
+}
+
+.fi-simple-main-ctn {
+    @apply flex items-center justify-center;
+}
+
+.fi-simple-page {
+    @apply w-full max-w-md;
+}
+
+.fi-simple-page .fi-section {
+    @apply rounded-2xl border-0 bg-white p-2 shadow-xl;
+}
+
+.fi-simple-page .fi-section-header-heading {
+    @apply text-xl font-semibold text-[#1b2b4b];
+}
+
+.fi-simple-header-heading {
+    @apply text-white;
+}
+
+/* Buttons */
+.fi-btn-color-primary {
+    @apply shadow-sm;
+}
+
+/* Badges — slightly refined */
+.fi-badge {
+    @apply text-xs font-medium;
+}
+
+/* Account widget */
+.fi-wi-account {
+    @apply rounded-xl border border-gray-200/80 bg-white shadow-sm ring-0;
+}
+
+/* Breadcrumbs */
+.fi-breadcrumbs-item-label {
+    @apply text-sm text-gray-500;
+}
+
+/* Modal polish */
+.fi-modal-window {
+    @apply rounded-xl;
+}
+
+/* Pagination */
+.fi-pagination {
+    @apply gap-2;
+}
+
+.fi-pagination-items {
+    @apply flex flex-wrap gap-1;
+}
+
+.fi-pagination-overview {
+    @apply text-sm text-gray-500;
+}
+
+.fi-pagination-item {
+    @apply rounded-lg border border-gray-200 text-sm font-medium text-gray-700;
+}
+
+.fi-pagination-item.fi-active {
+    @apply border-[#7ba7bc] bg-[#e8f0f4] text-[#1b2b4b];
+}

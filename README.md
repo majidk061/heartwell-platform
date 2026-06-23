@@ -180,6 +180,37 @@ npm run build
 
 > Change the admin password after first login in production.
 
+The admin panel uses a custom HeartWell enterprise theme (`resources/css/filament/admin/theme.css`). After changing admin styles, rebuild assets:
+
+```bash
+npm run build
+```
+
+### CMS workflow (admin controls website content)
+
+| Admin area | Controls |
+|------------|----------|
+| **Pages** → edit page → **Page Sections** tab | Hero, intro, journey steps, founder block, images per section |
+| **Avatar Cards** | Home page “Which feels like you?” cards (text + image) |
+| **Site Settings** | Brand name/tagline, navigation, CTA labels, footer compliance text |
+| **Support Pathways / FAQs / Testimonials** | Pathway content, FAQ accordions, quotes + photos |
+
+Upload images via **File Upload** fields (stored in `storage/app/public/cms/`). Run once:
+
+```bash
+php artisan storage:link
+```
+
+### Demo data (pagination testing)
+
+`DemoDataSeeder` adds ~35 leads, 30 waitlist entries, 25 consultations, 20 group inquiries, 15 FAQs, and 12 testimonials.
+
+```bash
+php artisan db:seed --class=DemoDataSeeder
+```
+
+For a clean reset: `php artisan migrate:fresh --seed`
+
 ### Admin sections
 
 | Group | Manage |

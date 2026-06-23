@@ -2,6 +2,7 @@
 
 namespace App\Domains\Content\Actions;
 
+use App\Domains\Content\Models\AvatarCard;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\SupportPathway;
 use App\Domains\Content\Models\Testimonial;
@@ -24,6 +25,17 @@ class ShowHomePageAction
             throw new ModelNotFoundException('Home page not found or not published.');
         }
 
+        $siteSettings = app(GetSiteSettingsAction::class)->execute();
+
+        $avatarCards = AvatarCard::query()
+            ->where('is_published', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        if ($avatarCards->isEmpty()) {
+            $avatarCards = collect(array_values(config('heartwell.avatar_cards')));
+        }
+
         return [
             'page' => $page,
             'sections' => $page->publishedSections,
@@ -36,8 +48,9 @@ class ShowHomePageAction
                 ->orderBy('sort_order')
                 ->limit(3)
                 ->get(),
-            'avatar_cards' => config('heartwell.avatar_cards'),
-            'ctas' => config('heartwell.ctas'),
+            'avatarCards' => $avatarCards,
+            'siteSettings' => $siteSettings,
+            'ctas' => $siteSettings['ctas'],
         ];
     }
 }

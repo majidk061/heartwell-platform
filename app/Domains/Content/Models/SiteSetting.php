@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Domains\Content\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class SiteSetting extends Model
+{
+    protected $table = 'site_settings';
+
+    protected $fillable = [
+        'key',
+        'value',
+    ];
+
+    protected $casts = [
+        'value' => 'array',
+    ];
+}

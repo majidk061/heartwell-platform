@@ -2,38 +2,32 @@
 
 @section('content')
     @php
-        $hero = $sections->firstWhere('type', 'hero');
-        $skipTypes = $page->slug === 'contact' ? ['hero', 'forms', 'cta'] : ['hero'];
+        $hero = $sections->firstWhere('type', 'hero') ?? $sections->firstWhere('section_type', 'hero');
     @endphp
 
-    <x-layout.page-hero
-        :title="$hero?->heading ?? $page->title"
-        :subheading="$hero?->subheading"
-        :body="$hero?->body"
-    />
-
-    @foreach($sections->whereNotIn('type', $skipTypes) as $section)
-        <section class="hw-section bg-hw-white {{ !$loop->last && $page->slug !== 'contact' ? 'border-b border-hw-border' : '' }}">
-            <x-layout.page-container narrow>
-                @if($section->heading)
-                    <x-layout.section-heading :title="$section->heading" />
-                @endif
-                @if($section->body)
-                    <div class="text-hw-text leading-relaxed whitespace-pre-line text-base">{{ $section->body }}</div>
-                @endif
-            </x-layout.page-container>
-        </section>
-    @endforeach
-
-    @if($page->slug === 'support-pathways' && !empty($pathways))
-        <x-pathway-accordion :pathways="$pathways" />
+    @if($page->slug !== 'home' && $hero && ! in_array($page->slug, ['contact']))
+        <x-layout.page-hero
+            :title="$hero->heading ?? $page->title"
+            :subheading="$hero->subheading"
+            :body="$hero->body"
+        />
     @endif
+
+    @include('pages.partials.sections', [
+        'sections' => $page->slug === 'contact'
+            ? $sections->whereNotIn('type', ['hero', 'forms'])->whereNotIn('section_type', ['hero', 'forms'])
+            : ($hero && $page->slug !== 'home' ? $sections->whereNotIn('type', ['hero'])->whereNotIn('section_type', ['hero']) : $sections),
+        'page' => $page,
+        'pathways' => $pathways ?? collect(),
+        'faqs' => $faqs ?? collect(),
+        'ctas' => $siteSettings['ctas'] ?? ($ctas ?? null),
+        'compliance' => $siteSettings['compliance'] ?? ($compliance ?? null),
+    ])
 
     @if($page->slug === 'contact')
-        @include('pages.partials.contact-forms')
-    @endif
-
-    @if(in_array($page->slug, ['meet-the-founder', 'support-pathways', 'your-experience', 'why-heartwell', 'wellness-journey']))
-        <x-cta-section />
+        @include('pages.partials.contact-forms', [
+            'compliance' => $siteSettings['compliance'] ?? ($compliance ?? null),
+            'ctas' => $siteSettings['ctas'] ?? ($ctas ?? null),
+        ])
     @endif
 @endsection

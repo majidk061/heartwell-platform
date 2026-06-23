@@ -1,5 +1,12 @@
 @props(['headline', 'tagline' => null, 'body' => null, 'imageUrl' => null])
 
+@php
+    $src = $imageUrl;
+    if ($src && ! str_starts_with($src, 'http')) {
+        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    }
+@endphp
+
 <section class="bg-hw-white hw-section">
     <div class="hw-container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
@@ -12,13 +19,13 @@
                     <p class="text-base md:text-lg text-hw-text mt-4 md:mt-6 leading-relaxed">{{ $body }}</p>
                 @endif
                 <div class="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ config('heartwell.ctas.primary.label') }}</a>
-                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary sm:w-auto">{{ config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                    <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ ($siteSettings['ctas']['primary']['label'] ?? null) ?: config('heartwell.ctas.primary.label') }}</a>
+                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary sm:w-auto">{{ ($siteSettings['ctas']['secondary']['waitlist']['label'] ?? null) ?: config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
             </div>
             <div class="order-1 lg:order-2 w-full">
-                @if($imageUrl)
-                    <img src="{{ $imageUrl }}" alt="" class="w-full h-auto rounded-lg object-cover aspect-[4/3]" loading="eager">
+                @if($src)
+                    <img src="{{ $src }}" alt="" class="w-full h-auto rounded-lg object-cover aspect-[4/3]" loading="eager">
                 @else
                     <div class="w-full aspect-[4/3] rounded-lg bg-hw-dusty-blue-light flex items-center justify-center">
                         <span class="text-hw-muted text-sm px-4 text-center">Hero image placeholder</span>

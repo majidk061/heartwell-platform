@@ -13,6 +13,7 @@ class SupportPathway extends Model
         'slug',
         'title',
         'intro',
+        'image_path',
         'accordion_content',
         'avatar_type',
         'cta_label',

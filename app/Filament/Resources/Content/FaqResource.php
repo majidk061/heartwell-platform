@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\Faq;
+use App\Filament\Concerns\ConfiguresHeartWellForms;
+use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\Content\FaqResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +14,9 @@ use Filament\Tables\Table;
 
 class FaqResource extends Resource
 {
+    use ConfiguresHeartWellForms;
+    use ConfiguresHeartWellTables;
+
     protected static ?string $model = Faq::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
@@ -24,39 +29,41 @@ class FaqResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('question')
-                    ->required()
-                    ->maxLength(500)
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('answer')
-                    ->required()
-                    ->rows(5)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('page_slug')
-                    ->label('Page slug')
-                    ->helperText('Leave blank for global FAQs.')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sort_order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_published')
-                    ->default(true),
+                static::formSection('FAQ content', 'heroicon-o-question-mark-circle', [
+                    Forms\Components\TextInput::make('question')
+                        ->required()
+                        ->maxLength(500)
+                        ->prefixIcon('heroicon-o-question-mark-circle')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('answer')
+                        ->required()
+                        ->rows(5)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('page_slug')
+                        ->label('Page slug')
+                        ->helperText('Leave blank for global FAQs.')
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-link'),
+                ], 1),
+                static::formSection('Publishing', 'heroicon-o-eye', [
+                    Forms\Components\TextInput::make('sort_order')
+                        ->numeric()
+                        ->default(0)
+                        ->prefixIcon('heroicon-o-arrows-up-down'),
+                    Forms\Components\Toggle::make('is_published')
+                        ->default(true),
+                ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
+        return static::configureHeartWellTable($table
             ->columns([
-                Tables\Columns\TextColumn::make('question')
-                    ->searchable()
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('page_slug')
-                    ->label('Page'),
-                Tables\Columns\IconColumn::make('is_published')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('question')->searchable()->limit(50),
+                Tables\Columns\TextColumn::make('page_slug')->label('Page'),
+                Tables\Columns\IconColumn::make('is_published')->boolean(),
+                Tables\Columns\TextColumn::make('sort_order')->sortable(),
             ])
             ->defaultSort('sort_order')
             ->actions([
@@ -66,7 +73,7 @@ class FaqResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ]));
     }
 
     public static function getPages(): array

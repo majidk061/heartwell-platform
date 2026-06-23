@@ -1,10 +1,21 @@
-@props(['section' => null])
+@props(['section' => null, 'imageUrl' => null])
+
+@php
+    $src = $imageUrl;
+    if ($src && ! str_starts_with($src, 'http')) {
+        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    }
+@endphp
 
 <section class="bg-hw-white hw-section">
     <x-layout.page-container>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
-            <div class="aspect-square w-full max-w-md mx-auto lg:mx-0 rounded-lg bg-hw-blush-light flex items-center justify-center">
-                <span class="text-hw-muted text-sm px-4 text-center">Founder photo placeholder</span>
+            <div class="aspect-square w-full max-w-md mx-auto lg:mx-0 rounded-lg overflow-hidden bg-hw-blush-light flex items-center justify-center">
+                @if($src)
+                    <img src="{{ $src }}" alt="Founder" class="w-full h-full object-cover">
+                @else
+                    <span class="text-hw-muted text-sm px-4 text-center">Founder photo placeholder</span>
+                @endif
             </div>
             <div class="text-center lg:text-left">
                 <p class="text-hw-blush uppercase tracking-wider text-sm font-semibold">Meet the Founder</p>

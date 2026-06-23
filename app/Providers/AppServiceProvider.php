@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domains\Content\Actions\GetSiteSettingsAction;
 use App\Domains\Integrations\Contracts\AcuityServiceInterface;
 use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
@@ -27,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        view()->share('siteSettings', app(GetSiteSettingsAction::class)->execute());
     }
 }

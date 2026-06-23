@@ -24,6 +24,8 @@ class ShowPageAction
             throw new ModelNotFoundException("Page [{$slug}] not found or not published.");
         }
 
+        $siteSettings = app(GetSiteSettingsAction::class)->execute();
+
         return [
             'page' => $page,
             'sections' => $page->publishedSections,
@@ -38,8 +40,9 @@ class ShowPageAction
                 })
                 ->orderBy('sort_order')
                 ->get(),
-            'ctas' => config('heartwell.ctas'),
-            'compliance' => config('heartwell.compliance'),
+            'siteSettings' => $siteSettings,
+            'ctas' => $siteSettings['ctas'],
+            'compliance' => $siteSettings['compliance'],
         ];
     }
 }

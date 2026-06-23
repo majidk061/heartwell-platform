@@ -31,12 +31,12 @@
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex flex-col shrink-0 justify-self-start">
                     <span class="font-heading text-lg sm:text-xl text-hw-heading font-semibold">HeartWell</span>
-                    <span class="text-xs text-hw-muted hidden sm:block">{{ config('heartwell.brand.tagline') }}</span>
+                    <span class="text-xs text-hw-muted hidden sm:block">{{ $siteSettings['brand']['tagline'] ?? config('heartwell.brand.tagline') }}</span>
                 </a>
 
                 {{-- Desktop nav (center) --}}
                 <nav class="hidden xl:flex items-center justify-center gap-x-5" aria-label="Main">
-                    @foreach(config('heartwell.navigation') as $item)
+                    @foreach(($siteSettings['navigation'] ?? config('heartwell.navigation')) as $item)
                         <a href="{{ route($item['route']) }}"
                            class="text-sm font-medium whitespace-nowrap transition-colors {{ request()->routeIs($item['route']) ? 'text-hw-heading' : 'text-hw-text hover:text-hw-heading' }}"
                            @click="mobileOpen = false">
@@ -47,8 +47,8 @@
 
                 {{-- Desktop CTAs (right) --}}
                 <div class="hidden xl:flex items-center justify-end gap-3 shrink-0">
-                    <a href="{{ route('contact') }}#book" class="btn-primary btn-sm">{{ config('heartwell.ctas.primary.label') }}</a>
-                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm">{{ config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                    <a href="{{ route('contact') }}#book" class="btn-primary btn-sm">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
 
                 {{-- Mobile menu toggle --}}
@@ -75,8 +75,8 @@
                     </a>
                 @endforeach
                 <div class="pt-4 mt-2 border-t border-hw-border flex flex-col gap-3">
-                    <a href="{{ route('contact') }}#book" class="btn-primary w-full text-center" @click="mobileOpen = false">{{ config('heartwell.ctas.primary.label') }}</a>
-                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                    <a href="{{ route('contact') }}#book" class="btn-primary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
             </nav>
         </div>
@@ -107,13 +107,13 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 <div>
                     <p class="font-heading text-xl font-semibold">HeartWell</p>
-                    <p class="text-sm text-hw-taupe mt-2">{{ config('heartwell.brand.promise') }}</p>
-                    <p class="text-sm text-hw-taupe">{{ config('heartwell.brand.tagline') }}</p>
+                    <p class="text-sm text-hw-taupe mt-2">{{ $siteSettings['brand']['promise'] ?? config('heartwell.brand.promise') }}</p>
+                    <p class="text-sm text-hw-taupe">{{ $siteSettings['brand']['tagline'] ?? config('heartwell.brand.tagline') }}</p>
                 </div>
                 <div>
                     <p class="font-semibold mb-3">Explore</p>
                     <ul class="space-y-2 text-sm text-hw-taupe-light">
-                        @foreach(config('heartwell.navigation') as $item)
+                        @foreach(($siteSettings['navigation'] ?? config('heartwell.navigation')) as $item)
                             <li><a href="{{ route($item['route']) }}" class="hover:text-hw-white transition-colors inline-block py-1">{{ $item['label'] }}</a></li>
                         @endforeach
                     </ul>
@@ -121,15 +121,15 @@
                 <div class="sm:col-span-2 md:col-span-1">
                     <p class="font-semibold mb-3">Get Started</p>
                     <div class="flex flex-col sm:flex-row md:flex-col gap-3">
-                        <a href="{{ route('contact') }}#book" class="btn-primary btn-sm text-center">{{ config('heartwell.ctas.primary.label') }}</a>
-                        <a href="{{ route('contact') }}#waitlist" class="btn-secondary border-hw-white text-hw-white hover:bg-hw-white hover:text-hw-navy btn-sm text-center">{{ config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                        <a href="{{ route('contact') }}#book" class="btn-primary btn-sm text-center">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                        <a href="{{ route('contact') }}#waitlist" class="btn-secondary border-hw-white text-hw-white hover:bg-hw-white hover:text-hw-navy btn-sm text-center">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                     </div>
                 </div>
             </div>
             <p class="text-xs text-hw-taupe mt-8 pt-8 border-t border-hw-taupe/30">
-                {{ config('heartwell.compliance.footer_note') }}
+                {{ $siteSettings['compliance']['footer_note'] ?? config('heartwell.compliance.footer_note') }}
             </p>
-            <p class="text-xs text-hw-taupe mt-4">&copy; {{ date('Y') }} {{ config('heartwell.brand.name') }}. All rights reserved.</p>
+            <p class="text-xs text-hw-taupe mt-4">&copy; {{ date('Y') }} {{ $siteSettings['brand']['name'] ?? config('heartwell.brand.name') }}. All rights reserved.</p>
         </div>
     </footer>
 </body>

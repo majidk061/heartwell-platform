@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Domains\Automation\Models\AutomationRule;
+use App\Domains\Content\Models\AvatarCard;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
+use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\SupportPathway;
 use App\Domains\CRM\Enums\AvatarType;
 use App\Models\User;
@@ -13,10 +15,24 @@ use Illuminate\Support\Facades\Hash;
 
 class HeartWellSeeder extends Seeder
 {
+    private const IMG_HERO = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=80';
+
+    private const IMG_FOUNDER = 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=900&q=80';
+
+    private const IMG_DEPLETED = 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&q=80';
+
+    private const IMG_METABOLIC = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80';
+
+    private const IMG_CONFIDENCE = 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80';
+
+    private const IMG_WELLNESS = 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80';
+
     public function run(): void
     {
         $this->seedAdminUser();
+        $this->seedSiteSettings();
         $this->seedPages();
+        $this->seedAvatarCards();
         $this->seedSupportPathways();
         $this->seedAutomationRules();
     }
@@ -41,9 +57,9 @@ class HeartWellSeeder extends Seeder
                 'title' => 'Home',
                 'sort_order' => 1,
                 'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Thoughtful, Compassionate Care You Can Trust', 'content' => ['subheading' => 'For Every Stage of Life', 'body' => 'Feeling exhausted? Stuck? Not feeling like yourself? HeartWell offers nurse-guided wellness support for every stage of life.']],
+                    ['section_type' => 'hero', 'heading' => 'Thoughtful, Compassionate Care You Can Trust', 'content' => ['subheading' => 'For Every Stage of Life', 'body' => 'Feeling exhausted? Stuck? Not feeling like yourself? HeartWell offers nurse-guided wellness support for every stage of life.', 'image_url' => self::IMG_HERO]],
                     ['section_type' => 'intro', 'heading' => "You're Not Alone. You Deserve Support.", 'content' => ['body' => 'HeartWell is nurse-led mobile wellness — warm, clinically credentialed, and built around your whole story.']],
-                    ['section_type' => 'founder_teaser', 'heading' => 'Meet the Founder', 'content' => ['body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to bring thoughtful, compassionate care you can trust.']],
+                    ['section_type' => 'founder_teaser', 'heading' => 'Meet the Founder', 'content' => ['body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to bring thoughtful, compassionate care you can trust.', 'image_url' => self::IMG_FOUNDER]],
                 ],
             ],
             [
@@ -85,7 +101,7 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 6,
                 'sections' => [
                     ['section_type' => 'hero', 'heading' => 'Meet the Founder', 'content' => ['body' => 'Credentials: BSN, RN, MBA. A warm, clinical voice guiding your care.']],
-                    ['section_type' => 'founder_teaser', 'heading' => 'Led with heart and expertise', 'content' => ['credentials' => ['BSN', 'RN', 'MBA']]],
+                    ['section_type' => 'founder_teaser', 'heading' => 'Led with heart and expertise', 'content' => ['body' => 'Jacquie Wilson brings decades of nursing leadership and a passion for whole-person wellness to every HeartWell experience.', 'image_url' => self::IMG_FOUNDER, 'credentials' => ['BSN', 'RN', 'MBA']]],
                 ],
             ],
             [
@@ -129,6 +145,30 @@ class HeartWellSeeder extends Seeder
         }
     }
 
+    private function seedSiteSettings(): void
+    {
+        SiteSetting::query()->updateOrCreate(['key' => 'brand'], ['value' => config('heartwell.brand')]);
+        SiteSetting::query()->updateOrCreate(['key' => 'navigation'], ['value' => config('heartwell.navigation')]);
+        SiteSetting::query()->updateOrCreate(['key' => 'ctas'], ['value' => config('heartwell.ctas')]);
+        SiteSetting::query()->updateOrCreate(['key' => 'compliance'], ['value' => config('heartwell.compliance')]);
+    }
+
+    private function seedAvatarCards(): void
+    {
+        $cards = [
+            ['slug' => 'depleted', 'headline' => "I'm functioning… but exhausted.", 'subtext' => 'Low energy, fatigue, burnout, and brain fog — you deserve support that meets you where you are.', 'cta_label' => 'Explore Energy & Recovery', 'pathway_slug' => 'energy-wellness', 'image_path' => self::IMG_DEPLETED],
+            ['slug' => 'frustrated', 'headline' => "I'm trying, but I feel stuck.", 'subtext' => 'Weight changes, metabolism shifts, and resistance despite effort — clarity is possible.', 'cta_label' => 'Explore Metabolic Support', 'pathway_slug' => 'metabolic-weight', 'image_path' => self::IMG_METABOLIC],
+            ['slug' => 'confidence', 'headline' => 'How I see myself is changing.', 'subtext' => 'Appearance changes, self-image shifts, and confidence concerns — support for every stage of life.', 'cta_label' => 'Explore Confidence & Aesthetic Support', 'pathway_slug' => 'confidence-aesthetic', 'image_path' => self::IMG_CONFIDENCE],
+        ];
+
+        foreach ($cards as $index => $card) {
+            AvatarCard::query()->updateOrCreate(
+                ['slug' => $card['slug']],
+                array_merge($card, ['sort_order' => $index + 1, 'is_published' => true]),
+            );
+        }
+    }
+
     private function seedSupportPathways(): void
     {
         $pathways = [
@@ -136,22 +176,24 @@ class HeartWellSeeder extends Seeder
                 'slug' => 'recovery-hydration',
                 'title' => 'Recovery & Hydration Support',
                 'intro' => 'Support when your body needs restoration and replenishment.',
+                'image_path' => self::IMG_WELLNESS,
                 'avatar_type' => AvatarType::Depleted,
                 'cta_label' => 'Book a Visit',
                 'cta_url' => '/contact#book',
                 'accordion_content' => [
-                    ['title' => 'When you need recovery support', 'body' => 'Empathetic guidance for depletion, fatigue, and recovery — not a treatment menu.'],
+                    ['heading' => 'When you need recovery support', 'body' => 'Empathetic guidance for depletion, fatigue, and recovery — not a treatment menu.'],
                 ],
             ],
             [
                 'slug' => 'energy-wellness',
                 'title' => 'Energy & Wellness Support',
                 'intro' => 'For when you are functioning but exhausted.',
+                'image_path' => self::IMG_DEPLETED,
                 'avatar_type' => AvatarType::Depleted,
                 'cta_label' => 'Request Consultation',
                 'cta_url' => '/contact#consultation',
                 'accordion_content' => [
-                    ['title' => 'Energy and vitality', 'body' => 'Nurse-led support for burnout, brain fog, and low energy.'],
+                    ['heading' => 'Energy and vitality', 'body' => 'Nurse-led support for burnout, brain fog, and low energy.'],
                 ],
             ],
             [
@@ -162,7 +204,7 @@ class HeartWellSeeder extends Seeder
                 'cta_label' => 'Request Consultation',
                 'cta_url' => '/contact#consultation',
                 'accordion_content' => [
-                    ['title' => 'Metabolic shifts', 'body' => 'Support for weight and metabolism changes with compassion, not judgment.'],
+                    ['heading' => 'Metabolic shifts', 'body' => 'Support for weight and metabolism changes with compassion, not judgment.'],
                 ],
             ],
             [
@@ -173,7 +215,7 @@ class HeartWellSeeder extends Seeder
                 'cta_label' => 'Book a Visit',
                 'cta_url' => '/contact#book',
                 'accordion_content' => [
-                    ['title' => 'Cellular wellness', 'body' => 'Educational, supportive guidance — never a clinical catalog.'],
+                    ['heading' => 'Cellular wellness', 'body' => 'Educational, supportive guidance — never a clinical catalog.'],
                 ],
             ],
             [
@@ -184,7 +226,7 @@ class HeartWellSeeder extends Seeder
                 'cta_label' => 'Book a Visit',
                 'cta_url' => '/contact#book',
                 'accordion_content' => [
-                    ['title' => 'Confidence through transitions', 'body' => 'Support for self-image and appearance changes with warmth and trust.'],
+                    ['heading' => 'Confidence through transitions', 'body' => 'Support for self-image and appearance changes with warmth and trust.'],
                 ],
             ],
         ];
