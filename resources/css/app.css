@@ -1,0 +1,93 @@
+@import './tokens/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-hw-white antialiased;
+    overflow-x: hidden;
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+  }
+
+  img,
+  iframe,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer components {
+  .hw-container {
+    @apply mx-auto w-full max-w-container;
+    padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+      max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
+
+  .hw-container-narrow {
+    @apply mx-auto w-full;
+    max-width: var(--content-narrow);
+    padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+      max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
+
+  .hw-container-form {
+    @apply mx-auto w-full;
+    max-width: var(--content-form);
+    padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+      max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
+
+  .hw-section {
+    @apply py-section;
+  }
+
+  .hw-page-title {
+    font-size: var(--text-hero);
+    @apply font-heading text-hw-heading leading-tight;
+  }
+
+  .hw-section-title {
+    font-size: var(--text-h2);
+    @apply font-heading text-hw-heading;
+  }
+
+  .hw-form-field {
+    @apply w-full rounded-md border border-hw-border px-4 py-3 min-h-[44px] text-base;
+    @apply focus:outline-none focus:ring-2 focus:ring-hw-dusty-blue focus:border-hw-dusty-blue;
+  }
+
+  .hw-form-label {
+    @apply block text-sm font-medium text-hw-heading mb-2;
+  }
+
+  .hw-form-group {
+    @apply space-y-5;
+  }
+
+  .hw-contact-nav {
+    @apply flex gap-2 overflow-x-auto pb-2 -mx-1 px-1;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .hw-contact-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hw-contact-nav a {
+    @apply shrink-0 px-4 py-2 text-sm font-medium rounded-full border border-hw-border;
+    @apply text-hw-text hover:text-hw-heading transition-colors min-h-[44px] flex items-center;
+  }
+
+  .hw-contact-nav a:hover {
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 30%, transparent);
+  }
+}
