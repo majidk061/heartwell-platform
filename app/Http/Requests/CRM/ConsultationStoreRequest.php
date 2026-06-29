@@ -27,6 +27,8 @@ class ConsultationStoreRequest extends FormRequest
             'preferred_contact_method' => ['nullable', 'string', Rule::in(['email', 'phone', 'either'])],
             'source_page' => ['nullable', 'string', 'max:255'],
             'avatar_type' => ['nullable', Rule::enum(AvatarType::class)],
+            'marketing_consent' => ['nullable', 'boolean'],
+            'website' => ['prohibited'],
         ];
     }
 }

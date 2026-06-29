@@ -8,7 +8,7 @@ use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 use App\Domains\Integrations\Services\AcuityService;
 use App\Domains\Integrations\Services\MailchimpService;
-use App\Domains\Integrations\Services\SendGridService;
+use App\Domains\Integrations\Services\SettingsResolver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        try {
+            app(SettingsResolver::class)->mergeIntoConfig();
+        } catch (\Throwable) {
+            // Settings table may not exist during initial migrate
+        }
+
         view()->share('siteSettings', app(GetSiteSettingsAction::class)->execute());
     }
 }

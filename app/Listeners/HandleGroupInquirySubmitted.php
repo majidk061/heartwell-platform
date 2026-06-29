@@ -4,13 +4,15 @@ namespace App\Listeners;
 
 use App\Domains\Automation\Actions\EvaluateAutomationRulesAction;
 use App\Domains\CRM\Events\GroupInquirySubmitted;
-use App\Domains\Integrations\Contracts\SendGridServiceInterface;
+use App\Domains\Integrations\Actions\NotifyAdminsAction;
+use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 
 class HandleGroupInquirySubmitted
 {
     public function __construct(
         private readonly EvaluateAutomationRulesAction $evaluateAutomationRules,
-        private readonly SendGridServiceInterface $sendGrid,
+        private readonly SendTemplatedEmailAction $sendTemplatedEmail,
+        private readonly NotifyAdminsAction $notifyAdmins,
     ) {}
 
     public function handle(GroupInquirySubmitted $event): void
@@ -30,16 +32,7 @@ class HandleGroupInquirySubmitted
 
         $this->evaluateAutomationRules->execute('group_inquiry_submitted', $context);
 
-        $this->sendGrid->sendAdminAlert(
-            'New group inquiry: '.($inquiry->event_name ?? 'Unnamed event'),
-            sprintf(
-                "Host: %s (%s)\nGuests: %s\nDate: %s\n\n%s",
-                $inquiry->host_name,
-                $inquiry->host_email,
-                $inquiry->guest_count ?? 'N/A',
-                $inquiry->event_date?->toDateString() ?? 'TBD',
-                $inquiry->message ?? '',
-            ),
-        );
+        $this->sendTemplatedEmail->execute('group_inquiry_ack', $inquiry->host_email, $context);
+        $this->notifyAdmins->execute('group_inquiry', 'group_inquiry_admin_notify', $context);
     }
 }

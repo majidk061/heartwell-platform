@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,14 +22,16 @@ class SendConsultationAckJob implements ShouldQueue
         public readonly array $dynamicData = [],
     ) {}
 
-    public function handle(SendGridServiceInterface $sendGrid): void
+    public function handle(SendTemplatedEmailAction $sendTemplatedEmail, SendGridServiceInterface $sendGrid): void
     {
-        $templateId = config('integrations.sendgrid.templates.consultation_ack');
-
-        if (blank($templateId)) {
+        if ($sendTemplatedEmail->execute('consultation_ack', $this->email, $this->dynamicData)) {
             return;
         }
 
-        $sendGrid->sendTemplate($templateId, $this->email, $this->dynamicData);
+        $templateId = config('integrations.sendgrid.templates.consultation_ack');
+
+        if (filled($templateId)) {
+            $sendGrid->sendTemplate($templateId, $this->email, $this->dynamicData);
+        }
     }
 }

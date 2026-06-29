@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\Content\SupportPathwayResource\Pages;
 
 use App\Filament\Resources\Content\SupportPathwayResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditSupportPathway extends EditRecord
+class EditSupportPathway extends HeartWellEditRecord
 {
     protected static string $resource = SupportPathwayResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

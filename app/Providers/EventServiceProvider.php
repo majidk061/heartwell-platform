@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use App\Domains\Booking\Events\BookingSynced;
 use App\Domains\CRM\Events\ConsultationRequested;
 use App\Domains\CRM\Events\GroupInquirySubmitted;
+use App\Domains\CRM\Events\LeadCreated;
 use App\Domains\CRM\Events\LeadStatusChanged;
 use App\Domains\CRM\Events\WaitlistJoined;
+use App\Listeners\HandleBookingSynced;
 use App\Listeners\HandleConsultationRequested;
 use App\Listeners\HandleGroupInquirySubmitted;
+use App\Listeners\HandleLeadCreated;
 use App\Listeners\HandleLeadStatusChanged;
 use App\Listeners\HandleWaitlistJoined;
 use Illuminate\Auth\Events\Registered;
@@ -31,6 +35,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         LeadStatusChanged::class => [
             HandleLeadStatusChanged::class,
+        ],
+        LeadCreated::class => [
+            HandleLeadCreated::class,
+        ],
+        BookingSynced::class => [
+            HandleBookingSynced::class,
         ],
     ];
 

@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Content\PageResource\Pages;
 
 use App\Filament\Resources\Content\PageResource;
 use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Pages\HeartWellCreateRecord;
 
-class CreatePage extends CreateRecord
+class CreatePage extends HeartWellCreateRecord
 {
     protected static string $resource = PageResource::class;
 }

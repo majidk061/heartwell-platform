@@ -6,13 +6,14 @@
         $intro = $sections->firstWhere('type', 'intro');
         $founder = $sections->firstWhere('type', 'founder_teaser');
         $siteCtas = $siteSettings['ctas'] ?? config('heartwell.ctas');
+        $home = $siteSettings['home'] ?? [];
     @endphp
 
     <x-hero
         :headline="$hero?->heading ?? config('heartwell.brand.promise')"
         :tagline="$hero?->subheading ?? config('heartwell.brand.tagline')"
         :body="$hero?->body"
-        :image-url="\App\Domains\Content\Support\CmsImage::url($hero?->image_url)"
+        :image-url="$hero?->image_url"
     />
 
     @if($pathways->isNotEmpty())
@@ -21,8 +22,8 @@
 
     <section class="hw-section bg-hw-white">
         <x-layout.page-container>
-            <h2 class="hw-section-title text-center">You're Not Alone. You Deserve Support.</h2>
-            <p class="text-center text-hw-muted mt-3 text-base md:text-lg">Which of these feels most like you?</p>
+            <h2 class="hw-section-title text-center">{{ $home['avatar_intro_heading'] ?? "You're Not Alone. You Deserve Support." }}</h2>
+            <p class="text-center text-hw-muted mt-3 text-base md:text-lg">{{ $home['avatar_intro_subtitle'] ?? 'Which of these feels most like you?' }}</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 md:mt-10">
                 @foreach($avatarCards as $card)
                     <x-avatar-card :card="$card" />
@@ -45,12 +46,16 @@
     @endif
 
     @if($pathways->isNotEmpty())
-        <x-pathway-accordion :pathways="$pathways->take(3)" />
+        <x-pathway-accordion :pathways="$pathways" />
+    @endif
+
+    @if(isset($testimonials) && $testimonials->isNotEmpty())
+        <x-testimonials :testimonials="$testimonials" />
     @endif
 
     <x-founder-teaser
         :section="$founder"
-        :image-url="\App\Domains\Content\Support\CmsImage::url($founder?->image_url)"
+        :image-url="$founder?->image_url"
     />
 
     <x-cta-section :ctas="$siteCtas" />

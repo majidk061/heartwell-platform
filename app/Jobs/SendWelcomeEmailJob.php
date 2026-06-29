@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,14 +22,16 @@ class SendWelcomeEmailJob implements ShouldQueue
         public readonly array $dynamicData = [],
     ) {}
 
-    public function handle(SendGridServiceInterface $sendGrid): void
+    public function handle(SendTemplatedEmailAction $sendTemplatedEmail, SendGridServiceInterface $sendGrid): void
     {
-        $templateId = config('integrations.sendgrid.templates.waitlist_welcome');
-
-        if (blank($templateId)) {
+        if ($sendTemplatedEmail->execute('waitlist_welcome', $this->email, $this->dynamicData)) {
             return;
         }
 
-        $sendGrid->sendTemplate($templateId, $this->email, $this->dynamicData);
+        $templateId = config('integrations.sendgrid.templates.waitlist_welcome');
+
+        if (filled($templateId)) {
+            $sendGrid->sendTemplate($templateId, $this->email, $this->dynamicData);
+        }
     }
 }

@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\CRM\WaitlistEntryResource\Pages;
 
 use App\Filament\Resources\CRM\WaitlistEntryResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditWaitlistEntry extends EditRecord
+class EditWaitlistEntry extends HeartWellEditRecord
 {
     protected static string $resource = WaitlistEntryResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

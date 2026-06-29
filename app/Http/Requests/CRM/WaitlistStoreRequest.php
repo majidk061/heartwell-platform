@@ -27,6 +27,8 @@ class WaitlistStoreRequest extends FormRequest
             'interests.*' => ['string', 'max:255'],
             'source_page' => ['nullable', 'string', 'max:255'],
             'avatar_type' => ['nullable', Rule::enum(AvatarType::class)],
+            'marketing_consent' => ['nullable', 'boolean'],
+            'website' => ['prohibited'],
         ];
     }
 }

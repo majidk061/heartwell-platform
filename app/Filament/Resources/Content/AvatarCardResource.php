@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\AvatarCard;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
+use App\Filament\Concerns\ConfiguresReorderableTables;
 use App\Filament\Resources\Content\AvatarCardResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,8 +16,10 @@ use Filament\Tables\Table;
 
 class AvatarCardResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
+    use ConfiguresReorderableTables;
 
     protected static ?string $model = AvatarCard::class;
 
@@ -26,6 +30,16 @@ class AvatarCardResource extends Resource
     protected static ?int $navigationSort = 5;
 
     protected static ?string $navigationLabel = 'Avatar Cards';
+
+    protected static function permissionPrefix(): string
+    {
+        return 'content.avatar_cards';
+    }
+
+    public static function getSubheading(): ?string
+    {
+        return 'Drag rows to change avatar card order on the website.';
+    }
 
     public static function form(Form $form): Form
     {
@@ -55,10 +69,6 @@ class AvatarCardResource extends Resource
                     Forms\Components\TextInput::make('pathway_slug')
                         ->label('Pathway slug')
                         ->prefixIcon('heroicon-o-map'),
-                    Forms\Components\TextInput::make('sort_order')
-                        ->numeric()
-                        ->default(0)
-                        ->prefixIcon('heroicon-o-arrows-up-down'),
                     Forms\Components\Toggle::make('is_published')
                         ->default(true),
                 ]),
@@ -67,17 +77,15 @@ class AvatarCardResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return static::configureHeartWellTable($table
+        return static::applyReorderableSort(static::configureHeartWellTable($table
             ->columns([
                 Tables\Columns\TextColumn::make('headline')->searchable(),
                 Tables\Columns\TextColumn::make('pathway_slug'),
                 Tables\Columns\IconColumn::make('is_published')->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')->sortable(),
             ])
-            ->defaultSort('sort_order')
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ]));
+            ])));
     }
 
     public static function getPages(): array

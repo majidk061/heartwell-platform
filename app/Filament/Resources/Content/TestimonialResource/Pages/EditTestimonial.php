@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\Content\TestimonialResource\Pages;
 
 use App\Filament\Resources\Content\TestimonialResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditTestimonial extends EditRecord
+class EditTestimonial extends HeartWellEditRecord
 {
     protected static string $resource = TestimonialResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

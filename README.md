@@ -577,12 +577,49 @@ Credentials: `admin@heartwellwellness.com` / `password`
 
 ---
 
+## Admin CMS Workflow (Production)
+
+1. **Site Settings** (`/admin` → Site Settings) — logo (text/image/both), menu, buttons, footer, Google Analytics
+2. **Pages** — edit each of the 7 pages; use **Page sections** tab to add/reorder hero, intro, features, FAQ blocks
+3. **Support Pathways** — five pathway accordions with images and CTAs
+4. **Avatar Cards / Testimonials / FAQs** — managed under Website Content
+5. **System Settings** (super admin) — Email/SMTP, Integrations (Acuity, Mailchimp, SendGrid, Hydreight)
+6. **Leads & CRM** — pipeline tabs, 360° lead view, status changes, notes, assignments
+
+```bash
+php artisan heartwell:sitemap    # Regenerate sitemap after content changes
+php artisan heartwell:preflight  # Pre-launch checks
+```
+
+---
+
 ## Development Notes
 
 - **PoC project** — corporate `infrastructure/` / `yaml-pipelines` folders not required unless deploying to enterprise Azure pipeline.
-- **Placeholder content** — seeded copy is for development; replace via Filament admin or update `HeartWellSeeder.php`.
-- **Page completion** — Home, Support Pathways, and Contact are the most complete; other inner pages have basic CMS content and may need richer layouts and client-final copy/images.
+- **Placeholder content** — seeded copy is for development; replace via Filament admin.
+- **All 7 pages** — rich CMS sections seeded per PDF spec; swap client-final copy/images in admin.
 - **Security** — set `APP_DEBUG=false` in production; change default admin password; never commit `.env` to git.
+- **Roles** — `super_admin` (full access including secrets) and `editor` (content + CRM); seeded via `RoleSeeder` with granular permissions from `PermissionSeeder`.
+
+### Team management (sub-admins)
+
+Super admins can invite team members under **System Settings → Team Members**:
+
+1. Create a user with name, email, roles, and optional direct permissions.
+2. The invitee receives an email with a **Set your password** link (Filament password reset flow).
+3. Use **Resend invite** or **Force password reset** from the user table if needed.
+4. Deactivate users with the **Active** toggle — deactivated users cannot log in.
+
+Configure **Email / SMTP** before inviting so password-reset and invite emails deliver.
+
+### Email templates & notifications
+
+Under **System Settings**:
+
+- **Email Templates** — edit logo, subject, heading, and body for automated emails (merge tags like `{{first_name}}`, `{{email}}`).
+- **Email Notifications** — set per-form admin recipient addresses (waitlist, consultation, group inquiry, booking, new lead).
+
+Global fallback admin email is configured in **Email / SMTP → Admin alert email**.
 - **Cursor rules** — see `.cursor/rules/` for coding standards used by AI assistants on this project.
 
 ---

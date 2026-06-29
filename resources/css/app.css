@@ -90,4 +90,49 @@
   .hw-contact-nav a:hover {
     background-color: color-mix(in srgb, var(--color-dusty-blue-light) 30%, transparent);
   }
+
+  .hw-contact-tab--active {
+    @apply border-hw-dusty-blue text-hw-navy;
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 40%, transparent);
+  }
+
+  .hw-contact-card {
+    @apply relative w-full text-left rounded-xl border border-hw-border bg-white p-5 transition;
+    @apply hover:border-hw-dusty-blue hover:shadow-sm;
+  }
+
+  .hw-contact-card--active {
+    @apply border-hw-dusty-blue shadow-sm;
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 20%, transparent);
+  }
+
+  .hw-contact-card--featured {
+    @apply border-hw-navy;
+  }
+
+  .hw-contact-card__badge {
+    @apply absolute top-3 right-3 text-xs font-semibold uppercase tracking-wide;
+    @apply text-hw-navy bg-hw-blush px-2 py-0.5 rounded-full;
+  }
+
+  .hw-contact-card__icon {
+    @apply text-hw-dusty-blue mb-3 block;
+  }
+
+  .hw-contact-card__title {
+    @apply block font-heading text-lg text-hw-navy mb-1;
+  }
+
+  .hw-contact-card__desc {
+    @apply block text-sm text-hw-muted;
+  }
+
+  .hw-contact-panel {
+    @apply rounded-xl border border-hw-border p-6 md:p-8;
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 20%, transparent);
+  }
+
+  .hw-contact-panel--featured {
+    @apply border-hw-navy bg-white shadow-md;
+  }
 }

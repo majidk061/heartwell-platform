@@ -4,9 +4,9 @@ namespace App\Filament\Resources\CRM\GroupInquiryResource\Pages;
 
 use App\Filament\Resources\CRM\GroupInquiryResource;
 use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Pages\HeartWellCreateRecord;
 
-class CreateGroupInquiry extends CreateRecord
+class CreateGroupInquiry extends HeartWellCreateRecord
 {
     protected static string $resource = GroupInquiryResource::class;
 }

@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Content\AvatarCardResource\Pages;
 
 use App\Filament\Resources\Content\AvatarCardResource;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Pages\HeartWellCreateRecord;
 
-class CreateAvatarCard extends CreateRecord
+class CreateAvatarCard extends HeartWellCreateRecord
 {
     protected static string $resource = AvatarCardResource::class;
 }

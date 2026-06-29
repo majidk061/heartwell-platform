@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\Faq;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
+use App\Filament\Concerns\ConfiguresReorderableTables;
 use App\Filament\Resources\Content\FaqResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,8 +16,10 @@ use Filament\Tables\Table;
 
 class FaqResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
+    use ConfiguresReorderableTables;
 
     protected static ?string $model = Faq::class;
 
@@ -24,6 +28,16 @@ class FaqResource extends Resource
     protected static ?string $navigationGroup = 'Website Content';
 
     protected static ?int $navigationSort = 4;
+
+    protected static function permissionPrefix(): string
+    {
+        return 'content.faqs';
+    }
+
+    public static function getSubheading(): ?string
+    {
+        return 'Drag rows to change FAQ order on the website.';
+    }
 
     public static function form(Form $form): Form
     {
@@ -46,10 +60,6 @@ class FaqResource extends Resource
                         ->prefixIcon('heroicon-o-link'),
                 ], 1),
                 static::formSection('Publishing', 'heroicon-o-eye', [
-                    Forms\Components\TextInput::make('sort_order')
-                        ->numeric()
-                        ->default(0)
-                        ->prefixIcon('heroicon-o-arrows-up-down'),
                     Forms\Components\Toggle::make('is_published')
                         ->default(true),
                 ]),
@@ -58,14 +68,12 @@ class FaqResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return static::configureHeartWellTable($table
+        return static::applyReorderableSort(static::configureHeartWellTable($table
             ->columns([
                 Tables\Columns\TextColumn::make('question')->searchable()->limit(50),
                 Tables\Columns\TextColumn::make('page_slug')->label('Page'),
                 Tables\Columns\IconColumn::make('is_published')->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')->sortable(),
             ])
-            ->defaultSort('sort_order')
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -73,7 +81,7 @@ class FaqResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]));
+            ])));
     }
 
     public static function getPages(): array

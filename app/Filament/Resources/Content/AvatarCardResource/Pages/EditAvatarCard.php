@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\Content\AvatarCardResource\Pages;
 
 use App\Filament\Resources\Content\AvatarCardResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditAvatarCard extends EditRecord
+class EditAvatarCard extends HeartWellEditRecord
 {
     protected static string $resource = AvatarCardResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

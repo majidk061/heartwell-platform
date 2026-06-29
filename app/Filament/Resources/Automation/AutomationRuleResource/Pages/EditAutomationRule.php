@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\Automation\AutomationRuleResource\Pages;
 
 use App\Filament\Resources\Automation\AutomationRuleResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditAutomationRule extends EditRecord
+class EditAutomationRule extends HeartWellEditRecord
 {
     protected static string $resource = AutomationRuleResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

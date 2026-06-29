@@ -23,34 +23,25 @@ class ListLeads extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return [Actions\CreateAction::make()];
     }
 
     public function getTabs(): array
     {
+        $tab = fn (string $label, LeadStatus $status, string $icon, string $color) => Tab::make($label)
+            ->icon($icon)
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status))
+            ->badge(Lead::query()->where('status', $status)->count())
+            ->badgeColor($color);
+
         return [
-            'all' => Tab::make('All')
-                ->badge(Lead::query()->count()),
-
-            'new' => Tab::make('New')
-                ->icon('heroicon-m-sparkles')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', LeadStatus::NewLead))
-                ->badge(Lead::query()->where('status', LeadStatus::NewLead)->count())
-                ->badgeColor('gray'),
-
-            'contacted' => Tab::make('Contacted')
-                ->icon('heroicon-m-phone')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', LeadStatus::Contacted))
-                ->badge(Lead::query()->where('status', LeadStatus::Contacted)->count())
-                ->badgeColor('info'),
-
-            'booked' => Tab::make('Booked')
-                ->icon('heroicon-m-calendar')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', LeadStatus::Booked))
-                ->badge(Lead::query()->where('status', LeadStatus::Booked)->count())
-                ->badgeColor('success'),
+            'all' => Tab::make('All')->badge(Lead::query()->count()),
+            'new' => $tab('New', LeadStatus::NewLead, 'heroicon-m-sparkles', 'gray'),
+            'contacted' => $tab('Contacted', LeadStatus::Contacted, 'heroicon-m-phone', 'info'),
+            'consultation' => $tab('Consultation', LeadStatus::ConsultationScheduled, 'heroicon-m-calendar-days', 'warning'),
+            'booked' => $tab('Booked', LeadStatus::Booked, 'heroicon-m-check-circle', 'success'),
+            'completed' => $tab('Completed', LeadStatus::Completed, 'heroicon-m-check-badge', 'success'),
+            'follow_up' => $tab('Follow up', LeadStatus::FollowUp, 'heroicon-m-arrow-path', 'danger'),
         ];
     }
 }

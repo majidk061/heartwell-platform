@@ -4,8 +4,10 @@ namespace App\Domains\CRM\Models;
 
 use App\Domains\Booking\Models\Booking;
 use App\Domains\CRM\Enums\AvatarType;
+use App\Domains\CRM\Enums\LeadPriority;
 use App\Domains\CRM\Enums\LeadSource;
 use App\Domains\CRM\Enums\LeadStatus;
+use App\Domains\CRM\Enums\PreferredContactMethod;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,11 +23,23 @@ class Lead extends Model
         'email',
         'phone',
         'source',
+        'source_page',
         'avatar_type',
         'status',
+        'priority',
+        'preferred_contact_method',
         'notes',
         'mailchimp_member_id',
         'assigned_to',
+        'last_contacted_at',
+        'next_follow_up_at',
+        'marketing_consent',
+        'marketing_consent_at',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'tags',
+        'closed_reason',
         'metadata',
     ];
 
@@ -33,6 +47,13 @@ class Lead extends Model
         'source' => LeadSource::class,
         'avatar_type' => AvatarType::class,
         'status' => LeadStatus::class,
+        'priority' => LeadPriority::class,
+        'preferred_contact_method' => PreferredContactMethod::class,
+        'last_contacted_at' => 'datetime',
+        'next_follow_up_at' => 'datetime',
+        'marketing_consent' => 'boolean',
+        'marketing_consent_at' => 'datetime',
+        'tags' => 'array',
         'metadata' => 'array',
     ];
 

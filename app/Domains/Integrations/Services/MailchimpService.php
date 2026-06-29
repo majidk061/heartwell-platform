@@ -4,6 +4,7 @@ namespace App\Domains\Integrations\Services;
 
 use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use Illuminate\Support\Facades\Log;
+use MailchimpMarketing\ApiClient;
 
 class MailchimpService implements MailchimpServiceInterface
 {
@@ -15,10 +16,32 @@ class MailchimpService implements MailchimpServiceInterface
             return null;
         }
 
-        // Live integration wired when API keys are present.
-        Log::info('[Mailchimp] subscribe', compact('email', 'firstName', 'lastName', 'tags'));
+        try {
+            $client = $this->client();
+            $audienceId = config('integrations.mailchimp.audience_id');
+            $hash = md5(strtolower($email));
 
-        return null;
+            $client->lists->setListMember($audienceId, $hash, [
+                'email_address' => $email,
+                'status_if_new' => 'subscribed',
+                'merge_fields' => [
+                    'FNAME' => $firstName,
+                    'LNAME' => $lastName ?? '',
+                ],
+            ]);
+
+            if ($tags !== []) {
+                $client->lists->updateListMemberTags($audienceId, $hash, [
+                    'tags' => collect($tags)->map(fn (string $tag) => ['name' => $tag, 'status' => 'active'])->all(),
+                ]);
+            }
+
+            return $hash;
+        } catch (\Throwable $e) {
+            Log::error('[Mailchimp] subscribe failed', ['email' => $email, 'error' => $e->getMessage()]);
+
+            return null;
+        }
     }
 
     public function unsubscribe(string $email): bool
@@ -29,9 +52,19 @@ class MailchimpService implements MailchimpServiceInterface
             return true;
         }
 
-        Log::info('[Mailchimp] unsubscribe', compact('email'));
+        try {
+            $audienceId = config('integrations.mailchimp.audience_id');
+            $hash = md5(strtolower($email));
+            $this->client()->lists->updateListMember($audienceId, $hash, [
+                'status' => 'unsubscribed',
+            ]);
 
-        return true;
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('[Mailchimp] unsubscribe failed', ['email' => $email, 'error' => $e->getMessage()]);
+
+            return false;
+        }
     }
 
     public function isConfigured(): bool
@@ -41,5 +74,16 @@ class MailchimpService implements MailchimpServiceInterface
         return ($config['enabled'] ?? false)
             && filled($config['api_key'])
             && filled($config['audience_id']);
+    }
+
+    private function client(): ApiClient
+    {
+        $client = new ApiClient;
+        $client->setConfig([
+            'apiKey' => config('integrations.mailchimp.api_key'),
+            'server' => config('integrations.mailchimp.server_prefix'),
+        ]);
+
+        return $client;
     }
 }

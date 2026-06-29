@@ -4,9 +4,12 @@ namespace App\Filament\Resources\CRM;
 
 use App\Domains\CRM\Actions\TransitionLeadStatusAction;
 use App\Domains\CRM\Enums\AvatarType;
+use App\Domains\CRM\Enums\LeadPriority;
 use App\Domains\CRM\Enums\LeadSource;
 use App\Domains\CRM\Enums\LeadStatus;
+use App\Domains\CRM\Enums\PreferredContactMethod;
 use App\Domains\CRM\Models\Lead;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\CRM\LeadResource\Pages;
@@ -16,11 +19,13 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 
 class LeadResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
 
@@ -32,61 +37,60 @@ class LeadResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static function permissionPrefix(): string
+    {
+        return 'crm.leads';
+    }
+
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                static::formSection('Contact', 'heroicon-o-user', [
-                    Forms\Components\TextInput::make('first_name')
-                        ->required()
-                        ->maxLength(255)
-                        ->prefixIcon('heroicon-o-user'),
-                    Forms\Components\TextInput::make('last_name')
-                        ->maxLength(255)
-                        ->prefixIcon('heroicon-o-user'),
-                    Forms\Components\TextInput::make('email')
-                        ->email()
-                        ->required()
-                        ->maxLength(255)
-                        ->prefixIcon('heroicon-o-envelope'),
-                    Forms\Components\TextInput::make('phone')
-                        ->tel()
-                        ->maxLength(50)
-                        ->prefixIcon('heroicon-o-phone'),
-                ]),
-                static::formSection('CRM', 'heroicon-o-funnel', [
-                    Forms\Components\Select::make('source')
-                        ->options(collect(LeadSource::cases())->mapWithKeys(
-                            fn (LeadSource $source) => [$source->value => $source->label()]
-                        ))
-                        ->required()
-                        ->prefixIcon('heroicon-o-arrow-path'),
-                    Forms\Components\Select::make('avatar_type')
-                        ->options(collect(AvatarType::cases())->mapWithKeys(
-                            fn (AvatarType $type) => [$type->value => $type->label()]
-                        ))
-                        ->prefixIcon('heroicon-o-heart'),
-                    Forms\Components\Select::make('status')
-                        ->options(collect(LeadStatus::cases())->mapWithKeys(
-                            fn (LeadStatus $status) => [$status->value => $status->label()]
-                        ))
-                        ->required()
-                        ->disabled(fn (?Model $record) => $record !== null)
-                        ->dehydrated(fn (?Model $record) => $record === null)
-                        ->helperText('Use the status transition action on the edit page for existing leads.')
-                        ->prefixIcon('heroicon-o-flag'),
-                    Forms\Components\Select::make('assigned_to')
-                        ->relationship('assignedUser', 'name')
-                        ->searchable()
-                        ->preload()
-                        ->prefixIcon('heroicon-o-user-circle'),
-                ]),
-                static::formSection('Notes', 'heroicon-o-document-text', [
-                    Forms\Components\Textarea::make('notes')
-                        ->rows(4)
-                        ->columnSpanFull(),
-                ], 1),
-            ]);
+        return $form->schema([
+            static::formSection('Contact', 'heroicon-o-user', [
+                Forms\Components\TextInput::make('first_name')->required()->maxLength(255),
+                Forms\Components\TextInput::make('last_name')->maxLength(255),
+                Forms\Components\TextInput::make('email')->email()->required(),
+                Forms\Components\TextInput::make('phone')->tel(),
+                Forms\Components\Select::make('preferred_contact_method')
+                    ->options(collect(PreferredContactMethod::cases())->mapWithKeys(
+                        fn (PreferredContactMethod $m) => [$m->value => $m->label()]
+                    )),
+            ]),
+            static::formSection('CRM', 'heroicon-o-funnel', [
+                Forms\Components\Select::make('source')
+                    ->options(collect(LeadSource::cases())->mapWithKeys(
+                        fn (LeadSource $source) => [$source->value => $source->label()]
+                    ))
+                    ->required(),
+                Forms\Components\TextInput::make('source_page')->label('Source page'),
+                Forms\Components\Select::make('avatar_type')
+                    ->options(collect(AvatarType::cases())->mapWithKeys(
+                        fn (AvatarType $type) => [$type->value => $type->label()]
+                    )),
+                Forms\Components\Select::make('status')
+                    ->options(collect(LeadStatus::cases())->mapWithKeys(
+                        fn (LeadStatus $status) => [$status->value => $status->label()]
+                    ))
+                    ->required()
+                    ->disabled(fn (?Model $record) => $record !== null)
+                    ->dehydrated(fn (?Model $record) => $record === null)
+                    ->helperText('Use Change status action on the lead view for existing leads.'),
+                Forms\Components\Select::make('priority')
+                    ->options(collect(LeadPriority::cases())->mapWithKeys(
+                        fn (LeadPriority $p) => [$p->value => $p->label()]
+                    ))
+                    ->default(LeadPriority::Normal->value),
+                Forms\Components\Select::make('assigned_to')
+                    ->relationship('assignedUser', 'name')
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\DateTimePicker::make('next_follow_up_at')->label('Next follow-up'),
+                Forms\Components\Toggle::make('marketing_consent')->label('Marketing consent'),
+                Forms\Components\TagsInput::make('tags'),
+            ]),
+            static::formSection('Notes', 'heroicon-o-document-text', [
+                Forms\Components\Textarea::make('notes')->rows(4)->columnSpanFull(),
+            ], 1),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -98,11 +102,8 @@ class LeadResource extends Resource
                     ->getStateUsing(fn (Lead $record) => $record->fullName())
                     ->searchable(['first_name', 'last_name'])
                     ->sortable(['first_name']),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->copyable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->badge()
+                Tables\Columns\TextColumn::make('email')->searchable()->copyable(),
+                Tables\Columns\TextColumn::make('status')->badge()
                     ->formatStateUsing(fn (LeadStatus $state) => $state->label())
                     ->color(fn (LeadStatus $state) => match ($state) {
                         LeadStatus::NewLead => 'gray',
@@ -111,18 +112,12 @@ class LeadResource extends Resource
                         LeadStatus::Booked => 'success',
                         LeadStatus::Completed => 'success',
                         LeadStatus::FollowUp => 'danger',
-                    })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('source')
-                    ->badge()
-                    ->formatStateUsing(fn (LeadSource $state) => $state->label()),
-                Tables\Columns\TextColumn::make('assignedUser.name')
-                    ->label('Assigned to')
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->since()
-                    ->dateTimeTooltip()
-                    ->sortable(),
+                    }),
+                Tables\Columns\TextColumn::make('priority')->badge()->toggleable(),
+                Tables\Columns\TextColumn::make('source_page')->toggleable(),
+                Tables\Columns\TextColumn::make('next_follow_up_at')->dateTime()->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('assignedUser.name')->label('Assigned')->toggleable(),
+                Tables\Columns\TextColumn::make('created_at')->since()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -130,26 +125,23 @@ class LeadResource extends Resource
                     ->options(collect(LeadStatus::cases())->mapWithKeys(
                         fn (LeadStatus $status) => [$status->value => $status->label()]
                     )),
-                Tables\Filters\SelectFilter::make('source')
-                    ->options(collect(LeadSource::cases())->mapWithKeys(
-                        fn (LeadSource $source) => [$source->value => $source->label()]
-                    )),
+                Tables\Filters\Filter::make('unassigned')
+                    ->query(fn (Builder $query) => $query->whereNull('assigned_to')),
+                Tables\Filters\Filter::make('overdue_follow_up')
+                    ->query(fn (Builder $query) => $query->where('next_follow_up_at', '<', now())),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('transitionStatus')
                     ->label('Change status')
                     ->icon('heroicon-o-arrow-path')
                     ->form([
                         Forms\Components\Select::make('status')
-                            ->label('New status')
-                            ->options(function (Lead $record) {
-                                return collect($record->status->allowedTransitions())
-                                    ->mapWithKeys(fn (LeadStatus $status) => [$status->value => $status->label()]);
-                            })
+                            ->options(fn (Lead $record) => collect($record->status->allowedTransitions())
+                                ->mapWithKeys(fn (LeadStatus $status) => [$status->value => $status->label()]))
                             ->required(),
-                        Forms\Components\Textarea::make('notes')
-                            ->rows(2),
+                        Forms\Components\Textarea::make('notes')->rows(2),
                     ])
                     ->action(function (Lead $record, array $data, TransitionLeadStatusAction $action): void {
                         try {
@@ -159,23 +151,25 @@ class LeadResource extends Resource
                                 auth()->id(),
                                 $data['notes'] ?? null,
                             );
-
-                            Notification::make()
-                                ->title('Lead status updated')
-                                ->success()
-                                ->send();
+                            Notification::make()->title('Lead status updated')->success()->send();
                         } catch (ValidationException $e) {
-                            Notification::make()
-                                ->title('Invalid status transition')
-                                ->body(collect($e->errors())->flatten()->first())
-                                ->danger()
-                                ->send();
+                            Notification::make()->title('Invalid status transition')->danger()->send();
                         }
                     })
                     ->visible(fn (Lead $record) => $record->status->allowedTransitions() !== []),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('assign')
+                        ->label('Assign to')
+                        ->form([
+                            Forms\Components\Select::make('assigned_to')
+                                ->label('User')
+                                ->options(fn () => \App\Models\User::query()->pluck('name', 'id'))
+                                ->searchable()
+                                ->required(),
+                        ])
+                        ->action(fn ($records, array $data) => $records->each->update(['assigned_to' => $data['assigned_to']])),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]), poll: true);
@@ -186,6 +180,7 @@ class LeadResource extends Resource
         return [
             'index' => Pages\ListLeads::route('/'),
             'create' => Pages\CreateLead::route('/create'),
+            'view' => Pages\ViewLead::route('/{record}'),
             'edit' => Pages\EditLead::route('/{record}/edit'),
         ];
     }

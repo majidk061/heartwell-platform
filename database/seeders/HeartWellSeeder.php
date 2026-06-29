@@ -76,7 +76,18 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 3,
                 'sections' => [
                     ['section_type' => 'hero', 'heading' => 'Your Experience with HeartWell', 'content' => ['body' => 'A clear, supportive journey from first hello to ongoing care.']],
-                    ['section_type' => 'journey', 'heading' => 'What to expect', 'content' => ['steps' => ['Connect', 'Consult', 'Plan', 'Experience', 'Follow up']]],
+                    ['section_type' => 'journey', 'heading' => 'What to expect', 'content' => ['steps' => [
+                        ['title' => 'Connect', 'description' => 'Reach out via waitlist, consultation, or booking.'],
+                        ['title' => 'Consult', 'description' => 'A nurse-led conversation about your goals and concerns.'],
+                        ['title' => 'Plan', 'description' => 'Together we map a pathway that fits your life.'],
+                        ['title' => 'Experience', 'description' => 'Your visit — calm, mobile, and centered on you.'],
+                        ['title' => 'Follow up', 'description' => 'Ongoing support so you never feel alone.'],
+                    ]]],
+                    ['section_type' => 'group_individual', 'heading' => 'Individual visits vs group gatherings', 'content' => ['body' => '<p>Individual visits are one-on-one wellness support. Group gatherings are hosted experiences — each guest still completes their own clinical intake.</p>', 'columns' => [
+                        ['title' => 'Individual visit', 'body' => 'Book for yourself via Acuity. One nurse-led experience tailored to you.'],
+                        ['title' => 'Group gathering', 'body' => 'Host inquires here. Each guest completes separate Hydreight clinical intake.'],
+                    ]]],
+                    ['section_type' => 'intro', 'heading' => 'Safety and clinical care', 'content' => ['body' => 'Every client completes clinical intake, screening, and clearance before services. HeartWell coordinates; our licensed clinical partner handles medical records.']],
                 ],
             ],
             [
@@ -85,6 +96,12 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 4,
                 'sections' => [
                     ['section_type' => 'hero', 'heading' => 'Why HeartWell', 'content' => ['body' => 'Nurse-led. Mobile-friendly. Rooted in whole-person wellness.']],
+                    ['section_type' => 'features', 'heading' => 'What makes us different', 'content' => ['features' => [
+                        ['title' => 'Nurse-led care', 'body' => 'Clinically credentialed guidance you can trust — not a generic spa menu.'],
+                        ['title' => 'Mobile wellness', 'body' => 'Care that comes to you with convenience and personalization.'],
+                        ['title' => 'Whole-person support', 'body' => 'We see your full story — not just a single symptom or service.'],
+                        ['title' => 'Compassion first', 'body' => 'Education without overwhelm. You are never just a transaction.'],
+                    ]]],
                 ],
             ],
             [
@@ -93,6 +110,8 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 5,
                 'sections' => [
                     ['section_type' => 'hero', 'heading' => 'Your Wellness Journey', 'content' => ['body' => 'Education and support for conditions and life transitions.']],
+                    ['section_type' => 'rich_text', 'heading' => 'You are not alone in this', 'content' => ['body' => '<p>Hormonal shifts, burnout, metabolic changes, and life transitions are common — and addressable. HeartWell connects how you feel with supportive pathways forward.</p>']],
+                    ['section_type' => 'faq', 'heading' => 'Common questions', 'content' => []],
                 ],
             ],
             [
@@ -151,6 +170,30 @@ class HeartWellSeeder extends Seeder
         SiteSetting::query()->updateOrCreate(['key' => 'navigation'], ['value' => config('heartwell.navigation')]);
         SiteSetting::query()->updateOrCreate(['key' => 'ctas'], ['value' => config('heartwell.ctas')]);
         SiteSetting::query()->updateOrCreate(['key' => 'compliance'], ['value' => config('heartwell.compliance')]);
+        SiteSetting::query()->updateOrCreate(['key' => 'branding'], ['value' => [
+            'logo_mode' => 'text',
+            'logo_text' => 'HeartWell',
+            'logo_tagline' => config('heartwell.brand.tagline'),
+        ]]);
+        SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
+            'avatar_intro_heading' => "You're Not Alone. You Deserve Support.",
+            'avatar_intro_subtitle' => 'Which of these feels most like you?',
+            'pathways_section_title' => 'Support Pathways',
+            'cta_section_heading' => 'Ready to take the next step?',
+            'cta_section_body' => 'Book a visit or join the waitlist — we are here when you are ready.',
+        ]]);
+        SiteSetting::query()->updateOrCreate(['key' => 'contact_forms'], ['value' => [
+            'waitlist_title' => 'Join the Waitlist',
+            'waitlist_subtitle' => 'Be the first to know when new appointments open.',
+            'consultation_title' => 'Request a Consultation',
+            'consultation_subtitle' => 'Tell us a little about yourself — we will reach out personally.',
+            'group_title' => 'Group Wellness Gathering',
+            'group_subtitle' => 'Planning a group experience? Start here.',
+        ]]);
+        SiteSetting::query()->updateOrCreate(['key' => 'seo'], ['value' => [
+            'robots_index' => true,
+            'default_meta_title' => config('heartwell.brand.name'),
+        ]]);
     }
 
     private function seedAvatarCards(): void

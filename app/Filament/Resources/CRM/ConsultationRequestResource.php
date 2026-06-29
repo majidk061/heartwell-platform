@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CRM;
 
 use App\Domains\CRM\Enums\AvatarType;
 use App\Domains\CRM\Models\ConsultationRequest;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\CRM\ConsultationRequestResource\Pages;
@@ -15,6 +16,7 @@ use Filament\Tables\Table;
 
 class ConsultationRequestResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
 
@@ -27,6 +29,11 @@ class ConsultationRequestResource extends Resource
     protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = 'Consultations';
+
+    protected static function permissionPrefix(): string
+    {
+        return 'crm.consultations';
+    }
 
     public static function form(Form $form): Form
     {

@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Content\SupportPathwayResource\Pages;
 
 use App\Filament\Resources\Content\SupportPathwayResource;
 use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Pages\HeartWellCreateRecord;
 
-class CreateSupportPathway extends CreateRecord
+class CreateSupportPathway extends HeartWellCreateRecord
 {
     protected static string $resource = SupportPathwayResource::class;
 }

@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\CRM\GroupInquiryResource\Pages;
 
 use App\Filament\Resources\CRM\GroupInquiryResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditGroupInquiry extends EditRecord
+class EditGroupInquiry extends HeartWellEditRecord
 {
     protected static string $resource = GroupInquiryResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

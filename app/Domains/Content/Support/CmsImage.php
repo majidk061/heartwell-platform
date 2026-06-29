@@ -16,6 +16,12 @@ class CmsImage
             return $path;
         }
 
+        $path = ltrim($path, '/');
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
         if (Storage::disk('public')->exists($path)) {
             return Storage::disk('public')->url($path);
         }

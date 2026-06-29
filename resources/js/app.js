@@ -57,3 +57,24 @@ Alpine.data('formHandler', () => ({
 }));
 
 Alpine.start();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const track = (name, params = {}) => {
+        if (typeof gtag === 'function') {
+            gtag('event', name, params);
+        }
+    };
+
+    document.querySelectorAll('form[action*="contact"]').forEach((form) => {
+        form.addEventListener('submit', () => {
+            const id = form.getAttribute('id') || form.action;
+            track('form_submit', { form_id: id });
+        });
+    });
+
+    document.querySelectorAll('a[href*="#book"], a[href*="#consultation"], a[href*="#waitlist"]').forEach((link) => {
+        link.addEventListener('click', () => {
+            track('cta_click', { link_url: link.getAttribute('href') });
+        });
+    });
+});

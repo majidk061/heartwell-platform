@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CRM;
 
 use App\Domains\CRM\Models\GroupInquiry;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\CRM\GroupInquiryResource\Pages;
@@ -14,6 +15,7 @@ use Filament\Tables\Table;
 
 class GroupInquiryResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
 
@@ -26,6 +28,11 @@ class GroupInquiryResource extends Resource
     protected static ?int $navigationSort = 4;
 
     protected static ?string $navigationLabel = 'Group Inquiries';
+
+    protected static function permissionPrefix(): string
+    {
+        return 'crm.group_inquiries';
+    }
 
     public static function form(Form $form): Form
     {

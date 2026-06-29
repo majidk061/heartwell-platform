@@ -24,6 +24,7 @@ class GroupInquiryStoreRequest extends FormRequest
             'event_date' => ['nullable', 'date', 'after_or_equal:today'],
             'guest_count' => ['nullable', 'integer', 'min:1', 'max:500'],
             'message' => ['nullable', 'string', 'max:5000'],
+            'website' => ['prohibited'],
         ];
     }
 }

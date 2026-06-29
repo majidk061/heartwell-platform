@@ -4,13 +4,18 @@ namespace App\Listeners;
 
 use App\Domains\Automation\Actions\EvaluateAutomationRulesAction;
 use App\Domains\CRM\Events\WaitlistJoined;
-use App\Jobs\SendWelcomeEmailJob;
+use App\Domains\Integrations\Actions\NotifyAdminsAction;
+use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Jobs\SubscribeToMailchimpJob;
+use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 
 class HandleWaitlistJoined
 {
     public function __construct(
         private readonly EvaluateAutomationRulesAction $evaluateAutomationRules,
+        private readonly SendTemplatedEmailAction $sendTemplatedEmail,
+        private readonly NotifyAdminsAction $notifyAdmins,
+        private readonly SendGridServiceInterface $sendGrid,
     ) {}
 
     public function handle(WaitlistJoined $event): void
@@ -23,6 +28,7 @@ class HandleWaitlistJoined
             'email' => $entry->email,
             'first_name' => $entry->first_name,
             'last_name' => $entry->last_name,
+            'phone' => $entry->phone,
             'avatar_type' => $entry->avatar_type?->value,
             'source_page' => $entry->source_page,
             'tags' => config('integrations.mailchimp.default_tags', []),
@@ -34,6 +40,15 @@ class HandleWaitlistJoined
             SubscribeToMailchimpJob::dispatch($lead->id, $context['tags']);
         }
 
-        SendWelcomeEmailJob::dispatch($entry->email, $context);
+        $sent = $this->sendTemplatedEmail->execute('waitlist_welcome', $entry->email, $context);
+
+        if (! $sent) {
+            $templateId = config('integrations.sendgrid.templates.waitlist_welcome');
+            if (filled($templateId)) {
+                $this->sendGrid->sendTemplate($templateId, $entry->email, $context);
+            }
+        }
+
+        $this->notifyAdmins->execute('waitlist', 'waitlist_admin_notify', $context);
     }
 }

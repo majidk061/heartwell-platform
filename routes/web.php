@@ -25,12 +25,15 @@ foreach ($pageSlugs as $slug) {
 }
 
 Route::post('/contact/waitlist', [ContactController::class, 'storeWaitlist'])
+    ->middleware('throttle:5,1')
     ->name('contact.waitlist');
 
 Route::post('/contact/consultation', [ContactController::class, 'storeConsultation'])
+    ->middleware('throttle:5,1')
     ->name('contact.consultation');
 
 Route::post('/contact/group-inquiry', [ContactController::class, 'storeGroupInquiry'])
+    ->middleware('throttle:5,1')
     ->name('contact.group-inquiry');
 
 Route::get('/clinical-intake', ClinicalIntakeController::class)

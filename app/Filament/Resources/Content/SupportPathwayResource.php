@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\SupportPathway;
 use App\Domains\CRM\Enums\AvatarType;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
+use App\Filament\Concerns\ConfiguresReorderableTables;
 use App\Filament\Resources\Content\SupportPathwayResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,8 +17,10 @@ use Filament\Tables\Table;
 
 class SupportPathwayResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
+    use ConfiguresReorderableTables;
 
     protected static ?string $model = SupportPathway::class;
 
@@ -25,6 +29,16 @@ class SupportPathwayResource extends Resource
     protected static ?string $navigationGroup = 'Website Content';
 
     protected static ?int $navigationSort = 2;
+
+    protected static function permissionPrefix(): string
+    {
+        return 'content.pathways';
+    }
+
+    public static function getSubheading(): ?string
+    {
+        return 'Drag rows to change pathway order on the website.';
+    }
 
     public static function form(Form $form): Form
     {
@@ -73,10 +87,6 @@ class SupportPathwayResource extends Resource
                     Forms\Components\TextInput::make('cta_url')
                         ->maxLength(255)
                         ->prefixIcon('heroicon-o-link'),
-                    Forms\Components\TextInput::make('sort_order')
-                        ->numeric()
-                        ->default(0)
-                        ->prefixIcon('heroicon-o-arrows-up-down'),
                     Forms\Components\Toggle::make('is_published')
                         ->default(true),
                 ]),
@@ -85,15 +95,13 @@ class SupportPathwayResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return static::configureHeartWellTable($table
+        return static::applyReorderableSort(static::configureHeartWellTable($table
             ->columns([
                 Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('slug'),
                 Tables\Columns\TextColumn::make('avatar_type')->badge(),
                 Tables\Columns\IconColumn::make('is_published')->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')->sortable(),
             ])
-            ->defaultSort('sort_order')
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -101,7 +109,7 @@ class SupportPathwayResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]));
+            ])));
     }
 
     public static function getPages(): array

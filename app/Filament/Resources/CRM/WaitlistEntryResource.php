@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CRM;
 
 use App\Domains\CRM\Enums\AvatarType;
 use App\Domains\CRM\Models\WaitlistEntry;
+use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\CRM\WaitlistEntryResource\Pages;
@@ -15,6 +16,7 @@ use Filament\Tables\Table;
 
 class WaitlistEntryResource extends Resource
 {
+    use AuthorizesWithPermissions;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
 
@@ -27,6 +29,11 @@ class WaitlistEntryResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Waitlist';
+
+    protected static function permissionPrefix(): string
+    {
+        return 'crm.waitlist';
+    }
 
     public static function form(Form $form): Form
     {

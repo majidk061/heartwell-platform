@@ -3,17 +3,9 @@
 namespace App\Filament\Resources\CRM\LeadResource\Pages;
 
 use App\Filament\Resources\CRM\LeadResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\HeartWellEditRecord;
 
-class EditLead extends EditRecord
+class EditLead extends HeartWellEditRecord
 {
     protected static string $resource = LeadResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

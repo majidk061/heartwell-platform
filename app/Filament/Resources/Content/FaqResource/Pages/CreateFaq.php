@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Content\FaqResource\Pages;
 
 use App\Filament\Resources\Content\FaqResource;
 use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Pages\HeartWellCreateRecord;
 
-class CreateFaq extends CreateRecord
+class CreateFaq extends HeartWellCreateRecord
 {
     protected static string $resource = FaqResource::class;
 }

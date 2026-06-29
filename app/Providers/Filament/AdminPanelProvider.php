@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Domains\Content\Actions\GetSiteSettingsAction;
 use App\Filament\Pages\Dashboard;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -29,10 +30,13 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName(config('heartwell.brand.name'))
+            ->profile(isSimple: false)
+            ->passwordReset()
+            ->brandName(fn () => app(GetSiteSettingsAction::class)->execute()['brand']['name'] ?? config('heartwell.brand.name'))
             ->brandLogo(fn () => view('filament.admin.logo'))
             ->brandLogoHeight('2rem')
             ->font('Source Sans 3')
+            ->breadcrumbs(true)
             ->colors([
                 'primary' => '#7ba7bc',
                 'gray' => Color::Slate,
@@ -53,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
                 'Leads & CRM',
                 'Bookings',
                 'Automation',
+                'System Settings',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

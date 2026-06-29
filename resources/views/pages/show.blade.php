@@ -5,7 +5,7 @@
         $hero = $sections->firstWhere('type', 'hero') ?? $sections->firstWhere('section_type', 'hero');
     @endphp
 
-    @if($page->slug !== 'home' && $hero && ! in_array($page->slug, ['contact']))
+    @if($page->slug !== 'home' && $hero)
         <x-layout.page-hero
             :title="$hero->heading ?? $page->title"
             :subheading="$hero->subheading"

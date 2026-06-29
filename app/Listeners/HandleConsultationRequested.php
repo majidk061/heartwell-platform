@@ -4,12 +4,17 @@ namespace App\Listeners;
 
 use App\Domains\Automation\Actions\EvaluateAutomationRulesAction;
 use App\Domains\CRM\Events\ConsultationRequested;
-use App\Jobs\SendConsultationAckJob;
+use App\Domains\Integrations\Actions\NotifyAdminsAction;
+use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
+use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 
 class HandleConsultationRequested
 {
     public function __construct(
         private readonly EvaluateAutomationRulesAction $evaluateAutomationRules,
+        private readonly SendTemplatedEmailAction $sendTemplatedEmail,
+        private readonly NotifyAdminsAction $notifyAdmins,
+        private readonly SendGridServiceInterface $sendGrid,
     ) {}
 
     public function handle(ConsultationRequested $event): void
@@ -22,6 +27,7 @@ class HandleConsultationRequested
             'email' => $request->email,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
+            'phone' => $request->phone,
             'message' => $request->message,
             'preferred_contact_method' => $request->preferred_contact_method,
             'avatar_type' => $request->avatar_type?->value,
@@ -30,6 +36,15 @@ class HandleConsultationRequested
 
         $this->evaluateAutomationRules->execute('consultation_requested', $context);
 
-        SendConsultationAckJob::dispatch($request->email, $context);
+        $sent = $this->sendTemplatedEmail->execute('consultation_ack', $request->email, $context);
+
+        if (! $sent) {
+            $templateId = config('integrations.sendgrid.templates.consultation_ack');
+            if (filled($templateId)) {
+                $this->sendGrid->sendTemplate($templateId, $request->email, $context);
+            }
+        }
+
+        $this->notifyAdmins->execute('consultation', 'consultation_admin_notify', $context);
     }
 }

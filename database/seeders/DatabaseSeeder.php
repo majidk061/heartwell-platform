@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             HeartWellSeeder::class,
             DemoDataSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
+            EmailTemplateSeeder::class,
         ]);
     }
 }
