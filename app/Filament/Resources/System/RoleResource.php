@@ -37,9 +37,6 @@ class RoleResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $permissionGroups = collect(PermissionSeeder::allPermissions())
-            ->mapWithKeys(fn (string $p) => [$p => str_replace('.', ' › ', $p)]);
-
         return $form
             ->schema([
                 static::formSection('Role details', 'heroicon-o-shield-check', [
@@ -47,11 +44,16 @@ class RoleResource extends Resource
                     Forms\Components\Hidden::make('guard_name')->default('web'),
                 ]),
                 static::formSection('Permissions', 'heroicon-o-key', [
+                    Forms\Components\Placeholder::make('all_permissions_notice')
+                        ->label('')
+                        ->content('Super admin has all permissions automatically.')
+                        ->visible(fn (?Role $record) => $record?->name === 'super_admin'),
                     Forms\Components\CheckboxList::make('permissions')
                         ->relationship('permissions', 'name')
-                        ->options($permissionGroups->all())
+                        ->getOptionLabelFromRecordUsing(fn ($record) => str_replace('.', ' › ', $record->name))
                         ->columns(3)
                         ->searchable()
+                        ->disabled(fn (?Role $record) => $record?->name === 'super_admin')
                         ->columnSpanFull(),
                 ], 1),
             ]);

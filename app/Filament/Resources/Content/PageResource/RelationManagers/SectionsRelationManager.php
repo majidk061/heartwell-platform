@@ -63,10 +63,13 @@ class SectionsRelationManager extends RelationManager
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('content_image')
                     ->label('Section image')
-                    ->image()
                     ->disk('public')
                     ->directory('cms/sections')
                     ->visibility('public')
+                    ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios(['4:3', '1:1'])
+                    ->maxSize(2048)
                     ->helperText(static::imageUploadHelper())
                     ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text']))
                     ->columnSpanFull(),

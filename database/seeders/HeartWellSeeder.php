@@ -171,9 +171,10 @@ class HeartWellSeeder extends Seeder
         SiteSetting::query()->updateOrCreate(['key' => 'ctas'], ['value' => config('heartwell.ctas')]);
         SiteSetting::query()->updateOrCreate(['key' => 'compliance'], ['value' => config('heartwell.compliance')]);
         SiteSetting::query()->updateOrCreate(['key' => 'branding'], ['value' => [
-            'logo_mode' => 'text',
+            'logo_mode' => 'image',
             'logo_text' => 'HeartWell',
             'logo_tagline' => config('heartwell.brand.tagline'),
+            'logo_image_path' => 'cms/branding/heartwell-logo-test.png',
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
             'avatar_intro_heading' => "You're Not Alone. You Deserve Support.",
@@ -189,6 +190,14 @@ class HeartWellSeeder extends Seeder
             'consultation_subtitle' => 'Tell us a little about yourself — we will reach out personally.',
             'group_title' => 'Group Wellness Gathering',
             'group_subtitle' => 'Planning a group experience? Start here.',
+        ]]);
+        SiteSetting::query()->updateOrCreate(['key' => 'email_notifications'], ['value' => [
+            'default_admin_emails' => ['majidk061@gmail.com'],
+            'waitlist_admin_emails' => ['majidk061@gmail.com'],
+            'consultation_admin_emails' => ['majidk061@gmail.com'],
+            'group_inquiry_admin_emails' => ['majidk061@gmail.com'],
+            'booking_admin_emails' => ['majidk061@gmail.com'],
+            'new_lead_admin_emails' => ['majidk061@gmail.com'],
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'seo'], ['value' => [
             'robots_index' => true,

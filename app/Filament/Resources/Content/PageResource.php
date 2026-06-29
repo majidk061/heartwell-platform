@@ -83,9 +83,12 @@ class PageResource extends Resource
                     Forms\Components\FileUpload::make('og_image')
                         ->label('Social share image')
                         ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['1200:630', '16:9'])
+                        ->maxSize(2048)
                         ->disk('public')
                         ->directory('cms/pages')
-                        ->helperText(ConfiguresHeartWellAdminUx::imageUploadHelper())
+                        ->helperText(ConfiguresHeartWellAdminUx::ogImageUploadHelper())
                         ->columnSpanFull(),
                 ]),
                 static::formSection('Publishing', 'heroicon-o-eye', [

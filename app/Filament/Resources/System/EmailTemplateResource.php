@@ -57,9 +57,12 @@ class EmailTemplateResource extends Resource
                     Forms\Components\FileUpload::make('logo_path')
                         ->label('Logo override')
                         ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['10:3'])
+                        ->maxSize(1024)
                         ->disk('public')
                         ->directory('cms/email')
-                        ->helperText('Leave blank to use the site logo.'),
+                        ->helperText(ConfiguresHeartWellAdminUx::logoUploadHelper()),
                     Forms\Components\TextInput::make('button_label'),
                     Forms\Components\TextInput::make('button_url')->helperText('Supports merge tags, e.g. {{reset_url}}'),
                     Forms\Components\Textarea::make('footer_text')->rows(2)->columnSpanFull(),

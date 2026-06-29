@@ -51,8 +51,12 @@ class TestimonialResource extends Resource
                     Forms\Components\FileUpload::make('image_path')
                         ->label('Author photo')
                         ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['1:1'])
+                        ->maxSize(2048)
                         ->disk('public')
-                        ->directory('cms/testimonials'),
+                        ->directory('cms/testimonials')
+                        ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::testimonialUploadHelper()),
                     Forms\Components\Textarea::make('quote')
                         ->required()
                         ->rows(4)

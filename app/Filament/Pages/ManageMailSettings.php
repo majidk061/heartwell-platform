@@ -76,6 +76,7 @@ class ManageMailSettings extends Page implements HasForms
             'mail_from_address' => $r->get('mail_from_address', 'MAIL_FROM_ADDRESS'),
             'mail_from_name' => $r->get('mail_from_name', 'MAIL_FROM_NAME'),
             'admin_alert_email' => $r->get('admin_alert_email', 'SENDGRID_ADMIN_ALERT_EMAIL'),
+            'test_recipient_email' => 'majidk061@gmail.com',
         ]);
     }
 
@@ -103,6 +104,11 @@ class ManageMailSettings extends Page implements HasForms
                 ->label('Admin alert email')
                 ->email()
                 ->helperText('Internal notifications for new leads and form submissions.'),
+            Forms\Components\TextInput::make('test_recipient_email')
+                ->label('Test email recipient')
+                ->email()
+                ->default('majidk061@gmail.com')
+                ->helperText('Address used when you click Send test email.'),
         ])->columns(2)->statePath('data');
     }
 
@@ -130,10 +136,10 @@ class ManageMailSettings extends Page implements HasForms
     public function testEmail(): void
     {
         $this->save();
-        $to = auth()->user()?->email;
+        $to = $this->data['test_recipient_email'] ?? auth()->user()?->email;
 
         if (! $to) {
-            Notification::make()->title('No admin email on your account')->danger()->send();
+            Notification::make()->title('Enter a test recipient email')->danger()->send();
 
             return;
         }

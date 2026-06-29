@@ -28,6 +28,36 @@ trait ConfiguresHeartWellAdminUx
 
     public static function imageUploadHelper(): string
     {
-        return 'Recommended 1200×630 for hero images. JPG or WebP, max 2 MB.';
+        return 'Crop to 4:3 (1200×900) for hero sections. JPG or WebP, max 2 MB.';
+    }
+
+    public static function logoUploadHelper(): string
+    {
+        return 'Crop to wide logo (10:3). Used in the site header. Max 2 MB.';
+    }
+
+    public static function faviconUploadHelper(): string
+    {
+        return 'Crop to square 1:1. Displays in browser tabs. Max 512 KB.';
+    }
+
+    public static function ogImageUploadHelper(): string
+    {
+        return 'Crop to 1200×630 (social share). Max 2 MB.';
+    }
+
+    public static function avatarCardUploadHelper(): string
+    {
+        return 'Crop to 4:5 portrait. Max 2 MB.';
+    }
+
+    public static function pathwayUploadHelper(): string
+    {
+        return 'Crop to 16:9 landscape. Max 2 MB.';
+    }
+
+    public static function testimonialUploadHelper(): string
+    {
+        return 'Crop to square 1:1. Max 2 MB.';
     }
 }

@@ -3,16 +3,19 @@
 namespace App\Providers\Filament;
 
 use App\Domains\Content\Actions\GetSiteSettingsAction;
+use App\Filament\Concerns\FormatsEmptyValues;
 use App\Filament\Pages\Dashboard;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -23,6 +26,14 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        $placeholder = FormatsEmptyValues::emptyPlaceholder();
+
+        TextColumn::configureUsing(fn (TextColumn $column) => $column->placeholder($placeholder));
+        TextEntry::configureUsing(fn (TextEntry $entry) => $entry->placeholder($placeholder));
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel

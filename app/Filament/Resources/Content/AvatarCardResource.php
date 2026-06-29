@@ -59,8 +59,12 @@ class AvatarCardResource extends Resource
                     Forms\Components\FileUpload::make('image_path')
                         ->label('Card image')
                         ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['4:5'])
+                        ->maxSize(2048)
                         ->disk('public')
                         ->directory('cms/avatar-cards')
+                        ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::avatarCardUploadHelper())
                         ->columnSpanFull(),
                 ]),
                 static::formSection('Link & display', 'heroicon-o-arrow-top-right-on-square', [

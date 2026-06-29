@@ -2,17 +2,22 @@
     $forms = $siteSettings['contact_forms'] ?? [];
     $ctas = $ctas ?? ($siteSettings['ctas'] ?? config('heartwell.ctas'));
     $compliance = $compliance ?? ($siteSettings['compliance'] ?? config('heartwell.compliance'));
+    $acuityEnabled = filled(config('integrations.acuity.embed_url'));
+    $defaultTab = $acuityEnabled ? 'book' : 'waitlist';
 @endphp
 
 <section
-    class="hw-section bg-hw-white border-t border-hw-border"
+    class="hw-section bg-hw-white border-t border-hw-border hw-contact-section"
     x-data="{
-        activeTab: 'book',
+        activeTab: '{{ $defaultTab }}',
+        acuityEnabled: @js($acuityEnabled),
         init() {
             const hash = window.location.hash.replace('#', '');
             const tabs = ['waitlist', 'consultation', 'book', 'group-inquiry'];
             if (tabs.includes(hash)) {
                 this.activeTab = hash;
+            } else if (! this.acuityEnabled) {
+                this.activeTab = 'waitlist';
             }
             this.$watch('activeTab', (tab) => {
                 history.replaceState(null, '', `#${tab}`);
@@ -27,26 +32,28 @@
     }"
 >
     <x-layout.page-container narrow>
-        <div class="text-center mb-8 md:mb-10">
-            <h2 class="font-heading text-2xl md:text-3xl text-hw-navy mb-2">How would you like to connect?</h2>
-            <p class="text-hw-muted text-base max-w-2xl mx-auto">Choose the path that feels right — we are here to support your wellness journey.</p>
+        <div class="text-center mb-6 md:mb-8">
+            <h2 class="font-heading text-xl md:text-2xl text-hw-navy mb-1">How would you like to connect?</h2>
+            <p class="text-hw-muted text-sm md:text-base max-w-xl mx-auto">Choose a path below — forms open right here, no long scrolling.</p>
         </div>
 
-        <nav class="hw-contact-nav md:hidden mb-6" aria-label="Contact sections">
-            <a href="#book" @click.prevent="setTab('book')" :class="activeTab === 'book' ? 'hw-contact-tab--active' : ''">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
-            <a href="#consultation" @click.prevent="setTab('consultation')" :class="activeTab === 'consultation' ? 'hw-contact-tab--active' : ''">{{ $forms['consultation_title'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Request Consultation') }}</a>
+        <nav class="hw-contact-nav md:hidden mb-4" aria-label="Contact sections">
             <a href="#waitlist" @click.prevent="setTab('waitlist')" :class="activeTab === 'waitlist' ? 'hw-contact-tab--active' : ''">{{ $forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join Waitlist') }}</a>
+            <a href="#consultation" @click.prevent="setTab('consultation')" :class="activeTab === 'consultation' ? 'hw-contact-tab--active' : ''">{{ $forms['consultation_title'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Request Consultation') }}</a>
+            @if($acuityEnabled)
+                <a href="#book" @click.prevent="setTab('book')" :class="activeTab === 'book' ? 'hw-contact-tab--active' : ''">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
+            @endif
             <a href="#group-inquiry" @click.prevent="setTab('group-inquiry')" :class="activeTab === 'group-inquiry' ? 'hw-contact-tab--active' : ''">{{ $forms['group_title'] ?? 'Group Gathering' }}</a>
         </nav>
 
-        <div class="grid lg:grid-cols-12 gap-8 lg:gap-10">
-            <div class="hidden lg:block lg:col-span-4 space-y-3">
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
+            <div class="hidden lg:block lg:col-span-4 lg:sticky lg:top-24 lg:self-start space-y-3">
                 <x-contact-option-card
-                    id="book"
-                    :title="$ctas['primary']['label'] ?? 'Book a Visit'"
-                    description="Schedule your individual wellness visit."
-                    icon="calendar"
-                    :featured="true"
+                    id="waitlist"
+                    :title="$forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join the Waitlist')"
+                    description="Be first to know when appointments open."
+                    icon="bell"
+                    :featured="! $acuityEnabled"
                 />
                 <x-contact-option-card
                     id="consultation"
@@ -54,12 +61,15 @@
                     description="Tell us about yourself — we will be in touch."
                     icon="chat"
                 />
-                <x-contact-option-card
-                    id="waitlist"
-                    :title="$forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join the Waitlist')"
-                    description="Be first to know when appointments open."
-                    icon="bell"
-                />
+                @if($acuityEnabled)
+                    <x-contact-option-card
+                        id="book"
+                        :title="$ctas['primary']['label'] ?? 'Book a Visit'"
+                        description="Schedule your individual wellness visit."
+                        icon="calendar"
+                        :featured="true"
+                    />
+                @endif
                 <x-contact-option-card
                     id="group-inquiry"
                     :title="$forms['group_title'] ?? 'Group Wellness Gathering'"
@@ -69,7 +79,7 @@
             </div>
 
             <div id="contact-panel" class="lg:col-span-8 scroll-mt-24">
-                <div x-show="activeTab === 'waitlist'" x-cloak class="hw-contact-panel">
+                <div x-show="activeTab === 'waitlist'" x-cloak class="hw-contact-panel {{ ! $acuityEnabled ? 'hw-contact-panel--featured' : '' }}">
                     <x-layout.section-heading
                         :title="$forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join the Waitlist')"
                         :subtitle="$forms['waitlist_subtitle'] ?? 'Be the first to know when appointments open in your area.'"
@@ -141,7 +151,14 @@
                             <iframe src="{{ config('integrations.acuity.embed_url') }}" class="w-full min-h-[400px] md:min-h-[600px] border-0" title="Book a Visit"></iframe>
                         </div>
                     @else
-                        <p class="text-hw-muted text-base">Online booking will appear here once Acuity is configured. Use the consultation form in the meantime.</p>
+                        <div class="rounded-lg border border-hw-border bg-hw-dusty-blue-light px-5 py-6 text-center space-y-3">
+                            <p class="font-heading text-lg text-hw-navy">Online scheduling is coming soon</p>
+                            <p class="text-hw-muted text-base">Join the waitlist or request a consultation — we will reach out to help you book your visit.</p>
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                                <button type="button" @click="setTab('waitlist')" class="btn-primary sm:w-auto">Join the Waitlist</button>
+                                <button type="button" @click="setTab('consultation')" class="btn-secondary sm:w-auto">Request Consultation</button>
+                            </div>
+                        </div>
                     @endif
                 </div>
 

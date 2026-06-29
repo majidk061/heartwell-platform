@@ -40,7 +40,7 @@ class DemoDataSeeder extends Seeder
                 'source' => $sources[$i % count($sources)],
                 'avatar_type' => $avatars[$i % count($avatars)],
                 'status' => $statuses[$i % count($statuses)],
-                'notes' => fake()->optional(0.6)->sentence(),
+                'notes' => null,
             ]);
         }
     }

@@ -41,8 +41,8 @@ class ViewLead extends ViewRecord
                 ->label('Mark contacted')
                 ->icon('heroicon-o-phone')
                 ->visible(fn (Lead $record) => $record->status === LeadStatus::NewLead)
-                ->action(function (Lead $record, TransitionLeadStatusAction $action): void {
-                    $action->execute($record, LeadStatus::Contacted, auth()->id());
+                ->action(function (Lead $record): void {
+                    app(TransitionLeadStatusAction::class)->execute($record, LeadStatus::Contacted, auth()->id());
                     $record->update(['last_contacted_at' => now()]);
                     Notification::make()->title('Marked as contacted')->success()->send();
                 }),
@@ -57,9 +57,9 @@ class ViewLead extends ViewRecord
                     Forms\Components\Textarea::make('notes')->rows(2),
                     Forms\Components\DateTimePicker::make('next_follow_up_at')->label('Next follow-up'),
                 ])
-                ->action(function (Lead $record, array $data, TransitionLeadStatusAction $action): void {
+                ->action(function (Lead $record, array $data): void {
                     try {
-                        $action->execute(
+                        app(TransitionLeadStatusAction::class)->execute(
                             $record,
                             LeadStatus::from($data['status']),
                             auth()->id(),
@@ -117,9 +117,12 @@ class ViewLead extends ViewRecord
                 Infolists\Components\TextEntry::make('next_follow_up_at')->dateTime(),
                 Infolists\Components\IconEntry::make('marketing_consent')->boolean()->label('Marketing consent'),
             ])->columns(3),
-            Infolists\Components\Section::make('Notes')->schema([
-                Infolists\Components\TextEntry::make('notes')->columnSpanFull()->markdown(),
-            ])->collapsible(),
+            Infolists\Components\Section::make('Notes')
+                ->schema([
+                    Infolists\Components\TextEntry::make('notes')->columnSpanFull()->markdown(),
+                ])
+                ->collapsible()
+                ->visible(fn (Lead $record) => filled($record->notes)),
             Infolists\Components\Section::make('Status history')->schema([
                 Infolists\Components\RepeatableEntry::make('statusHistory')
                     ->schema([

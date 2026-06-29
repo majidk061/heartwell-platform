@@ -143,9 +143,9 @@ class LeadResource extends Resource
                             ->required(),
                         Forms\Components\Textarea::make('notes')->rows(2),
                     ])
-                    ->action(function (Lead $record, array $data, TransitionLeadStatusAction $action): void {
+                    ->action(function (Lead $record, array $data): void {
                         try {
-                            $action->execute(
+                            app(TransitionLeadStatusAction::class)->execute(
                                 $record,
                                 LeadStatus::from($data['status']),
                                 auth()->id(),

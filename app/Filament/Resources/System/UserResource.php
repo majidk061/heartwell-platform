@@ -56,17 +56,28 @@ class UserResource extends Resource
                     Forms\Components\Toggle::make('is_active')->label('Active')->default(true),
                 ]),
                 static::formSection('Roles', 'heroicon-o-shield-check', [
+                    Forms\Components\Placeholder::make('super_admin_notice')
+                        ->label('')
+                        ->content('Super admin always has full access to all areas.')
+                        ->visible(fn (?User $record) => $record?->hasRole('super_admin')),
                     Forms\Components\CheckboxList::make('roles')
                         ->options(Role::query()->pluck('name', 'name'))
+                        ->disabled(fn (?User $record) => $record?->hasRole('super_admin'))
                         ->columns(2)
                         ->columnSpanFull(),
                 ], 1),
-                static::formSection('Direct permissions', 'heroicon-o-key', [
+                static::formSection('Permissions', 'heroicon-o-key', [
+                    Forms\Components\TagsInput::make('effective_permissions')
+                        ->label('Effective permissions (from roles + direct)')
+                        ->disabled()
+                        ->dehydrated(false)
+                        ->columnSpanFull(),
                     Forms\Components\CheckboxList::make('permissions')
-                        ->label('Extra permissions')
+                        ->label('Direct permissions (extra grants)')
                         ->options(collect(PermissionSeeder::allPermissions())
                             ->mapWithKeys(fn (string $p) => [$p => str_replace('.', ' › ', $p)])
                             ->all())
+                        ->disabled(fn (?User $record) => $record?->hasRole('super_admin'))
                         ->columns(3)
                         ->searchable()
                         ->columnSpanFull(),
@@ -119,7 +130,8 @@ class UserResource extends Resource
 
                         Notification::make()->title('Password reset email sent')->success()->send();
                     }),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn (User $record) => ! $record->hasRole('super_admin')),
             ]));
     }
 

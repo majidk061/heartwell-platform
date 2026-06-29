@@ -32,12 +32,12 @@ class UserPolicy
 
     public function delete(User $user, User $model): bool
     {
-        if ($model->id === $user->id) {
+        if ($model->hasRole('super_admin')) {
             return false;
         }
 
-        if ($model->hasRole('super_admin')) {
-            return $user->hasRole('super_admin') && User::role('super_admin')->count() > 1;
+        if ($model->id === $user->id) {
+            return false;
         }
 
         return $user->hasRole('super_admin');

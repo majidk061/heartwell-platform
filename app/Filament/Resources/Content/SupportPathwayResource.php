@@ -60,8 +60,12 @@ class SupportPathwayResource extends Resource
                     Forms\Components\FileUpload::make('image_path')
                         ->label('Pathway image')
                         ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['16:9'])
+                        ->maxSize(2048)
                         ->disk('public')
                         ->directory('cms/pathways')
+                        ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::pathwayUploadHelper())
                         ->columnSpanFull(),
                 ]),
                 static::formSection('Accordion content', 'heroicon-o-list-bullet', [

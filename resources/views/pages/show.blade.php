@@ -13,21 +13,32 @@
         />
     @endif
 
-    @include('pages.partials.sections', [
-        'sections' => $page->slug === 'contact'
-            ? $sections->whereNotIn('type', ['hero', 'forms'])->whereNotIn('section_type', ['hero', 'forms'])
-            : ($hero && $page->slug !== 'home' ? $sections->whereNotIn('type', ['hero'])->whereNotIn('section_type', ['hero']) : $sections),
-        'page' => $page,
-        'pathways' => $pathways ?? collect(),
-        'faqs' => $faqs ?? collect(),
-        'ctas' => $siteSettings['ctas'] ?? ($ctas ?? null),
-        'compliance' => $siteSettings['compliance'] ?? ($compliance ?? null),
-    ])
-
     @if($page->slug === 'contact')
         @include('pages.partials.contact-forms', [
             'compliance' => $siteSettings['compliance'] ?? ($compliance ?? null),
             'ctas' => $siteSettings['ctas'] ?? ($ctas ?? null),
+        ])
+    @endif
+
+    @if($page->slug !== 'contact')
+        @include('pages.partials.sections', [
+            'sections' => $hero && $page->slug !== 'home'
+                ? $sections->whereNotIn('type', ['hero'])->whereNotIn('section_type', ['hero'])
+                : $sections,
+            'page' => $page,
+            'pathways' => $pathways ?? collect(),
+            'faqs' => $faqs ?? collect(),
+            'ctas' => $siteSettings['ctas'] ?? ($ctas ?? null),
+            'compliance' => $siteSettings['compliance'] ?? ($compliance ?? null),
+        ])
+    @else
+        @include('pages.partials.sections', [
+            'sections' => $sections->whereNotIn('type', ['hero', 'forms'])->whereNotIn('section_type', ['hero', 'forms']),
+            'page' => $page,
+            'pathways' => $pathways ?? collect(),
+            'faqs' => $faqs ?? collect(),
+            'ctas' => $siteSettings['ctas'] ?? ($ctas ?? null),
+            'compliance' => $siteSettings['compliance'] ?? ($compliance ?? null),
         ])
     @endif
 @endsection
