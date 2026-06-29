@@ -67,7 +67,9 @@ class EmailTemplateSeeder extends Seeder
                 'audience' => 'user',
                 'subject' => 'Your HeartWell appointment is confirmed',
                 'heading' => 'Appointment confirmed',
-                'body' => '<p>Hi {{first_name}},</p><p>Your appointment on {{booking_date}} is confirmed.</p>',
+                'body' => '<p>Hi {{first_name}},</p><p>Your appointment on {{booking_date}} is confirmed.</p><p>Before your visit, please complete your secure clinical intake through HeartWell.</p>',
+                'button_label' => 'Complete clinical intake',
+                'button_url' => url('/clinical-intake'),
             ],
             [
                 'key' => 'booking_admin_notify',

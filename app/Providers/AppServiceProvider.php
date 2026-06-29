@@ -8,6 +8,7 @@ use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 use App\Domains\Integrations\Services\AcuityService;
 use App\Domains\Integrations\Services\MailchimpService;
+use App\Domains\Integrations\Services\SendGridService;
 use App\Domains\Integrations\Services\SettingsResolver;
 use Illuminate\Support\ServiceProvider;
 

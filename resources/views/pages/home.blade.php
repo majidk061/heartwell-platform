@@ -24,6 +24,9 @@
         <x-layout.page-container>
             <h2 class="hw-section-title text-center">{{ $home['avatar_intro_heading'] ?? "You're Not Alone. You Deserve Support." }}</h2>
             <p class="text-center text-hw-muted mt-3 text-base md:text-lg">{{ $home['avatar_intro_subtitle'] ?? 'Which of these feels most like you?' }}</p>
+            @if(! empty($home['avatar_unifying_message']))
+                <p class="text-center font-heading text-lg md:text-xl text-hw-heading italic mt-4 max-w-2xl mx-auto">{{ $home['avatar_unifying_message'] }}</p>
+            @endif
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 md:mt-10">
                 @foreach($avatarCards as $card)
                     <x-avatar-card :card="$card" />

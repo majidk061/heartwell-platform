@@ -169,7 +169,10 @@ class LeadResource extends Resource
                                 ->searchable()
                                 ->required(),
                         ])
-                        ->action(fn ($records, array $data) => $records->each->update(['assigned_to' => $data['assigned_to']])),
+                        ->action(function ($records, array $data): void {
+                            $records->each->update(['assigned_to' => $data['assigned_to']]);
+                            Notification::make()->title('Leads assigned')->success()->send();
+                        }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]), poll: true);

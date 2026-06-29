@@ -36,7 +36,12 @@ class ViewLead extends ViewRecord
             Actions\Action::make('assignToMe')
                 ->label('Assign to me')
                 ->icon('heroicon-o-user-circle')
-                ->action(fn (Lead $record) => $record->update(['assigned_to' => auth()->id()])),
+                ->visible(fn (Lead $record) => $record->assigned_to !== auth()->id())
+                ->action(function (Lead $record): void {
+                    $record->update(['assigned_to' => auth()->id()]);
+                    $this->record = $record->fresh(['statusHistory', 'assignedUser']);
+                    Notification::make()->title('Lead assigned to you')->success()->send();
+                }),
             Actions\Action::make('markContacted')
                 ->label('Mark contacted')
                 ->icon('heroicon-o-phone')

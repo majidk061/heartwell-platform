@@ -65,7 +65,7 @@
   }
 
   .hw-form-label {
-    @apply block text-sm font-medium text-hw-heading mb-2;
+    @apply block text-sm font-medium text-hw-text mb-2;
   }
 
   .hw-form-group {
@@ -96,7 +96,7 @@
   }
 
   .hw-contact-tab--active {
-    @apply border-hw-dusty-blue text-hw-navy;
+    @apply border-hw-dusty-blue text-hw-heading;
     background-color: color-mix(in srgb, var(--color-dusty-blue-light) 40%, transparent);
   }
 
@@ -124,7 +124,7 @@
   }
 
   .hw-contact-card__title {
-    @apply block font-heading text-lg text-hw-navy mb-1;
+    @apply block font-heading text-lg text-hw-heading mb-1;
   }
 
   .hw-contact-card__desc {

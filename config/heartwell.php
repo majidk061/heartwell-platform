@@ -30,9 +30,10 @@ return [
   ],
 
   'compliance' => [
-    'footer_note' => 'HeartWell Aesthetics & Wellness provides wellness education and coordination. Clinical intake and medical services are delivered through our licensed clinical partner. HeartWell is your primary brand contact for scheduling and support.',
+    'footer_note' => 'HeartWell Aesthetics & Wellness provides wellness education and coordination in New Jersey. Clinical intake, health history, consent forms, and provider screening are completed through HeartWell\'s HIPAA-compliant secure clinical portal. Clinical clearance is required before treatment and must be renewed every 6 months, or sooner if required. HeartWell remains your primary contact for scheduling and support.',
     'contact_disclaimer' => 'Information submitted through this form is used to coordinate your wellness journey. It is not a substitute for emergency medical care. If you are experiencing a medical emergency, call 911.',
-    'hydreight_note' => 'Individual clinical intake is completed through our secure clinical partner portal. Each guest must complete their own intake before services are provided.',
+    'clinical_portal_note' => 'Before your first visit, you will complete a secure clinical intake through HeartWell\'s HIPAA-compliant portal. Each guest at a group gathering must complete their own intake, health history, consent, and provider screening before receiving services.',
+    'group_intake_note' => 'Booking a group wellness gathering does not satisfy medical clearance for participants. Each guest receiving services must individually complete intake, health history, consent, and provider screening before treatment.',
     'privacy_summary' => 'We respect your privacy. Your information is used only to respond to your request and coordinate care. We do not sell your personal information.',
   ],
 

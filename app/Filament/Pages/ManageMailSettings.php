@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Domains\Integrations\Exceptions\MailNotConfiguredException;
+use App\Domains\Integrations\Services\MailChannelResolver;
 use App\Domains\Integrations\Services\SettingsResolver;
 use Filament\Actions;
 use Filament\Forms;
@@ -130,7 +132,16 @@ class ManageMailSettings extends Page implements HasForms
 
         app(SettingsResolver::class)->mergeIntoConfig();
 
-        Notification::make()->title('Email settings saved')->success()->send();
+        try {
+            app(MailChannelResolver::class)->resolve();
+            Notification::make()->title('Email settings saved')->success()->send();
+        } catch (MailNotConfiguredException $e) {
+            Notification::make()
+                ->title('Email settings saved')
+                ->body($e->getMessage())
+                ->warning()
+                ->send();
+        }
     }
 
     public function testEmail(): void

@@ -12,7 +12,7 @@ class ClinicalIntakeController extends Controller
         return view('pages.clinical-intake', [
             'portal_url' => config('integrations.hydreight.portal_url'),
             'enabled' => config('integrations.hydreight.enabled'),
-            'note' => config('heartwell.compliance.hydreight_note'),
+            'note' => config('heartwell.compliance.clinical_portal_note'),
             'brand' => config('heartwell.brand'),
         ]);
     }

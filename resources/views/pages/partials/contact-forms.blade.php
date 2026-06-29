@@ -33,7 +33,7 @@
 >
     <x-layout.page-container narrow>
         <div class="text-center mb-6 md:mb-8">
-            <h2 class="font-heading text-xl md:text-2xl text-hw-navy mb-1">How would you like to connect?</h2>
+            <h2 class="font-heading text-xl md:text-2xl text-hw-heading mb-1">How would you like to connect?</h2>
             <p class="text-hw-muted text-sm md:text-base max-w-xl mx-auto">Choose a path below — forms open right here, no long scrolling.</p>
         </div>
 
@@ -150,9 +150,13 @@
                         <div class="mt-4 w-full overflow-hidden rounded-xl shadow-md border border-hw-border">
                             <iframe src="{{ config('integrations.acuity.embed_url') }}" class="w-full min-h-[400px] md:min-h-[600px] border-0" title="Book a Visit"></iframe>
                         </div>
+                        <p class="mt-4 text-sm text-hw-muted leading-relaxed">
+                            {{ $compliance['clinical_portal_note'] ?? ($compliance['hydreight_note'] ?? config('heartwell.compliance.clinical_portal_note')) }}
+                            <a href="{{ route('clinical-intake') }}" class="text-hw-dusty-blue font-medium hover:text-hw-heading">Continue to clinical intake →</a>
+                        </p>
                     @else
                         <div class="rounded-lg border border-hw-border bg-hw-dusty-blue-light px-5 py-6 text-center space-y-3">
-                            <p class="font-heading text-lg text-hw-navy">Online scheduling is coming soon</p>
+                            <p class="font-heading text-lg text-hw-heading">Online scheduling is coming soon</p>
                             <p class="text-hw-muted text-base">Join the waitlist or request a consultation — we will reach out to help you book your visit.</p>
                             <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                                 <button type="button" @click="setTab('waitlist')" class="btn-primary sm:w-auto">Join the Waitlist</button>
@@ -167,9 +171,12 @@
                         :title="$forms['group_title'] ?? 'Group Wellness Gathering'"
                         :subtitle="$forms['group_subtitle'] ?? 'Tell us about your gathering.'"
                     />
-                    @if(! empty($compliance['hydreight_note']))
+                    @php
+                        $groupNote = $compliance['group_intake_note'] ?? config('heartwell.compliance.group_intake_note');
+                    @endphp
+                    @if(! empty($groupNote))
                         <div class="rounded-lg border border-hw-border bg-hw-blush/30 px-4 py-3 text-sm text-hw-muted mb-6">
-                            {{ $compliance['hydreight_note'] }}
+                            {{ $groupNote }}
                         </div>
                     @endif
                     <form method="POST" action="{{ route('contact.group-inquiry') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4" x-data="{ loading: false }" @submit="loading = true">

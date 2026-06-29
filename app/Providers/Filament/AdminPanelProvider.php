@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->brandName(fn () => app(GetSiteSettingsAction::class)->execute()['brand']['name'] ?? config('heartwell.brand.name'))
             ->brandLogo(fn () => view('filament.admin.logo'))
-            ->brandLogoHeight('2rem')
+            ->brandLogoHeight('3rem')
             ->font('Source Sans 3')
             ->breadcrumbs(true)
             ->colors([

@@ -16,6 +16,7 @@
     $credString = is_array($creds) ? implode(', ', array_filter($creds)) : (string) $creds;
     $displayName = $credString ? "{$name}, {$credString}" : $name;
     $role = $content['role'] ?? 'Founder & Registered Nurse';
+    $pronunciation = $content['pronunciation'] ?? null;
     $bio = $body ?? $section?->body ?? 'Jacquie Wilson brings nurse-led, clinically credentialed care to every HeartWell visit — thoughtful support for every stage of life.';
 
     $src = CmsImage::url($imageUrl ?? $section?->image_url ?? ($content['image_url'] ?? null));
@@ -34,6 +35,9 @@
             <div class="text-center lg:text-left">
                 <p class="text-hw-blush uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
                 <h2 class="hw-section-title mt-2">{{ $displayName }}</h2>
+                @if($pronunciation)
+                    <p class="text-hw-muted mt-1 text-sm italic">{{ $pronunciation }}</p>
+                @endif
                 <p class="text-hw-muted mt-1 text-sm md:text-base">{{ $role }}</p>
                 <p class="text-hw-text mt-4 leading-relaxed text-base">{{ $bio }}</p>
                 <a href="{{ route('meet-the-founder') }}" class="btn-primary sm:w-auto inline-flex mt-6">Learn More About My Story</a>

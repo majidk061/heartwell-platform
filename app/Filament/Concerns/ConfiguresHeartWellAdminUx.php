@@ -33,7 +33,7 @@ trait ConfiguresHeartWellAdminUx
 
     public static function logoUploadHelper(): string
     {
-        return 'Crop to wide logo (10:3). Used in the site header. Max 2 MB.';
+        return 'Upload the approved HeartWell logo PNG. Vertical stacked logos: use 3:4 or 2:3 — avoid cropping off text. Max 2 MB.';
     }
 
     public static function faviconUploadHelper(): string

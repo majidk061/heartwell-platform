@@ -12,7 +12,7 @@
 @endphp
 
 <article class="bg-hw-white border border-hw-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
-    <div class="aspect-[4/3] bg-hw-taupe-light overflow-hidden">
+    <div class="aspect-[4/5] bg-hw-taupe-light overflow-hidden">
         @if($imageUrl)
             <img src="{{ $imageUrl }}" alt="" class="w-full h-full object-cover">
         @else

@@ -89,8 +89,9 @@
                     @endforeach
                 </nav>
 
-                <div class="hidden xl:flex items-center justify-end gap-3 shrink-0">
+                <div class="hidden xl:flex items-center justify-end gap-2 shrink-0">
                     <a href="{{ route('contact') }}#book" class="btn-primary btn-sm">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                    <a href="{{ route('contact') }}#consultation" class="btn-secondary btn-sm">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                     <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
 
@@ -117,6 +118,7 @@
                 @endforeach
                 <div class="pt-4 mt-2 border-t border-hw-border flex flex-col gap-3">
                     <a href="{{ route('contact') }}#book" class="btn-primary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                    <a href="{{ route('contact') }}#consultation" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                     <a href="{{ route('contact') }}#waitlist" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
             </nav>
@@ -152,7 +154,7 @@
         <div class="hw-container py-10 md:py-12">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 <div>
-                    <x-site-logo variant="dark" :show-tagline="true" class="justify-self-start" />
+                    <x-site-logo variant="dark" :show-tagline="false" class="justify-self-start" />
                     <p class="text-sm text-hw-taupe mt-4">{{ $siteSettings['brand']['promise'] ?? config('heartwell.brand.promise') }}</p>
                     @if(! empty($footer['email']) || ! empty($footer['phone']))
                         <div class="mt-4 space-y-1 text-sm text-hw-taupe-light">
@@ -213,6 +215,7 @@
                     <p class="font-semibold mb-3">Get Started</p>
                     <div class="flex flex-col sm:flex-row md:flex-col gap-3">
                         <a href="{{ route('contact') }}#book" class="btn-primary btn-sm text-center">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                        <a href="{{ route('contact') }}#consultation" class="btn-secondary border-hw-white text-hw-white hover:bg-hw-white hover:text-hw-navy btn-sm text-center">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                         <a href="{{ route('contact') }}#waitlist" class="btn-secondary border-hw-white text-hw-white hover:bg-hw-white hover:text-hw-navy btn-sm text-center">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                     </div>
                 </div>

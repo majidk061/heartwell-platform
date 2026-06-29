@@ -13,7 +13,7 @@
                 @if(!empty($logoUrl))
                 <tr>
                     <td align="center" style="padding-bottom:24px;">
-                        <img src="{{ $logoUrl }}" alt="HeartWell" style="max-height:48px;width:auto;">
+                        <img src="{{ $logoUrl }}" alt="HeartWell" style="max-height:96px;width:auto;max-width:220px;">
                     </td>
                 </tr>
                 @endif

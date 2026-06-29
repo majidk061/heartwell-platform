@@ -98,7 +98,9 @@ class ManageSiteSettings extends Page implements HasForms
             'footer_note' => $settings['compliance']['footer_note'] ?? '',
             'contact_disclaimer' => $settings['compliance']['contact_disclaimer'] ?? '',
             'privacy_summary' => $settings['compliance']['privacy_summary'] ?? '',
-            'hydreight_note' => $settings['compliance']['hydreight_note'] ?? '',
+            'hydreight_note' => $settings['compliance']['clinical_portal_note'] ?? ($settings['compliance']['hydreight_note'] ?? ''),
+            'clinical_portal_note' => $settings['compliance']['clinical_portal_note'] ?? ($settings['compliance']['hydreight_note'] ?? ''),
+            'group_intake_note' => $settings['compliance']['group_intake_note'] ?? '',
             'waitlist_title' => $settings['contact_forms']['waitlist_title'] ?? 'Join the Waitlist',
             'waitlist_subtitle' => $settings['contact_forms']['waitlist_subtitle'] ?? '',
             'consultation_title' => $settings['contact_forms']['consultation_title'] ?? 'Request a Consultation',
@@ -107,6 +109,7 @@ class ManageSiteSettings extends Page implements HasForms
             'group_subtitle' => $settings['contact_forms']['group_subtitle'] ?? '',
             'avatar_intro_heading' => $settings['home']['avatar_intro_heading'] ?? "You're Not Alone. You Deserve Support.",
             'avatar_intro_subtitle' => $settings['home']['avatar_intro_subtitle'] ?? 'Which of these feels most like you?',
+            'avatar_unifying_message' => $settings['home']['avatar_unifying_message'] ?? "I don't feel like myself anymore.",
             'pathways_section_title' => $settings['home']['pathways_section_title'] ?? 'Support Pathways',
             'cta_section_heading' => $settings['home']['cta_section_heading'] ?? 'Ready to take the next step?',
             'cta_section_body' => $settings['home']['cta_section_body'] ?? 'Book a visit or join the waitlist — we are here when you are ready.',
@@ -146,7 +149,7 @@ class ManageSiteSettings extends Page implements HasForms
                                     ->label('Logo image')
                                     ->image()
                                     ->imageEditor()
-                                    ->imageEditorAspectRatios(['10:3', '16:9'])
+                                    ->imageEditorAspectRatios(['3:4', '2:3', '10:3'])
                                     ->maxSize(2048)
                                     ->disk('public')
                                     ->directory('cms/branding')
@@ -218,6 +221,10 @@ class ManageSiteSettings extends Page implements HasForms
                                 Forms\Components\TextInput::make('avatar_intro_subtitle')
                                     ->label('Avatar cards subtitle')
                                     ->columnSpanFull(),
+                                Forms\Components\TextInput::make('avatar_unifying_message')
+                                    ->label('Unifying emotional line')
+                                    ->helperText('Shared feeling behind all three avatar cards, e.g. "I don\'t feel like myself anymore."')
+                                    ->columnSpanFull(),
                                 Forms\Components\TextInput::make('pathways_section_title')
                                     ->label('Pathways section title'),
                                 Forms\Components\TextInput::make('cta_section_heading')
@@ -263,7 +270,8 @@ class ManageSiteSettings extends Page implements HasForms
                                 Forms\Components\Textarea::make('footer_note')->label('Footer compliance note')->rows(3)->columnSpanFull(),
                                 Forms\Components\Textarea::make('contact_disclaimer')->label('Contact form disclaimer')->rows(3)->columnSpanFull(),
                                 Forms\Components\Textarea::make('privacy_summary')->label('Privacy summary')->rows(3)->columnSpanFull(),
-                                Forms\Components\Textarea::make('hydreight_note')->label('Hydreight clinical note')->rows(3)->columnSpanFull(),
+                                Forms\Components\Textarea::make('clinical_portal_note')->label('Clinical portal note')->rows(3)->columnSpanFull(),
+                                Forms\Components\Textarea::make('group_intake_note')->label('Group gathering intake note')->rows(3)->columnSpanFull(),
                             ]),
                         Forms\Components\Tabs\Tab::make('Search & Google')
                             ->icon('heroicon-o-magnifying-glass')
@@ -362,6 +370,7 @@ class ManageSiteSettings extends Page implements HasForms
         SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
             'avatar_intro_heading' => $data['avatar_intro_heading'],
             'avatar_intro_subtitle' => $data['avatar_intro_subtitle'],
+            'avatar_unifying_message' => $data['avatar_unifying_message'] ?? '',
             'pathways_section_title' => $data['pathways_section_title'],
             'cta_section_heading' => $data['cta_section_heading'],
             'cta_section_body' => $data['cta_section_body'],
@@ -371,7 +380,8 @@ class ManageSiteSettings extends Page implements HasForms
             'footer_note' => $data['footer_note'],
             'contact_disclaimer' => $data['contact_disclaimer'],
             'privacy_summary' => $data['privacy_summary'],
-            'hydreight_note' => $data['hydreight_note'],
+            'clinical_portal_note' => $data['clinical_portal_note'] ?? '',
+            'group_intake_note' => $data['group_intake_note'] ?? '',
         ]]);
 
         SiteSetting::query()->updateOrCreate(['key' => 'seo'], ['value' => [

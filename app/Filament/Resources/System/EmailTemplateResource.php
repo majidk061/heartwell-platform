@@ -5,6 +5,7 @@ namespace App\Filament\Resources\System;
 use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Domains\Integrations\Models\EmailTemplate;
 use App\Filament\Concerns\AuthorizesWithPermissions;
+use App\Filament\Concerns\ConfiguresHeartWellAdminUx;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Resources\System\EmailTemplateResource\Pages;

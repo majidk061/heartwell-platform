@@ -4,8 +4,10 @@ namespace App\Domains\Automation\Engine;
 
 use App\Domains\Automation\Models\AutomationLog;
 use App\Domains\Automation\Models\AutomationRule;
+use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
+use App\Domains\Integrations\Services\MailChannelResolver;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -14,6 +16,8 @@ class RuleExecutor
     public function __construct(
         private readonly MailchimpServiceInterface $mailchimp,
         private readonly SendGridServiceInterface $sendGrid,
+        private readonly MailChannelResolver $mailChannel,
+        private readonly SendTemplatedEmailAction $sendTemplatedEmail,
     ) {}
 
     /**
@@ -60,13 +64,28 @@ class RuleExecutor
      */
     private function executeEmail(AutomationRule $rule, array $context): array
     {
+        $channel = $this->mailChannel->resolve();
+        $templateKey = $rule->template_ref ?? '';
+
+        if ($channel === 'smtp') {
+            $sent = $this->sendTemplatedEmail->execute(
+                $templateKey,
+                $context['email'] ?? '',
+                $context,
+            );
+
+            return ['status' => $sent ? 'sent' : 'skipped', 'channel' => 'smtp'];
+        }
+
+        $sendGridTemplateId = config('integrations.sendgrid.templates.'.$templateKey) ?? $templateKey;
+
         $this->sendGrid->sendTemplate(
-            $rule->template_ref ?? '',
+            $sendGridTemplateId,
             $context['email'] ?? '',
             $context,
         );
 
-        return ['status' => 'sent'];
+        return ['status' => 'sent', 'channel' => 'sendgrid'];
     }
 
     /**

@@ -85,7 +85,7 @@ class HeartWellSeeder extends Seeder
                     ]]],
                     ['section_type' => 'group_individual', 'heading' => 'Individual visits vs group gatherings', 'content' => ['body' => '<p>Individual visits are one-on-one wellness support. Group gatherings are hosted experiences — each guest still completes their own clinical intake.</p>', 'columns' => [
                         ['title' => 'Individual visit', 'body' => 'Book for yourself via Acuity. One nurse-led experience tailored to you.'],
-                        ['title' => 'Group gathering', 'body' => 'Host inquires here. Each guest completes separate Hydreight clinical intake.'],
+                        ['title' => 'Group gathering', 'body' => 'Host inquires here. Each guest completes their own secure HeartWell clinical intake before services.'],
                     ]]],
                     ['section_type' => 'intro', 'heading' => 'Safety and clinical care', 'content' => ['body' => 'Every client completes clinical intake, screening, and clearance before services. HeartWell coordinates; our licensed clinical partner handles medical records.']],
                 ],
@@ -120,7 +120,7 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 6,
                 'sections' => [
                     ['section_type' => 'hero', 'heading' => 'Meet the Founder', 'content' => ['body' => 'Credentials: BSN, RN, MBA. A warm, clinical voice guiding your care.']],
-                    ['section_type' => 'founder_teaser', 'heading' => 'Led with heart and expertise', 'content' => ['body' => 'Jacquie Wilson brings decades of nursing leadership and a passion for whole-person wellness to every HeartWell experience.', 'image_url' => self::IMG_FOUNDER, 'credentials' => ['BSN', 'RN', 'MBA']]],
+                    ['section_type' => 'founder_teaser', 'heading' => 'Led with heart and expertise', 'content' => ['body' => 'Jacquie Wilson brings decades of nursing leadership and a passion for whole-person wellness to every HeartWell experience.', 'image_url' => self::IMG_FOUNDER, 'credentials' => ['BSN', 'RN', 'MBA'], 'pronunciation' => 'Pronounced Jack-Kwa']],
                 ],
             ],
             [
@@ -172,13 +172,14 @@ class HeartWellSeeder extends Seeder
         SiteSetting::query()->updateOrCreate(['key' => 'compliance'], ['value' => config('heartwell.compliance')]);
         SiteSetting::query()->updateOrCreate(['key' => 'branding'], ['value' => [
             'logo_mode' => 'image',
-            'logo_text' => 'HeartWell',
-            'logo_tagline' => config('heartwell.brand.tagline'),
-            'logo_image_path' => 'cms/branding/heartwell-logo-test.png',
+            'logo_text' => 'HeartWell Aesthetics & Wellness',
+            'logo_tagline' => 'Compassionate Care for Every Stage of Life',
+            'logo_image_path' => 'cms/branding/heartwell-logo.png',
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
             'avatar_intro_heading' => "You're Not Alone. You Deserve Support.",
             'avatar_intro_subtitle' => 'Which of these feels most like you?',
+            'avatar_unifying_message' => "I don't feel like myself anymore.",
             'pathways_section_title' => 'Support Pathways',
             'cta_section_heading' => 'Ready to take the next step?',
             'cta_section_body' => 'Book a visit or join the waitlist — we are here when you are ready.',
@@ -301,7 +302,7 @@ class HeartWellSeeder extends Seeder
                 'name' => 'Waitlist Welcome Email',
                 'trigger_type' => 'waitlist.joined',
                 'channel' => 'email',
-                'template_ref' => config('integrations.sendgrid.templates.waitlist_welcome'),
+                'template_ref' => 'waitlist_welcome',
             ],
             [
                 'name' => 'Waitlist Mailchimp Subscribe',
@@ -313,13 +314,13 @@ class HeartWellSeeder extends Seeder
                 'name' => 'Consultation Acknowledgement',
                 'trigger_type' => 'consultation.requested',
                 'channel' => 'email',
-                'template_ref' => config('integrations.sendgrid.templates.consultation_ack'),
+                'template_ref' => 'consultation_ack',
             ],
             [
                 'name' => 'Lead Booked Confirmation',
                 'trigger_type' => 'lead.status_changed',
                 'channel' => 'email',
-                'template_ref' => config('integrations.sendgrid.templates.booking_confirmation'),
+                'template_ref' => 'booking_confirmation',
                 'conditions' => ['status' => 'booked'],
             ],
         ];
