@@ -46,6 +46,7 @@ class AutomationRuleResource extends Resource
                             'waitlist_joined' => 'Waitlist joined',
                             'consultation_requested' => 'Consultation requested',
                             'group_inquiry_submitted' => 'Group inquiry submitted',
+                            'booking_synced' => 'Booking synced (Acuity)',
                             'lead_status_changed' => 'Lead status changed',
                         ])
                         ->required(),

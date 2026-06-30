@@ -44,6 +44,8 @@
                                 src="{{ $imageUrl }}"
                                 alt=""
                                 class="mt-4 w-full max-h-56 object-cover rounded-lg"
+                                loading="lazy"
+                                decoding="async"
                             >
                         @endif
                         @if($pathway->intro && $hasAccordionPanels)
@@ -72,7 +74,12 @@
                                 @endforeach
                             </div>
                         @endif
-                        <a href="{{ $ctaUrl }}" class="btn-primary sm:w-auto inline-flex mt-4">{{ $ctaLabel }}</a>
+                        <x-pathway-bridge-modal
+                            :pathway-title="$pathway->title"
+                            :pathway-intro="$pathway->intro ?? 'Learn how HeartWell supports you on this pathway.'"
+                            :cta-url="$ctaUrl"
+                            :cta-label="$ctaLabel"
+                        />
                     </div>
                 </div>
             @endforeach

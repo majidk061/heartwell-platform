@@ -69,6 +69,14 @@
             @if($sectionSubtitle)
                 <p class="text-hw-muted text-base md:text-lg max-w-2xl mx-auto mt-3">{{ $sectionSubtitle }}</p>
             @endif
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                @if($acuityEnabled)
+                    <a href="#book" @click.prevent="setTab('book')" class="btn-primary sm:w-auto">Book a visit</a>
+                @endif
+                <a href="#waitlist" @click.prevent="setTab('waitlist')" class="btn-secondary sm:w-auto">{{ $forms['waitlist_title'] }}</a>
+                <a href="#consultation" @click.prevent="setTab('consultation')" class="btn-secondary sm:w-auto">{{ $forms['consultation_title'] }}</a>
+            </div>
+            <p class="text-xs text-hw-muted mt-4 max-w-xl mx-auto">Not sure where to start? Join the waitlist — no commitment required.</p>
         </div>
 
         <nav class="hw-contact-nav mb-6 lg:hidden" aria-label="Contact sections">

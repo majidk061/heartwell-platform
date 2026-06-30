@@ -13,7 +13,8 @@ class ClinicalIntakeTest extends TestCase
     {
         $this->get(route('clinical-intake'))
             ->assertOk()
-            ->assertSee('HeartWell journey', false)
+            ->assertSee('You\'re still with HeartWell', false)
+            ->assertSee('HeartWell coordinates everything', false)
             ->assertSee('HeartWell remains your primary point of contact', false)
             ->assertDontSee('Hydreight', false);
     }

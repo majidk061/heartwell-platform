@@ -69,7 +69,7 @@ return [
             'route' => 'meet-the-founder',
         ],
         [
-            'label' => 'Contact',
+            'label' => 'Contact / Waitlist',
             'route' => 'contact',
         ],
     ],

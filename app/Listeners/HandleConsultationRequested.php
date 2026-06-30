@@ -5,16 +5,12 @@ namespace App\Listeners;
 use App\Domains\Automation\Actions\EvaluateAutomationRulesAction;
 use App\Domains\CRM\Events\ConsultationRequested;
 use App\Domains\Integrations\Actions\NotifyAdminsAction;
-use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
-use App\Domains\Integrations\Contracts\SendGridServiceInterface;
 
 class HandleConsultationRequested
 {
     public function __construct(
         private readonly EvaluateAutomationRulesAction $evaluateAutomationRules,
-        private readonly SendTemplatedEmailAction $sendTemplatedEmail,
         private readonly NotifyAdminsAction $notifyAdmins,
-        private readonly SendGridServiceInterface $sendGrid,
     ) {}
 
     public function handle(ConsultationRequested $event): void
@@ -35,16 +31,6 @@ class HandleConsultationRequested
         ];
 
         $this->evaluateAutomationRules->execute('consultation_requested', $context);
-
-        $sent = $this->sendTemplatedEmail->execute('consultation_ack', $request->email, $context);
-
-        if (! $sent) {
-            $templateId = config('integrations.sendgrid.templates.consultation_ack');
-            if (filled($templateId)) {
-                $this->sendGrid->sendTemplate($templateId, $request->email, $context);
-            }
-        }
-
         $this->notifyAdmins->execute('consultation', 'consultation_admin_notify', $context);
     }
 }

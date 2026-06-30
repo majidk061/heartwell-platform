@@ -14,7 +14,7 @@
 <article class="bg-hw-white border border-hw-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
     <div class="aspect-[4/5] bg-hw-taupe-light overflow-hidden">
         @if($imageUrl)
-            <img src="{{ $imageUrl }}" alt="" class="w-full h-full object-cover">
+            <img src="{{ $imageUrl }}" alt="" class="w-full h-full object-cover" loading="lazy" decoding="async">
         @else
             <div class="w-full h-full flex items-center justify-center">
                 <span class="text-hw-muted text-sm px-4 text-center">{{ $headline }}</span>

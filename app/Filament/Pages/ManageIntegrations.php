@@ -83,6 +83,7 @@ class ManageIntegrations extends Page implements HasForms
             'sendgrid_template_booking' => $r->get('sendgrid_template_booking', 'SENDGRID_TEMPLATE_BOOKING_CONFIRMATION'),
             'hydreight_enabled' => (bool) ($r->get('hydreight_enabled') ?? config('integrations.hydreight.enabled')),
             'hydreight_portal_url' => $r->get('hydreight_portal_url', 'HYDREIGHT_PORTAL_URL'),
+            'hydreight_webhook_secret' => '',
             'twilio_enabled' => (bool) ($r->get('twilio_enabled') ?? config('integrations.twilio.enabled')),
             'twilio_account_sid' => $r->get('twilio_account_sid', 'TWILIO_ACCOUNT_SID'),
             'twilio_auth_token' => '',
@@ -125,6 +126,11 @@ class ManageIntegrations extends Page implements HasForms
                     Forms\Components\Toggle::make('hydreight_enabled')->label('Enable clinical portal link'),
                     Forms\Components\TextInput::make('hydreight_portal_url')->label('Portal URL')->url()->columnSpanFull()
                         ->helperText('HeartWell-branded handoff lives at /clinical-intake — clients never see Hydreight by name on the public site.'),
+                    Forms\Components\TextInput::make('hydreight_webhook_secret')
+                        ->label('Clinical status webhook secret')
+                        ->password()
+                        ->revealable()
+                        ->helperText('Register POST '.url('/webhooks/hydreight').'?secret=YOUR_SECRET for clearance status updates.'),
                 ]),
                 Forms\Components\Tabs\Tab::make('Twilio SMS')->schema([
                     Forms\Components\Toggle::make('twilio_enabled')->label('Enable SMS reminders'),
@@ -169,7 +175,7 @@ class ManageIntegrations extends Page implements HasForms
             }
         }
 
-        foreach (['acuity_api_key', 'acuity_webhook_secret', 'mailchimp_api_key', 'sendgrid_api_key', 'twilio_auth_token'] as $secret) {
+        foreach (['acuity_api_key', 'acuity_webhook_secret', 'mailchimp_api_key', 'sendgrid_api_key', 'twilio_auth_token', 'hydreight_webhook_secret'] as $secret) {
             if (filled($data[$secret] ?? null)) {
                 $r->set($secret, $data[$secret], 'integrations', $userId);
             }

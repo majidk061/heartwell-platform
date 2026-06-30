@@ -4,17 +4,20 @@ namespace App\Domains\Booking\Actions;
 
 use App\Domains\Booking\Models\Booking;
 use App\Domains\Booking\Models\BookingEvent;
+use App\Domains\CRM\Actions\SyncLeadBookedStatusAction;
 use App\Domains\CRM\Enums\LeadSource;
 use App\Domains\CRM\Enums\LeadStatus;
 use App\Domains\CRM\Models\Lead;
 use App\Domains\Integrations\Contracts\AcuityServiceInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SyncBookingFromAcuityWebhookAction
 {
     public function __construct(
         private readonly AcuityServiceInterface $acuity,
+        private readonly SyncLeadBookedStatusAction $syncLeadBookedStatus,
     ) {}
 
     /**
@@ -30,6 +33,27 @@ class SyncBookingFromAcuityWebhookAction
             $firstName = (string) ($details['firstName'] ?? $details['first_name'] ?? '');
             $lastName = (string) ($details['lastName'] ?? $details['last_name'] ?? '');
             $externalId = (string) ($details['id'] ?? $payload['id'] ?? '');
+            $action = (string) ($payload['action'] ?? 'scheduled');
+
+            if ($externalId !== '' && $this->isDuplicateWebhook($externalId, $action, $payload)) {
+                Log::info('[Acuity] duplicate webhook skipped', ['id' => $externalId, 'action' => $action]);
+
+                $existing = Booking::query()->where('external_acuity_id', $externalId)->first();
+
+                return [
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'firstName' => $firstName,
+                    'lastName' => $lastName,
+                    'email' => $email,
+                    'booking_date' => $existing?->scheduled_at?->toDayDateTimeString() ?? '',
+                    'datetime' => $existing?->scheduled_at?->toIso8601String() ?? '',
+                    'external_acuity_id' => $externalId,
+                    'booking_id' => $existing?->id,
+                    'lead_id' => $existing?->lead_id,
+                    'duplicate' => true,
+                ];
+            }
 
             $lead = null;
             if ($email !== '') {
@@ -43,8 +67,8 @@ class SyncBookingFromAcuityWebhookAction
                     ],
                 );
 
-                if ($lead->status !== LeadStatus::Booked) {
-                    $lead->update(['status' => LeadStatus::Booked]);
+                if ($action !== 'canceled') {
+                    $lead = $this->syncLeadBookedStatus->execute($lead);
                 }
             }
 
@@ -130,5 +154,33 @@ class SyncBookingFromAcuityWebhookAction
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function isDuplicateWebhook(string $externalId, string $action, array $payload): bool
+    {
+        $booking = Booking::query()->where('external_acuity_id', $externalId)->first();
+
+        if (! $booking) {
+            return false;
+        }
+
+        $recent = BookingEvent::query()
+            ->where('booking_id', $booking->id)
+            ->where('event_type', 'acuity.webhook.'.$action)
+            ->where('created_at', '>=', now()->subMinutes(2))
+            ->latest()
+            ->first();
+
+        if (! $recent) {
+            return false;
+        }
+
+        $previous = $recent->payload ?? [];
+
+        return ($previous['datetime'] ?? null) === ($payload['datetime'] ?? null)
+            && ($previous['email'] ?? null) === ($payload['email'] ?? null);
     }
 }

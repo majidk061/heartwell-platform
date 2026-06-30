@@ -141,6 +141,7 @@
                 </nav>
 
                 <div class="hidden xl:flex items-center justify-end gap-2 shrink-0">
+                    <a href="{{ route('contact') }}#consultation" class="btn-secondary btn-sm hw-header-cta hidden 2xl:inline-flex">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                     <a href="{{ route('contact') }}#book" class="btn-primary btn-sm hw-header-cta">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
                     <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm hw-header-cta">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
@@ -167,6 +168,7 @@
                     </a>
                 @endforeach
                 <div class="pt-4 mt-2 border-t border-hw-border flex flex-col gap-3">
+                    <a href="{{ route('contact') }}#consultation" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                     <a href="{{ route('contact') }}#book" class="btn-primary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
                     <a href="{{ route('contact') }}#waitlist" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>

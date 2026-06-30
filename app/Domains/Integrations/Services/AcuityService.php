@@ -52,7 +52,7 @@ class AcuityService implements AcuityServiceInterface
 
         $normalized = app(SyncBookingFromAcuityWebhookAction::class)->execute($payload);
 
-        if ($action !== 'canceled') {
+        if ($action !== 'canceled' && empty($normalized['duplicate'])) {
             BookingSynced::dispatch($normalized);
         }
 

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domains\Content\Models\SiteSetting;
+use App\Domains\Content\Support\SectionLayout;
 use App\Domains\Integrations\Services\MailChannelResolver;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -22,6 +23,7 @@ class PreflightCommand extends Command
         $checks = [
             'Storage linked' => is_link(public_path('storage')),
             'Sitemap exists' => File::exists(public_path('sitemap.xml')),
+            'Robots.txt route available' => filled(SectionLayout::defaultRobotsTxt()),
             'Site settings seeded' => SiteSetting::query()->exists(),
             'APP_KEY set' => filled(config('app.key')),
             'APP_URL configured' => filled(config('app.url')),
@@ -69,6 +71,19 @@ class PreflightCommand extends Command
             $this->comment('Acuity webhook: '.($secret ? $webhook.'?secret=YOUR_SECRET' : $webhook));
         } else {
             $this->warn('Acuity embed URL not set — Contact page shows waitlist/consultation only.');
+        }
+
+        if (filled(config('heartwell.ga4_measurement_id'))) {
+            $this->line('✓ GA4 measurement ID configured');
+        } elseif ($isProduction || $strict) {
+            $this->warn('GA4 measurement ID not set — analytics will not load.');
+        }
+
+        $hydreightWebhook = url('/webhooks/hydreight');
+        if (filled(config('integrations.hydreight.webhook_secret'))) {
+            $this->comment('Hydreight clearance webhook: '.$hydreightWebhook.'?secret=YOUR_SECRET');
+        } else {
+            $this->comment('Hydreight clearance webhook (optional): '.$hydreightWebhook);
         }
 
         return $failed ? self::FAILURE : self::SUCCESS;

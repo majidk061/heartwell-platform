@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\PreviewPageController;
 use App\Http\Controllers\Web\ClinicalIntakeController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\MyVisitController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -45,5 +46,11 @@ Route::post('/contact/group-inquiry', [ContactController::class, 'storeGroupInqu
 Route::get('/clinical-intake', ClinicalIntakeController::class)
     ->name('clinical-intake');
 
+Route::get('/my-visit', MyVisitController::class)
+    ->name('my-visit');
+
 Route::post('/webhooks/acuity', [WebhookController::class, 'acuity'])
     ->name('webhooks.acuity');
+
+Route::post('/webhooks/hydreight', [WebhookController::class, 'hydreight'])
+    ->name('webhooks.hydreight');

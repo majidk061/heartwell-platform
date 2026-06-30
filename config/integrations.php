@@ -37,6 +37,7 @@ return [
         'enabled' => env('HYDREIGHT_ENABLED', false),
         'portal_url' => env('HYDREIGHT_PORTAL_URL'),
         'handoff_route' => env('HYDREIGHT_HANDOFF_ROUTE', 'clinical-intake'),
+        'webhook_secret' => env('HYDREIGHT_WEBHOOK_SECRET'),
     ],
 
     'twilio' => [

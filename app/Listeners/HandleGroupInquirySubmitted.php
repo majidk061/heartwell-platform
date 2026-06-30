@@ -5,13 +5,11 @@ namespace App\Listeners;
 use App\Domains\Automation\Actions\EvaluateAutomationRulesAction;
 use App\Domains\CRM\Events\GroupInquirySubmitted;
 use App\Domains\Integrations\Actions\NotifyAdminsAction;
-use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 
 class HandleGroupInquirySubmitted
 {
     public function __construct(
         private readonly EvaluateAutomationRulesAction $evaluateAutomationRules,
-        private readonly SendTemplatedEmailAction $sendTemplatedEmail,
         private readonly NotifyAdminsAction $notifyAdmins,
     ) {}
 
@@ -31,8 +29,6 @@ class HandleGroupInquirySubmitted
         ];
 
         $this->evaluateAutomationRules->execute('group_inquiry_submitted', $context);
-
-        $this->sendTemplatedEmail->execute('group_inquiry_ack', $inquiry->host_email, $context);
         $this->notifyAdmins->execute('group_inquiry', 'group_inquiry_admin_notify', $context);
     }
 }

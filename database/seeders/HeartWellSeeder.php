@@ -586,6 +586,7 @@ class HeartWellSeeder extends Seeder
             'sitemap_enabled' => true,
             'sitemap_extra_urls' => [
                 ['path' => '/clinical-intake', 'priority' => 0.5, 'changefreq' => 'monthly'],
+                ['path' => '/my-visit', 'priority' => 0.6, 'changefreq' => 'monthly'],
             ],
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'theme'], ['value' => [
@@ -715,31 +716,73 @@ class HeartWellSeeder extends Seeder
                 'trigger_type' => 'waitlist_joined',
                 'channel' => 'email',
                 'template_ref' => 'waitlist_welcome',
+                'delay_minutes' => 0,
+            ],
+            [
+                'name' => 'Waitlist Nurture Day 3',
+                'trigger_type' => 'waitlist_joined',
+                'channel' => 'email',
+                'template_ref' => 'waitlist_nurture_day3',
+                'delay_minutes' => 4320,
+            ],
+            [
+                'name' => 'Waitlist Nurture Day 7',
+                'trigger_type' => 'waitlist_joined',
+                'channel' => 'email',
+                'template_ref' => 'waitlist_nurture_day7',
+                'delay_minutes' => 10080,
             ],
             [
                 'name' => 'Waitlist Mailchimp Subscribe',
                 'trigger_type' => 'waitlist_joined',
                 'channel' => 'mailchimp',
                 'template_ref' => null,
+                'delay_minutes' => 0,
             ],
             [
                 'name' => 'Consultation Acknowledgement',
                 'trigger_type' => 'consultation_requested',
                 'channel' => 'email',
                 'template_ref' => 'consultation_ack',
+                'delay_minutes' => 0,
+            ],
+            [
+                'name' => 'Booking Confirmation',
+                'trigger_type' => 'booking_synced',
+                'channel' => 'email',
+                'template_ref' => 'booking_confirmation',
+                'delay_minutes' => 0,
             ],
             [
                 'name' => 'Lead Booked Confirmation',
                 'trigger_type' => 'lead_status_changed',
                 'channel' => 'email',
                 'template_ref' => 'booking_confirmation',
-                'conditions' => ['status' => 'booked'],
+                'conditions' => ['to_status' => 'booked'],
+                'delay_minutes' => 0,
+            ],
+            [
+                'name' => 'Lead Contacted Follow-up',
+                'trigger_type' => 'lead_status_changed',
+                'channel' => 'email',
+                'template_ref' => 'lead_contacted_followup',
+                'conditions' => ['to_status' => 'contacted'],
+                'delay_minutes' => 2880,
+            ],
+            [
+                'name' => 'Lead Completed Nurture',
+                'trigger_type' => 'lead_status_changed',
+                'channel' => 'email',
+                'template_ref' => 'lead_completed_nurture',
+                'conditions' => ['to_status' => 'completed'],
+                'delay_minutes' => 1440,
             ],
             [
                 'name' => 'Group Inquiry Acknowledgement',
                 'trigger_type' => 'group_inquiry_submitted',
                 'channel' => 'email',
                 'template_ref' => 'group_inquiry_ack',
+                'delay_minutes' => 0,
             ],
             [
                 'name' => 'Group Inquiry Follow-up',
@@ -753,7 +796,7 @@ class HeartWellSeeder extends Seeder
         foreach ($rules as $rule) {
             AutomationRule::query()->updateOrCreate(
                 ['name' => $rule['name']],
-                array_merge($rule, ['is_active' => true, 'delay_minutes' => 0]),
+                array_merge(['is_active' => true], $rule),
             );
         }
     }

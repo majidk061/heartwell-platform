@@ -107,6 +107,7 @@ class SettingsResolver
             'integrations.sendgrid.admin_alert_email' => $r->get('sendgrid_admin_alert_email', 'SENDGRID_ADMIN_ALERT_EMAIL') ?? config('integrations.sendgrid.admin_alert_email'),
             'integrations.hydreight.enabled' => (bool) ($r->get('hydreight_enabled') ?? config('integrations.hydreight.enabled')),
             'integrations.hydreight.portal_url' => $r->get('hydreight_portal_url', 'HYDREIGHT_PORTAL_URL') ?? config('integrations.hydreight.portal_url'),
+            'integrations.hydreight.webhook_secret' => $r->get('hydreight_webhook_secret', 'HYDREIGHT_WEBHOOK_SECRET') ?? config('integrations.hydreight.webhook_secret'),
             'integrations.twilio.enabled' => (bool) ($r->get('twilio_enabled') ?? config('integrations.twilio.enabled')),
             'integrations.twilio.account_sid' => $r->get('twilio_account_sid', 'TWILIO_ACCOUNT_SID') ?? config('integrations.twilio.account_sid'),
             'integrations.twilio.auth_token' => $r->get('twilio_auth_token', 'TWILIO_AUTH_TOKEN') ?? config('integrations.twilio.auth_token'),
