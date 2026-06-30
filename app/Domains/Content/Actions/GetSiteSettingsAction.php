@@ -41,6 +41,13 @@ class GetSiteSettingsAction
                 'header_style' => 'transparent_blur',
                 'header_show_border' => true,
                 'colors' => SectionLayout::defaultThemeColors(),
+                'navigation_style' => [
+                    'hover_effect' => 'color',
+                    'hover_color' => '#e8967a',
+                    'active_style' => 'underline',
+                    'active_color' => '#e8967a',
+                    'header_cta_count' => 3,
+                ],
             ],
             'seo' => [
                 'ga4_measurement_id' => $resolver->get('ga4_measurement_id', 'HEARTWELL_GA4_MEASUREMENT_ID'),

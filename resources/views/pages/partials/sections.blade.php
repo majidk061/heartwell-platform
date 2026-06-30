@@ -37,16 +37,35 @@
 
     @switch($section->section_type ?? $section->type)
         @case('hero')
-            <x-hero
-                :headline="$section->heading"
-                :tagline="$section->subheading"
-                :body="$section->body ?? ($sectionContent['body'] ?? null)"
-                :image-url="CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null))"
-                :section="$section"
-                :theme-defaults="$themeDefaults"
-            />
+            @php
+                $heroView = section_view('hero', $sectionContent);
+                $showHeroConsultation = $sectionContent['show_consultation_link'] ?? true;
+            @endphp
+            @if($heroView)
+                @include($heroView, [
+                    'headline' => $section->heading,
+                    'tagline' => $section->subheading,
+                    'body' => $section->body ?? ($sectionContent['body'] ?? null),
+                    'introQuestion' => $sectionContent['intro_question'] ?? null,
+                    'imageUrl' => CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)),
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                    'showConsultation' => $showHeroConsultation,
+                ])
+            @endif
             @if($isHome && $pathways->isNotEmpty())
-                <x-pathway-bar :pathways="$pathways" />
+                @php
+                    $barContent = [
+                        'design_variant' => $sectionContent['pathway_bar_variant'] ?? 'divided_bar',
+                    ];
+                    $barView = section_view('pathway_bar', $barContent);
+                @endphp
+                @if($barView)
+                    @include($barView, [
+                        'pathways' => $pathways,
+                        'barHeading' => $sectionContent['pathway_bar_heading'] ?? 'Support Options Include:',
+                    ])
+                @endif
             @endif
             @break
 
@@ -66,32 +85,15 @@
             @break
 
         @case('avatar_intro')
-            @php
-                $avatarColumns = (int) ($sectionContent['card_columns'] ?? $sectionContent['columns'] ?? 3);
-                $avatarColumns = in_array($avatarColumns, [2, 3], true) ? $avatarColumns : 3;
-                $maxCards = max(1, min(6, (int) ($sectionContent['max_cards'] ?? 6)));
-                $displayCards = $avatarCards->take($maxCards);
-                $gridClass = $avatarColumns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3';
-                $showUnifying = $sectionContent['show_unifying_message'] ?? true;
-            @endphp
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults">
-                @if($section->heading)
-                    <h2 class="hw-section-title font-heading text-hw-heading">{{ $section->heading }}</h2>
-                @endif
-                @if($section->subheading ?? ($sectionContent['subheading'] ?? null))
-                    <p class="text-hw-muted mt-3 text-base md:text-lg">{{ $section->subheading ?? $sectionContent['subheading'] }}</p>
-                @endif
-                @if($showUnifying && ! empty($sectionContent['unifying_message']))
-                    <p class="font-heading text-lg md:text-xl text-hw-heading italic mt-4 max-w-2xl mx-auto">{{ $sectionContent['unifying_message'] }}</p>
-                @endif
-                @if($displayCards->isNotEmpty())
-                    <div class="grid grid-cols-1 {{ $gridClass }} gap-6 mt-8 md:mt-10 {{ ($sectionContent['display_mode'] ?? 'grid') === 'compact' ? 'gap-4' : '' }}">
-                        @foreach($displayCards as $card)
-                            <x-avatar-card :card="$card" />
-                        @endforeach
-                    </div>
-                @endif
-            </x-section-shell>
+            @php $avatarView = section_view('avatar_intro', $sectionContent); @endphp
+            @if($avatarView)
+                @include($avatarView, [
+                    'section' => $section,
+                    'sectionContent' => $sectionContent,
+                    'avatarCards' => $avatarCards,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @endif
             @break
 
         @case('journey')
@@ -181,11 +183,17 @@
             @break
 
         @case('founder_teaser')
-            <x-founder-teaser
-                :section="$section"
-                :image-url="CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null))"
-                :theme-defaults="$themeDefaults"
-            />
+            @php
+                $founderView = section_view('founder_teaser', $sectionContent);
+                $founderCreds = $sectionContent['credentials'] ?? [];
+            @endphp
+            @if($founderView)
+                @include($founderView, [
+                    'section' => $section,
+                    'imageUrl' => CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)),
+                    'credentials' => $founderCreds,
+                ])
+            @endif
             @break
 
         @case('testimonials')
@@ -238,23 +246,28 @@
             @break
 
         @case('cta')
-            @php $c = $sectionContent; @endphp
-            <x-cta-section
-                :heading="$section->heading"
-                :body="$section->body ?? ($c['body'] ?? null)"
-                :variant="$c['variant'] ?? 'dual'"
-                :primary-label="$c['primary_label'] ?? null"
-                :primary-url="$c['primary_url'] ?? null"
-                :waitlist-label="$c['waitlist_label'] ?? null"
-                :waitlist-url="$c['waitlist_url'] ?? null"
-                :show-consultation-link="$c['show_consultation_link'] ?? true"
-                :consultation-prefix="$c['consultation_prefix'] ?? 'Prefer to talk first?'"
-                :consultation-label="$c['consultation_label'] ?? null"
-                :consultation-url="$c['consultation_url'] ?? null"
-                :ctas="$ctas"
-                :section="$section"
-                :theme-defaults="$themeDefaults"
-            />
+            @php
+                $c = $sectionContent;
+                $ctaView = section_view('cta', $sectionContent);
+            @endphp
+            @if($ctaView)
+                @include($ctaView, [
+                    'heading' => $section->heading,
+                    'body' => $section->body ?? ($c['body'] ?? null),
+                    'variant' => $c['variant'] ?? 'dual',
+                    'primaryLabel' => $c['primary_label'] ?? null,
+                    'primaryUrl' => $c['primary_url'] ?? null,
+                    'waitlistLabel' => $c['waitlist_label'] ?? null,
+                    'waitlistUrl' => $c['waitlist_url'] ?? null,
+                    'showConsultationLink' => $c['show_consultation_link'] ?? true,
+                    'consultationPrefix' => $c['consultation_prefix'] ?? 'Prefer to talk first?',
+                    'consultationLabel' => $c['consultation_label'] ?? null,
+                    'consultationUrl' => $c['consultation_url'] ?? null,
+                    'ctas' => $ctas,
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @endif
             @break
 
         @case('forms')

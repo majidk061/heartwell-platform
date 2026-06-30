@@ -216,4 +216,79 @@
   .hw-contact-panel--active {
     @apply ring-2 ring-hw-dusty-blue border-hw-dusty-blue;
   }
+
+  .hw-hero-tagline {
+    color: var(--nav-active-color, var(--color-blush));
+  }
+
+  .hw-hero--overlay__scrim {
+    background: linear-gradient(
+      to right,
+      rgb(255 255 255 / 0.98) 0%,
+      rgb(249 245 242 / 0.96) 28%,
+      rgb(249 245 242 / 0.72) 42%,
+      rgb(249 245 242 / 0.35) 55%,
+      transparent 72%
+    );
+  }
+
+  .hw-avatar-card-horizontal {
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+  }
+
+  @media (max-width: 767px) {
+    .hw-hero--overlay__scrim {
+      background: linear-gradient(
+        to bottom,
+        rgb(255 255 255 / 0.97) 0%,
+        rgb(249 245 242 / 0.92) 45%,
+        rgb(249 245 242 / 0.55) 65%,
+        transparent 100%
+      );
+    }
+  }
+
+  .hw-nav-link--hover-color:hover {
+    color: var(--nav-hover-color, var(--color-heading));
+  }
+
+  .hw-nav-link--hover-underline:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--nav-hover-color, var(--color-heading));
+  }
+
+  .hw-nav-link--hover-background:hover {
+    background-color: color-mix(in srgb, var(--nav-hover-color) 12%, transparent);
+    border-radius: var(--radius-full);
+    padding-inline: 0.75rem;
+  }
+
+  .hw-nav-link--hover-pill:hover {
+    background-color: color-mix(in srgb, var(--nav-hover-color) 18%, transparent);
+    border-radius: var(--radius-full);
+    padding-inline: 0.75rem;
+  }
+
+  .hw-nav-link--active-underline {
+    color: var(--color-heading);
+    box-shadow: inset 0 -2px 0 0 var(--nav-active-color, var(--color-blush));
+  }
+
+  .hw-nav-link--active-bold {
+    color: var(--color-heading);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .hw-nav-link--active-pill {
+    background-color: color-mix(in srgb, var(--nav-active-color) 15%, transparent);
+    border-radius: var(--radius-full);
+    padding-inline: 0.75rem;
+    color: var(--color-heading);
+  }
+
+  .hw-nav-link--active-border_bottom {
+    border-bottom: 2px solid var(--nav-active-color, var(--color-blush));
+    color: var(--color-heading);
+  }
 }

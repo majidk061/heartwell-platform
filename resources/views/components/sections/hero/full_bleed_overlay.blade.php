@@ -1,0 +1,55 @@
+@props(['headline', 'tagline' => null, 'body' => null, 'introQuestion' => null, 'imageUrl' => null, 'section' => null, 'themeDefaults' => null, 'showConsultation' => true])
+
+@php
+    use App\Domains\Content\Support\SectionLayout;
+
+    $src = $imageUrl;
+    if ($src && ! str_starts_with($src, 'http')) {
+        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    }
+
+    $layout = $section
+        ? SectionLayout::resolve($section->content ?? [], $themeDefaults, 'hero', ['section_padding' => 'none'])
+        : ['container_width' => 'full', 'section_padding' => 'none', 'background' => 'white', 'text_align' => 'left'];
+
+    $sectionClass = SectionLayout::sectionClasses($layout);
+@endphp
+
+<section class="{{ $sectionClass }} hw-hero hw-hero--overlay relative overflow-hidden min-h-[32rem] md:min-h-[36rem] lg:min-h-[34rem] flex items-center">
+    @if($src)
+        <img
+            src="{{ $src }}"
+            alt=""
+            class="absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-[78%_center]"
+            loading="eager"
+        >
+        <div class="absolute inset-0 hw-hero--overlay__scrim" aria-hidden="true"></div>
+    @else
+        <div class="absolute inset-0 bg-hw-blush-light" aria-hidden="true"></div>
+    @endif
+
+    <x-layout.page-container :width="'default'" class="relative z-10 w-full py-12 md:py-16 lg:py-20">
+        <div class="max-w-xl lg:max-w-[42rem] text-left">
+            <h1 class="hw-page-title text-hw-heading">{{ $headline }}</h1>
+            @if($tagline)
+                <p class="hw-hero-tagline font-heading text-xl md:text-2xl lg:text-[1.65rem] italic mt-3 leading-snug">{{ $tagline }}</p>
+            @endif
+            @if($introQuestion)
+                <p class="font-heading text-lg md:text-xl text-hw-heading mt-5 md:mt-6 leading-snug">{{ $introQuestion }}</p>
+            @endif
+            @if($body)
+                <p class="text-base md:text-[1.05rem] text-hw-text mt-4 md:mt-5 leading-relaxed">{{ $body }}</p>
+            @endif
+            <div class="mt-7 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ ($siteSettings['ctas']['primary']['label'] ?? null) ?: config('heartwell.ctas.primary.label') }}</a>
+                <a href="{{ route('contact') }}#waitlist" class="btn-secondary sm:w-auto">{{ ($siteSettings['ctas']['secondary']['waitlist']['label'] ?? null) ?: config('heartwell.ctas.secondary.waitlist.label') }}</a>
+            </div>
+            @if($showConsultation)
+                <p class="mt-4 text-sm text-hw-muted">
+                    Prefer to talk first?
+                    <a href="{{ route('contact') }}#consultation" class="text-hw-dusty-blue font-medium hover:text-hw-heading transition-colors">{{ ($siteSettings['ctas']['secondary']['consultation']['label'] ?? null) ?: config('heartwell.ctas.secondary.consultation.label') }} →</a>
+                </p>
+            @endif
+        </div>
+    </x-layout.page-container>
+</section>

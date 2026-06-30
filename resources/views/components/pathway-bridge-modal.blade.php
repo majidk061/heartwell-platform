@@ -2,7 +2,7 @@
 
 <div
     x-data="{ open: false }"
-    class="inline-flex"
+    {{ $attributes->merge(['class' => 'inline-flex']) }}
 >
     <button type="button" class="btn-primary sm:w-auto" @click="open = true">
         {{ $ctaLabel }}

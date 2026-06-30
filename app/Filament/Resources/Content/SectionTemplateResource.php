@@ -147,6 +147,12 @@ class SectionTemplateResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('section_type')->badge(),
+                Tables\Columns\TextColumn::make('content.design_variant')
+                    ->label('Variant')
+                    ->formatStateUsing(fn (?string $state, SectionTemplate $record): string => $state
+                        ? (\App\Domains\Content\Support\SectionDesignRegistry::variantsFor($record->section_type)[$state] ?? $state)
+                        : 'Default')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('heading')->limit(40)->searchable(),
                 Tables\Columns\TextColumn::make('page_sections_count')
                     ->label('Used on')
@@ -181,6 +187,11 @@ class SectionTemplateResource extends Resource
                 ],
             ))
             ->actions([
+                Tables\Actions\Action::make('preview')
+                    ->label('Preview')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (SectionTemplate $record): string => route('admin.preview.section', ['template' => $record->getKey()]))
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 ...static::contentPublishingTableActions(),

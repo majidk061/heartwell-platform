@@ -42,6 +42,13 @@ class EditSectionTemplate extends HeartWellEditRecord
                 ])));
         }
 
+        array_unshift($actions, Actions\Action::make('previewSection')
+            ->label('Preview section')
+            ->icon('heroicon-o-eye')
+            ->url(fn (): string => route('admin.preview.section', ['template' => $this->record->getKey()]))
+            ->openUrlInNewTab()
+            ->visible(fn (): bool => $this->record->exists));
+
         return $actions;
     }
 

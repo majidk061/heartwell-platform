@@ -79,6 +79,7 @@
                             :pathway-intro="$pathway->intro ?? 'Learn how HeartWell supports you on this pathway.'"
                             :cta-url="$ctaUrl"
                             :cta-label="$ctaLabel"
+                            class="mt-6 md:mt-8"
                         />
                     </div>
                 </div>

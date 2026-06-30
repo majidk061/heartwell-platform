@@ -14,6 +14,8 @@ Route::get('/', HomeController::class)->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/preview/page/{slug}', PreviewPageController::class)
         ->name('admin.preview.page');
+    Route::get('/admin/preview/section/{template}', \App\Http\Controllers\Admin\PreviewSectionController::class)
+        ->name('admin.preview.section');
 });
 
 $pageSlugs = [

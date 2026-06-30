@@ -161,15 +161,71 @@ class HeartWellSeeder extends Seeder
     {
         $templates = [
             [
+                'name' => 'Hero — client split (home)',
+                'section_type' => 'hero',
+                'heading' => 'Thoughtful, Compassionate Care You Can Trust',
+                'description' => 'Client mock — split hero with pathway bar settings.',
+                'content' => [
+                    'design_variant' => 'split_image_right',
+                    'subheading' => 'For Every Stage of Life',
+                    'intro_question' => 'Feeling exhausted? Stuck? Not feeling like yourself?',
+                    'body' => 'HeartWell offers nurse-guided wellness support for every stage of life — personalized, compassionate, and led by a registered nurse.',
+                    'image_url' => self::IMG_HERO,
+                    'show_consultation_link' => false,
+                    'pathway_bar_variant' => 'labeled_inline_dividers',
+                    'pathway_bar_heading' => 'Support Options Include:',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
                 'name' => 'Hero — home banner',
                 'section_type' => 'hero',
                 'heading' => 'Thoughtful, Compassionate Care You Can Trust',
-                'description' => 'Large top banner with headline, subheading, body, and image.',
+                'description' => 'Classic split hero with consultation link.',
                 'content' => [
+                    'design_variant' => 'default',
                     'subheading' => 'For Every Stage of Life',
                     'body' => 'Feeling exhausted? Stuck? Not feeling like yourself? HeartWell offers nurse-guided wellness support for every stage of life.',
                     'image_url' => self::IMG_HERO,
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Hero — full bleed overlay',
+                'section_type' => 'hero',
+                'heading' => 'Thoughtful, Compassionate Care You Can Trust',
+                'description' => 'Full-width background image with text overlay on the left (client mock).',
+                'content' => [
+                    'design_variant' => 'full_bleed_overlay',
+                    'subheading' => 'For Every Stage of Life',
+                    'intro_question' => 'Feeling exhausted? Stuck? Not feeling like yourself?',
+                    'body' => 'Many women continue showing up every day while quietly feeling exhausted, depleted, stressed, or unlike themselves. HeartWell provides personalized, nurse-guided wellness support designed to help restore energy, recovery, confidence, and overall well-being.',
+                    'image_url' => self::IMG_HERO,
+                    'show_consultation_link' => false,
+                    'layout' => ['container_width' => 'full', 'section_padding' => 'none', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Hero — centered overlay',
+                'section_type' => 'hero',
+                'heading' => 'Thoughtful, Compassionate Care You Can Trust',
+                'description' => 'Centered text over full-width image.',
+                'content' => [
+                    'design_variant' => 'centered_overlay',
+                    'subheading' => 'For Every Stage of Life',
+                    'image_url' => self::IMG_HERO,
+                    'layout' => ['container_width' => 'full', 'section_padding' => 'none'],
+                ],
+            ],
+            [
+                'name' => 'Hero — minimal band',
+                'section_type' => 'hero',
+                'heading' => 'Page headline here',
+                'description' => 'Text-only hero band for inner pages.',
+                'content' => [
+                    'design_variant' => 'minimal',
+                    'body' => 'Short supporting line for this page.',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'blush', 'text_align' => 'center'],
                 ],
             ],
             [
@@ -193,11 +249,25 @@ class HeartWellSeeder extends Seeder
                 ],
             ],
             [
+                'name' => 'Avatar intro — client horizontal',
+                'section_type' => 'avatar_intro',
+                'heading' => "You're Not Alone. You Deserve Support.",
+                'description' => 'Client mock — horizontal cards with image left.',
+                'content' => [
+                    'design_variant' => 'horizontal_split_cards',
+                    'subheading' => 'Which of these feels most like you?',
+                    'max_cards' => 3,
+                    'show_unifying_message' => false,
+                    'layout' => ['container_width' => 'default', 'text_align' => 'center'],
+                ],
+            ],
+            [
                 'name' => 'Avatar intro block',
                 'section_type' => 'avatar_intro',
                 'heading' => "You're Not Alone. You Deserve Support.",
-                'description' => 'Audience cards intro with unifying message.',
+                'description' => 'Classic vertical portrait audience cards.',
                 'content' => [
+                    'design_variant' => 'default',
                     'subheading' => 'Which of these feels most like you?',
                     'unifying_message' => "I don't feel like myself anymore.",
                     'card_columns' => '3',
@@ -227,6 +297,7 @@ class HeartWellSeeder extends Seeder
                 'heading' => 'Meet the Founder',
                 'description' => 'Photo, bio, credentials, and pronunciation.',
                 'content' => [
+                    'design_variant' => 'photo_left',
                     'body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to bring thoughtful, compassionate care you can trust.',
                     'image_url' => self::IMG_FOUNDER,
                     'credentials' => ['BSN', 'RN', 'MBA'],
@@ -306,11 +377,25 @@ class HeartWellSeeder extends Seeder
                 ],
             ],
             [
+                'name' => 'CTA — client pre-footer band',
+                'section_type' => 'cta',
+                'heading' => 'You Deserve to Feel Like Yourself Again',
+                'description' => 'Client mock — cream band with dual CTAs.',
+                'content' => [
+                    'design_variant' => 'centered_band',
+                    'body' => "Whether you're feeling depleted, stuck, or simply unlike yourself, support is available.",
+                    'variant' => 'dual',
+                    'show_consultation_link' => false,
+                    'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'white'],
+                ],
+            ],
+            [
                 'name' => 'Standard CTA band',
                 'section_type' => 'cta',
                 'heading' => 'Ready to take the next step?',
                 'description' => 'Dual-button CTA with consultation link.',
                 'content' => [
+                    'design_variant' => 'default',
                     'body' => 'Book a visit or join the waitlist — we are here when you are ready.',
                     'variant' => 'dual',
                     'primary_label' => 'Book a Visit',

@@ -121,6 +121,11 @@ class ManageSiteSettings extends Page implements HasForms
             'header_mode' => $settings['theme']['header_mode'] ?? 'sticky',
             'header_style' => $settings['theme']['header_style'] ?? 'transparent_blur',
             'header_show_border' => $settings['theme']['header_show_border'] ?? true,
+            'nav_hover_effect' => $settings['theme']['navigation_style']['hover_effect'] ?? 'color',
+            'nav_hover_color' => $settings['theme']['navigation_style']['hover_color'] ?? '#e8967a',
+            'nav_active_style' => $settings['theme']['navigation_style']['active_style'] ?? 'underline',
+            'nav_active_color' => $settings['theme']['navigation_style']['active_color'] ?? '#e8967a',
+            'header_cta_count' => (int) ($settings['theme']['navigation_style']['header_cta_count'] ?? 3),
             ...collect(static::defaultThemeColors())->mapWithKeys(fn ($color, $key) => ['theme_color_'.$key => $settings['theme']['colors'][$key] ?? $color])->all(),
         ]);
     }
@@ -267,6 +272,39 @@ class ManageSiteSettings extends Page implements HasForms
                                 Forms\Components\Toggle::make('header_show_border')
                                     ->label('Show header border')
                                     ->default(true),
+                                Forms\Components\Fieldset::make('Navigation hover & active')
+                                    ->schema([
+                                        Forms\Components\Select::make('nav_hover_effect')
+                                            ->label('Hover effect')
+                                            ->options([
+                                                'color' => 'Text color change',
+                                                'underline' => 'Underline on hover',
+                                                'background' => 'Background highlight',
+                                                'pill' => 'Pill background',
+                                            ])
+                                            ->default('color'),
+                                        Forms\Components\ColorPicker::make('nav_hover_color')
+                                            ->label('Hover color')
+                                            ->default('#e8967a'),
+                                        Forms\Components\Select::make('nav_active_style')
+                                            ->label('Active page style')
+                                            ->options([
+                                                'underline' => 'Underline (client mock)',
+                                                'bold' => 'Bold text',
+                                                'pill' => 'Pill background',
+                                                'border_bottom' => 'Bottom border',
+                                            ])
+                                            ->default('underline'),
+                                        Forms\Components\ColorPicker::make('nav_active_color')
+                                            ->label('Active color')
+                                            ->default('#e8967a'),
+                                        Forms\Components\Select::make('header_cta_count')
+                                            ->label('Header CTA buttons')
+                                            ->options(['2' => 'Two (client mock)', '3' => 'Three (includes consultation)'])
+                                            ->default('3'),
+                                    ])
+                                    ->columns(2)
+                                    ->columnSpanFull(),
                                 Forms\Components\Fieldset::make('Brand colors')
                                     ->schema(collect(static::themeColorFields())->map(
                                         fn ($label, $key) => Forms\Components\ColorPicker::make('theme_color_'.$key)->label($label)
@@ -450,6 +488,13 @@ class ManageSiteSettings extends Page implements HasForms
             'header_style' => $data['header_style'] ?? 'transparent_blur',
             'header_show_border' => (bool) ($data['header_show_border'] ?? true),
             'colors' => $colors,
+            'navigation_style' => [
+                'hover_effect' => $data['nav_hover_effect'] ?? 'color',
+                'hover_color' => $data['nav_hover_color'] ?? '#e8967a',
+                'active_style' => $data['nav_active_style'] ?? 'underline',
+                'active_color' => $data['nav_active_color'] ?? '#e8967a',
+                'header_cta_count' => (int) ($data['header_cta_count'] ?? 3),
+            ],
         ]]);
 
         GenerateSitemapAction::forgetCache();

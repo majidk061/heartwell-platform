@@ -3,6 +3,7 @@
 namespace App\Filament\Concerns;
 
 use App\Domains\Content\Support\CmsImage;
+use App\Domains\Content\Support\SectionDesignRegistry;
 use Filament\Forms;
 
 trait MutatesSectionContent
@@ -13,6 +14,35 @@ trait MutatesSectionContent
     protected static function sectionContentFormSchema(): array
     {
         return [
+            Forms\Components\Select::make('content_design_variant')
+                ->label('Design variant')
+                ->options(fn (Forms\Get $get): array => \App\Domains\Content\Support\SectionDesignRegistry::variantsFor(
+                    (string) ($get('section_type') ?: 'hero')
+                ))
+                ->default(fn (Forms\Get $get): string => \App\Domains\Content\Support\SectionDesignRegistry::defaultVariant(
+                    (string) ($get('section_type') ?: 'hero')
+                ))
+                ->helperText('Choose the visual layout for this section. Preview before publishing.')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_intro_question')
+                ->label('Intro question line')
+                ->helperText('Optional line above body, e.g. “Feeling exhausted? Stuck?”')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero')
+                ->columnSpanFull(),
+            Forms\Components\Select::make('content_pathway_bar_variant')
+                ->label('Home pathway bar style')
+                ->options(\App\Domains\Content\Support\SectionDesignRegistry::variantsFor('pathway_bar'))
+                ->default('labeled_inline_dividers')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero')
+                ->helperText('Shown below this hero on the home page when pathways exist.'),
+            Forms\Components\TextInput::make('content_pathway_bar_heading')
+                ->label('Pathway bar heading')
+                ->default('Support Options Include:')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'),
+            Forms\Components\Toggle::make('content_show_consultation_link')
+                ->label('Show consultation link under hero buttons')
+                ->default(true)
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'),
             Forms\Components\TextInput::make('content_subheading')
                 ->label('Subheading')
                 ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'avatar_intro', 'cta']))
@@ -319,6 +349,10 @@ trait MutatesSectionContent
         }
 
         foreach ([
+            'design_variant' => 'content_design_variant',
+            'intro_question' => 'content_intro_question',
+            'pathway_bar_variant' => 'content_pathway_bar_variant',
+            'pathway_bar_heading' => 'content_pathway_bar_heading',
             'enabled' => 'content_enabled',
             'card_columns' => 'content_avatar_columns',
             'max_cards' => 'content_max_cards',
@@ -430,6 +464,10 @@ trait MutatesSectionContent
             $data['content_carousel_visible'],
             $data['content_carousel_autoplay'],
             $data['content_carousel_interval'],
+            $data['content_design_variant'],
+            $data['content_intro_question'],
+            $data['content_pathway_bar_variant'],
+            $data['content_pathway_bar_heading'],
             $data['layout_container_width'],
             $data['layout_section_padding'],
             $data['layout_background'],
@@ -521,6 +559,10 @@ trait MutatesSectionContent
         $data['content_carousel_visible'] = $content['carousel_visible'] ?? 1;
         $data['content_carousel_autoplay'] = $content['carousel_autoplay'] ?? false;
         $data['content_carousel_interval'] = $content['carousel_interval'] ?? 6;
+        $data['content_design_variant'] = $content['design_variant'] ?? SectionDesignRegistry::defaultVariant((string) ($data['section_type'] ?? 'hero'));
+        $data['content_intro_question'] = $content['intro_question'] ?? null;
+        $data['content_pathway_bar_variant'] = $content['pathway_bar_variant'] ?? 'labeled_inline_dividers';
+        $data['content_pathway_bar_heading'] = $content['pathway_bar_heading'] ?? 'Support Options Include:';
 
         return static::hydrateLayoutFromContent($data);
     }
