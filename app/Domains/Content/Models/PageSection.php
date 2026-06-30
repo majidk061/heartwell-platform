@@ -11,6 +11,7 @@ class PageSection extends Model
 
     protected $fillable = [
         'page_id',
+        'section_template_id',
         'section_type',
         'heading',
         'sort_order',
@@ -27,6 +28,16 @@ class PageSection extends Model
     public function page(): BelongsTo
     {
         return $this->belongsTo(Page::class, 'page_id');
+    }
+
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(SectionTemplate::class, 'section_template_id');
+    }
+
+    public function isLinkedToLibrary(): bool
+    {
+        return filled($this->section_template_id);
     }
 
     public function getTypeAttribute(): string
@@ -47,5 +58,21 @@ class PageSection extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->content['image_url'] ?? null;
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (PageSection $section): void {
+            if (! $section->section_template_id) {
+                return;
+            }
+
+            $section->heading = null;
+            $section->content = null;
+
+            if (blank($section->section_type) && $section->template) {
+                $section->section_type = $section->template->section_type;
+            }
+        });
     }
 }

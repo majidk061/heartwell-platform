@@ -5,6 +5,7 @@ namespace App\Filament\Resources\System;
 use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Domains\Integrations\Models\EmailTemplate;
 use App\Filament\Concerns\AuthorizesWithPermissions;
+use App\Filament\Concerns\ConfiguresCmsImageFields;
 use App\Filament\Concerns\ConfiguresHeartWellAdminUx;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
@@ -20,6 +21,7 @@ use Filament\Tables\Table;
 class EmailTemplateResource extends Resource
 {
     use AuthorizesWithPermissions;
+    use ConfiguresCmsImageFields;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
 
@@ -55,15 +57,13 @@ class EmailTemplateResource extends Resource
                     Forms\Components\TextInput::make('subject')->required()->columnSpanFull(),
                     Forms\Components\TextInput::make('heading')->columnSpanFull(),
                     Forms\Components\RichEditor::make('body')->columnSpanFull(),
-                    Forms\Components\FileUpload::make('logo_path')
-                        ->label('Logo override')
-                        ->image()
-                        ->imageEditor()
-                        ->imageEditorAspectRatios(['10:3'])
-                        ->maxSize(1024)
-                        ->disk('public')
-                        ->directory('cms/email')
-                        ->helperText(ConfiguresHeartWellAdminUx::logoUploadHelper()),
+                    static::cmsImagePreviewPlaceholder('logo_path', 'Current logo'),
+                    static::cmsImageUploadField(
+                        'logo_path',
+                        'Logo override',
+                        'cms/email',
+                        ConfiguresHeartWellAdminUx::logoUploadHelper(),
+                    )->imageEditor()->imageEditorAspectRatios(['10:3'])->maxSize(1024),
                     Forms\Components\TextInput::make('button_label'),
                     Forms\Components\TextInput::make('button_url')->helperText('Supports merge tags, e.g. {{reset_url}}'),
                     Forms\Components\Textarea::make('footer_text')->rows(2)->columnSpanFull(),

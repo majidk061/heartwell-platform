@@ -2,18 +2,25 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Domains\Content\Enums\ContentStatus;
+use App\Domains\Content\Models\Page;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
+    use RefreshDatabase;
+
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
+        Page::query()->create([
+            'slug' => 'home',
+            'title' => 'Home',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 1,
+        ]);
 
-        $response->assertStatus(200);
+        $this->get('/')->assertOk();
     }
 }

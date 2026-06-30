@@ -3,13 +3,14 @@
 namespace App\Domains\Admin\Actions;
 
 use App\Models\User;
-use App\Notifications\AdminInviteNotification;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class InviteAdminUserAction
 {
+    public function __construct(
+        private readonly SendAdminPasswordResetInviteAction $sendAdminPasswordResetInvite,
+    ) {}
+
     /**
      * @param  array<string, mixed>  $data
      */
@@ -18,7 +19,7 @@ class InviteAdminUserAction
         $user = $existingUser ?? User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make(Str::random(32)),
+            'password' => Str::random(32),
             'is_active' => $data['is_active'] ?? true,
             'invited_at' => now(),
         ]);
@@ -40,24 +41,7 @@ class InviteAdminUserAction
             $user->syncPermissions($data['permissions']);
         }
 
-        $token = Password::broker('users')->createToken($user);
-        $resetUrl = route('filament.admin.auth.password-reset.reset', [
-            'token' => $token,
-            'email' => $user->email,
-        ]);
-
-        $sent = app(\App\Domains\Integrations\Actions\SendTemplatedEmailAction::class)->execute('admin_invite', $user->email, [
-            'name' => $user->name,
-            'email' => $user->email,
-            'reset_url' => $resetUrl,
-        ]);
-
-        if (! $sent) {
-            \Illuminate\Support\Facades\Mail::raw(
-                "You have been invited to manage HeartWell.\n\nSet your password: {$resetUrl}",
-                fn ($message) => $message->to($user->email)->subject('Set your HeartWell admin password'),
-            );
-        }
+        $this->sendAdminPasswordResetInvite->execute($user, $existingUser !== null);
 
         return $user;
     }

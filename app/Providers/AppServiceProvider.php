@@ -35,6 +35,10 @@ class AppServiceProvider extends ServiceProvider
             // Settings table may not exist during initial migrate
         }
 
-        view()->share('siteSettings', app(GetSiteSettingsAction::class)->execute());
+        try {
+            view()->share('siteSettings', app(GetSiteSettingsAction::class)->execute());
+        } catch (\Throwable) {
+            // Database may be unavailable during isolated unit tests
+        }
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Filament\Pages;
 
+use App\Domains\Content\Actions\GenerateSitemapAction;
 use App\Domains\Content\Actions\GetSiteSettingsAction;
 use App\Domains\Content\Models\SiteSetting;
+use App\Domains\Content\Support\SectionLayout;
 use App\Domains\Integrations\Services\SettingsResolver;
+use App\Filament\Concerns\ConfiguresSectionFields;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -15,6 +18,7 @@ use Filament\Pages\Page;
 
 class ManageSiteSettings extends Page implements HasForms
 {
+    use ConfiguresSectionFields;
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
@@ -98,26 +102,26 @@ class ManageSiteSettings extends Page implements HasForms
             'footer_note' => $settings['compliance']['footer_note'] ?? '',
             'contact_disclaimer' => $settings['compliance']['contact_disclaimer'] ?? '',
             'privacy_summary' => $settings['compliance']['privacy_summary'] ?? '',
-            'hydreight_note' => $settings['compliance']['clinical_portal_note'] ?? ($settings['compliance']['hydreight_note'] ?? ''),
             'clinical_portal_note' => $settings['compliance']['clinical_portal_note'] ?? ($settings['compliance']['hydreight_note'] ?? ''),
             'group_intake_note' => $settings['compliance']['group_intake_note'] ?? '',
-            'waitlist_title' => $settings['contact_forms']['waitlist_title'] ?? 'Join the Waitlist',
-            'waitlist_subtitle' => $settings['contact_forms']['waitlist_subtitle'] ?? '',
-            'consultation_title' => $settings['contact_forms']['consultation_title'] ?? 'Request a Consultation',
-            'consultation_subtitle' => $settings['contact_forms']['consultation_subtitle'] ?? '',
-            'group_title' => $settings['contact_forms']['group_title'] ?? 'Group Wellness Gathering',
-            'group_subtitle' => $settings['contact_forms']['group_subtitle'] ?? '',
-            'avatar_intro_heading' => $settings['home']['avatar_intro_heading'] ?? "You're Not Alone. You Deserve Support.",
-            'avatar_intro_subtitle' => $settings['home']['avatar_intro_subtitle'] ?? 'Which of these feels most like you?',
-            'avatar_unifying_message' => $settings['home']['avatar_unifying_message'] ?? "I don't feel like myself anymore.",
-            'pathways_section_title' => $settings['home']['pathways_section_title'] ?? 'Support Pathways',
-            'cta_section_heading' => $settings['home']['cta_section_heading'] ?? 'Ready to take the next step?',
-            'cta_section_body' => $settings['home']['cta_section_body'] ?? 'Book a visit or join the waitlist — we are here when you are ready.',
             'ga4_measurement_id' => $settings['seo']['ga4_measurement_id'] ?? $resolver->get('ga4_measurement_id', 'HEARTWELL_GA4_MEASUREMENT_ID'),
             'default_meta_title' => $settings['seo']['default_meta_title'] ?? '',
             'default_meta_description' => $settings['seo']['default_meta_description'] ?? '',
             'default_og_image' => isset($settings['seo']['default_og_image']) ? [$settings['seo']['default_og_image']] : null,
             'robots_index' => $settings['seo']['robots_index'] ?? true,
+            'robots_txt_content' => $settings['seo']['robots_txt_content'] ?? SectionLayout::defaultRobotsTxt(),
+            'sitemap_enabled' => $settings['seo']['sitemap_enabled'] ?? true,
+            'sitemap_extra_urls' => $settings['seo']['sitemap_extra_urls'] ?? [
+                ['path' => '/clinical-intake', 'priority' => 0.5, 'changefreq' => 'monthly'],
+            ],
+            'site_width' => $settings['theme']['site_width'] ?? 'standard',
+            'default_container_width' => $settings['theme']['default_container_width'] ?? 'default',
+            'default_section_padding' => $settings['theme']['default_section_padding'] ?? 'normal',
+            'default_section_background' => $settings['theme']['default_section_background'] ?? 'white',
+            'header_mode' => $settings['theme']['header_mode'] ?? 'sticky',
+            'header_style' => $settings['theme']['header_style'] ?? 'transparent_blur',
+            'header_show_border' => $settings['theme']['header_show_border'] ?? true,
+            ...collect(static::defaultThemeColors())->mapWithKeys(fn ($color, $key) => ['theme_color_'.$key => $settings['theme']['colors'][$key] ?? $color])->all(),
         ]);
     }
 
@@ -212,38 +216,63 @@ class ManageSiteSettings extends Page implements HasForms
                                     ])
                                     ->columns(2),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Home page copy')
-                            ->icon('heroicon-o-home')
+                        Forms\Components\Tabs\Tab::make('Theme & Layout')
+                            ->icon('heroicon-o-paint-brush')
                             ->schema([
-                                Forms\Components\TextInput::make('avatar_intro_heading')
-                                    ->label('Avatar cards headline')
+                                Forms\Components\Select::make('site_width')
+                                    ->label('Site content width')
+                                    ->options([
+                                        'standard' => 'Standard (72rem)',
+                                        'wide' => 'Wide (84rem)',
+                                        'full' => 'Full width',
+                                    ])
+                                    ->default('standard'),
+                                Forms\Components\Select::make('default_container_width')
+                                    ->label('Default section container')
+                                    ->options(static::layoutSelectOptions())
+                                    ->default('default'),
+                                Forms\Components\Select::make('default_section_padding')
+                                    ->label('Default section padding')
+                                    ->options([
+                                        'none' => 'None',
+                                        'compact' => 'Compact',
+                                        'normal' => 'Normal',
+                                        'spacious' => 'Spacious',
+                                    ])
+                                    ->default('normal'),
+                                Forms\Components\Select::make('default_section_background')
+                                    ->label('Default section background')
+                                    ->options([
+                                        'white' => 'White',
+                                        'blush' => 'Blush',
+                                        'dusty_blue' => 'Dusty blue',
+                                        'taupe' => 'Taupe',
+                                        'transparent' => 'Transparent',
+                                    ])
+                                    ->default('white'),
+                                Forms\Components\Select::make('header_mode')
+                                    ->label('Header behavior')
+                                    ->options([
+                                        'sticky' => 'Sticky (follows scroll)',
+                                        'static' => 'Static (scrolls away)',
+                                    ])
+                                    ->default('sticky'),
+                                Forms\Components\Select::make('header_style')
+                                    ->label('Header style')
+                                    ->options([
+                                        'solid' => 'Solid white',
+                                        'transparent_blur' => 'Transparent with blur',
+                                    ])
+                                    ->default('transparent_blur'),
+                                Forms\Components\Toggle::make('header_show_border')
+                                    ->label('Show header border')
+                                    ->default(true),
+                                Forms\Components\Fieldset::make('Brand colors')
+                                    ->schema(collect(static::themeColorFields())->map(
+                                        fn ($label, $key) => Forms\Components\ColorPicker::make('theme_color_'.$key)->label($label)
+                                    )->values()->all())
+                                    ->columns(2)
                                     ->columnSpanFull(),
-                                Forms\Components\TextInput::make('avatar_intro_subtitle')
-                                    ->label('Avatar cards subtitle')
-                                    ->columnSpanFull(),
-                                Forms\Components\TextInput::make('avatar_unifying_message')
-                                    ->label('Unifying emotional line')
-                                    ->helperText('Shared feeling behind all three avatar cards, e.g. "I don\'t feel like myself anymore."')
-                                    ->columnSpanFull(),
-                                Forms\Components\TextInput::make('pathways_section_title')
-                                    ->label('Pathways section title'),
-                                Forms\Components\TextInput::make('cta_section_heading')
-                                    ->label('Bottom CTA headline'),
-                                Forms\Components\Textarea::make('cta_section_body')
-                                    ->label('Bottom CTA text')
-                                    ->rows(2)
-                                    ->columnSpanFull(),
-                            ])
-                            ->columns(2),
-                        Forms\Components\Tabs\Tab::make('Contact forms')
-                            ->icon('heroicon-o-envelope')
-                            ->schema([
-                                Forms\Components\TextInput::make('waitlist_title')->label('Waitlist section title'),
-                                Forms\Components\Textarea::make('waitlist_subtitle')->label('Waitlist subtitle')->rows(2),
-                                Forms\Components\TextInput::make('consultation_title')->label('Consultation section title'),
-                                Forms\Components\Textarea::make('consultation_subtitle')->label('Consultation subtitle')->rows(2),
-                                Forms\Components\TextInput::make('group_title')->label('Group inquiry title'),
-                                Forms\Components\Textarea::make('group_subtitle')->label('Group inquiry subtitle')->rows(2),
                             ])
                             ->columns(2),
                         Forms\Components\Tabs\Tab::make('Footer & Legal')
@@ -298,8 +327,38 @@ class ManageSiteSettings extends Page implements HasForms
                                     ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::ogImageUploadHelper())
                                     ->columnSpanFull(),
                                 Forms\Components\Toggle::make('robots_index')
-                                    ->label('Allow search engines to index site')
+                                    ->label('Allow search engines to index site (HTML meta)')
                                     ->default(true),
+                                Forms\Components\Textarea::make('robots_txt_content')
+                                    ->label('robots.txt content')
+                                    ->rows(8)
+                                    ->helperText('Controls crawler access rules. Separate from the HTML meta robots setting above.')
+                                    ->columnSpanFull(),
+                                Forms\Components\Toggle::make('sitemap_enabled')
+                                    ->label('Enable dynamic sitemap')
+                                    ->default(true),
+                                Forms\Components\Repeater::make('sitemap_extra_urls')
+                                    ->label('Extra sitemap URLs')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('path')->label('Path')->required()->placeholder('/clinical-intake'),
+                                        Forms\Components\TextInput::make('priority')->label('Priority')->numeric()->default(0.5),
+                                        Forms\Components\Select::make('changefreq')
+                                            ->label('Change frequency')
+                                            ->options([
+                                                'always' => 'Always',
+                                                'hourly' => 'Hourly',
+                                                'daily' => 'Daily',
+                                                'weekly' => 'Weekly',
+                                                'monthly' => 'Monthly',
+                                            ])
+                                            ->default('monthly'),
+                                    ])
+                                    ->columns(3)
+                                    ->columnSpanFull(),
+                                Forms\Components\Placeholder::make('sitemap_preview')
+                                    ->label('Sitemap preview')
+                                    ->content(fn () => url('/sitemap.xml'))
+                                    ->columnSpanFull(),
                             ])
                             ->columns(2),
                     ])
@@ -358,24 +417,6 @@ class ManageSiteSettings extends Page implements HasForms
 
         SiteSetting::query()->updateOrCreate(['key' => 'social'], ['value' => $data['social_links'] ?? []]);
 
-        SiteSetting::query()->updateOrCreate(['key' => 'contact_forms'], ['value' => [
-            'waitlist_title' => $data['waitlist_title'],
-            'waitlist_subtitle' => $data['waitlist_subtitle'],
-            'consultation_title' => $data['consultation_title'],
-            'consultation_subtitle' => $data['consultation_subtitle'],
-            'group_title' => $data['group_title'],
-            'group_subtitle' => $data['group_subtitle'],
-        ]]);
-
-        SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
-            'avatar_intro_heading' => $data['avatar_intro_heading'],
-            'avatar_intro_subtitle' => $data['avatar_intro_subtitle'],
-            'avatar_unifying_message' => $data['avatar_unifying_message'] ?? '',
-            'pathways_section_title' => $data['pathways_section_title'],
-            'cta_section_heading' => $data['cta_section_heading'],
-            'cta_section_body' => $data['cta_section_body'],
-        ]]);
-
         SiteSetting::query()->updateOrCreate(['key' => 'compliance'], ['value' => [
             'footer_note' => $data['footer_note'],
             'contact_disclaimer' => $data['contact_disclaimer'],
@@ -390,7 +431,28 @@ class ManageSiteSettings extends Page implements HasForms
             'default_meta_description' => $data['default_meta_description'],
             'default_og_image' => $this->firstUpload($data['default_og_image'] ?? null),
             'robots_index' => (bool) ($data['robots_index'] ?? true),
+            'robots_txt_content' => $data['robots_txt_content'] ?? SectionLayout::defaultRobotsTxt(),
+            'sitemap_enabled' => (bool) ($data['sitemap_enabled'] ?? true),
+            'sitemap_extra_urls' => $data['sitemap_extra_urls'] ?? [],
         ]]);
+
+        $colors = [];
+        foreach (static::defaultThemeColors() as $key => $default) {
+            $colors[$key] = $data['theme_color_'.$key] ?? $default;
+        }
+
+        SiteSetting::query()->updateOrCreate(['key' => 'theme'], ['value' => [
+            'site_width' => $data['site_width'] ?? 'standard',
+            'default_container_width' => $data['default_container_width'] ?? 'default',
+            'default_section_padding' => $data['default_section_padding'] ?? 'normal',
+            'default_section_background' => $data['default_section_background'] ?? 'white',
+            'header_mode' => $data['header_mode'] ?? 'sticky',
+            'header_style' => $data['header_style'] ?? 'transparent_blur',
+            'header_show_border' => (bool) ($data['header_show_border'] ?? true),
+            'colors' => $colors,
+        ]]);
+
+        GenerateSitemapAction::forgetCache();
 
         if (! empty($data['ga4_measurement_id'])) {
             $resolver->set('ga4_measurement_id', $data['ga4_measurement_id'], 'seo', auth()->id());

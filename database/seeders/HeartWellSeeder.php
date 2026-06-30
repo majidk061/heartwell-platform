@@ -4,14 +4,16 @@ namespace Database\Seeders;
 
 use App\Domains\Automation\Models\AutomationRule;
 use App\Domains\Content\Models\AvatarCard;
+use App\Domains\Content\Models\Faq;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
+use App\Domains\Content\Models\SectionTemplate;
 use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\SupportPathway;
+use App\Domains\Content\Support\SectionLayout;
 use App\Domains\CRM\Enums\AvatarType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class HeartWellSeeder extends Seeder
 {
@@ -31,115 +33,105 @@ class HeartWellSeeder extends Seeder
     {
         $this->seedAdminUser();
         $this->seedSiteSettings();
+        $this->seedSectionTemplates();
         $this->seedPages();
         $this->seedAvatarCards();
         $this->seedSupportPathways();
+        $this->seedFaqs();
         $this->seedAutomationRules();
     }
 
     private function seedAdminUser(): void
     {
-        User::query()->updateOrCreate(
-            ['email' => 'admin@heartwellwellness.com'],
-            [
-                'name' => 'HeartWell Admin',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ],
-        );
+        $user = User::query()->firstOrNew(['email' => 'admin@heartwellwellness.com']);
+        $user->name = 'HeartWell Admin';
+        $user->password = 'password';
+        $user->email_verified_at = now();
+        $user->is_active = true;
+        $user->save();
     }
 
     private function seedPages(): void
     {
-        $pages = [
-            [
-                'slug' => 'home',
+        $placements = [
+            'home' => [
                 'title' => 'Home',
                 'sort_order' => 1,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Thoughtful, Compassionate Care You Can Trust', 'content' => ['subheading' => 'For Every Stage of Life', 'body' => 'Feeling exhausted? Stuck? Not feeling like yourself? HeartWell offers nurse-guided wellness support for every stage of life.', 'image_url' => self::IMG_HERO]],
-                    ['section_type' => 'intro', 'heading' => "You're Not Alone. You Deserve Support.", 'content' => ['body' => 'HeartWell is nurse-led mobile wellness — warm, clinically credentialed, and built around your whole story.']],
-                    ['section_type' => 'founder_teaser', 'heading' => 'Meet the Founder', 'content' => ['body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to bring thoughtful, compassionate care you can trust.', 'image_url' => self::IMG_FOUNDER]],
+                'templates' => [
+                    'Hero — home banner',
+                    'Avatar intro block',
+                    'Intro — home nurse-led care',
+                    'Pathways teaser',
+                    'Testimonials — grid',
+                    'Founder teaser',
+                    'Standard CTA band',
                 ],
             ],
-            [
-                'slug' => 'support-pathways',
+            'support-pathways' => [
                 'title' => 'Support Pathways',
                 'sort_order' => 2,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Support Pathways', 'content' => ['body' => 'Empathetic guidance — not a treatment catalog.']],
+                'templates' => [
+                    'Hero — support pathways',
+                    'Rich text — support pathways guidance',
+                    'Pathways teaser — explore',
+                    'CTA — support pathways',
                 ],
             ],
-            [
-                'slug' => 'your-experience',
+            'your-experience' => [
                 'title' => 'Your Experience',
                 'sort_order' => 3,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Your Experience with HeartWell', 'content' => ['body' => 'A clear, supportive journey from first hello to ongoing care.']],
-                    ['section_type' => 'journey', 'heading' => 'What to expect', 'content' => ['steps' => [
-                        ['title' => 'Connect', 'description' => 'Reach out via waitlist, consultation, or booking.'],
-                        ['title' => 'Consult', 'description' => 'A nurse-led conversation about your goals and concerns.'],
-                        ['title' => 'Plan', 'description' => 'Together we map a pathway that fits your life.'],
-                        ['title' => 'Experience', 'description' => 'Your visit — calm, mobile, and centered on you.'],
-                        ['title' => 'Follow up', 'description' => 'Ongoing support so you never feel alone.'],
-                    ]]],
-                    ['section_type' => 'group_individual', 'heading' => 'Individual visits vs group gatherings', 'content' => ['body' => '<p>Individual visits are one-on-one wellness support. Group gatherings are hosted experiences — each guest still completes their own clinical intake.</p>', 'columns' => [
-                        ['title' => 'Individual visit', 'body' => 'Book for yourself via Acuity. One nurse-led experience tailored to you.'],
-                        ['title' => 'Group gathering', 'body' => 'Host inquires here. Each guest completes their own secure HeartWell clinical intake before services.'],
-                    ]]],
-                    ['section_type' => 'intro', 'heading' => 'Safety and clinical care', 'content' => ['body' => 'Every client completes clinical intake, screening, and clearance before services. HeartWell coordinates; our licensed clinical partner handles medical records.']],
+                'templates' => [
+                    'Hero — your experience',
+                    'Journey steps — 5 steps',
+                    'Group vs individual comparison',
+                    'Intro — safety and clinical care',
+                    'CTA — your experience',
                 ],
             ],
-            [
-                'slug' => 'why-heartwell',
+            'why-heartwell' => [
                 'title' => 'Why HeartWell',
                 'sort_order' => 4,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Why HeartWell', 'content' => ['body' => 'Nurse-led. Mobile-friendly. Rooted in whole-person wellness.']],
-                    ['section_type' => 'features', 'heading' => 'What makes us different', 'content' => ['features' => [
-                        ['title' => 'Nurse-led care', 'body' => 'Clinically credentialed guidance you can trust — not a generic spa menu.'],
-                        ['title' => 'Mobile wellness', 'body' => 'Care that comes to you with convenience and personalization.'],
-                        ['title' => 'Whole-person support', 'body' => 'We see your full story — not just a single symptom or service.'],
-                        ['title' => 'Compassion first', 'body' => 'Education without overwhelm. You are never just a transaction.'],
-                    ]]],
+                'templates' => [
+                    'Hero — why heartwell',
+                    'Features — differentiators',
+                    'CTA — start with conversation',
                 ],
             ],
-            [
-                'slug' => 'wellness-journey',
+            'wellness-journey' => [
                 'title' => 'Wellness Journey',
                 'sort_order' => 5,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Your Wellness Journey', 'content' => ['body' => 'Education and support for conditions and life transitions.']],
-                    ['section_type' => 'rich_text', 'heading' => 'You are not alone in this', 'content' => ['body' => '<p>Hormonal shifts, burnout, metabolic changes, and life transitions are common — and addressable. HeartWell connects how you feel with supportive pathways forward.</p>']],
-                    ['section_type' => 'faq', 'heading' => 'Common questions', 'content' => []],
+                'templates' => [
+                    'Hero — wellness journey',
+                    'Rich text — wellness journey',
+                    'FAQ block',
+                    'CTA — wellness journey',
                 ],
             ],
-            [
-                'slug' => 'meet-the-founder',
+            'meet-the-founder' => [
                 'title' => 'Meet the Founder',
                 'sort_order' => 6,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Meet the Founder', 'content' => ['body' => 'Credentials: BSN, RN, MBA. A warm, clinical voice guiding your care.']],
-                    ['section_type' => 'founder_teaser', 'heading' => 'Led with heart and expertise', 'content' => ['body' => 'Jacquie Wilson brings decades of nursing leadership and a passion for whole-person wellness to every HeartWell experience.', 'image_url' => self::IMG_FOUNDER, 'credentials' => ['BSN', 'RN', 'MBA'], 'pronunciation' => 'Pronounced Jack-Kwa']],
+                'templates' => [
+                    'Hero — meet the founder',
+                    'Founder teaser — full page',
+                    'CTA — connect with team',
                 ],
             ],
-            [
-                'slug' => 'contact',
+            'contact' => [
                 'title' => 'Contact',
                 'sort_order' => 7,
-                'sections' => [
-                    ['section_type' => 'hero', 'heading' => 'Let\'s connect', 'content' => ['body' => 'Join the waitlist, request a consultation, or inquire about group experiences.']],
-                    ['section_type' => 'forms', 'heading' => 'Get in touch', 'content' => ['forms' => ['waitlist', 'consultation', 'group_inquiry']]],
+                'templates' => [
+                    'Hero — contact',
+                    'Contact forms block',
                 ],
             ],
         ];
 
-        foreach ($pages as $pageData) {
-            $sections = $pageData['sections'];
-            unset($pageData['sections']);
+        foreach ($placements as $slug => $pageData) {
+            $templateNames = $pageData['templates'];
+            unset($pageData['templates']);
 
             $page = Page::query()->updateOrCreate(
-                ['slug' => $pageData['slug']],
+                ['slug' => $slug],
                 array_merge($pageData, [
                     'meta_title' => $pageData['title'].' | HeartWell',
                     'meta_description' => 'HeartWell Aesthetics & Wellness — '.$pageData['title'],
@@ -147,20 +139,415 @@ class HeartWellSeeder extends Seeder
                 ]),
             );
 
-            foreach ($sections as $index => $section) {
-                PageSection::query()->updateOrCreate(
-                    [
-                        'page_id' => $page->id,
-                        'section_type' => $section['section_type'],
-                    ],
-                    [
-                        'heading' => $section['heading'],
-                        'sort_order' => $index + 1,
-                        'content' => $section['content'],
-                        'is_published' => true,
-                    ],
-                );
+            PageSection::query()->where('page_id', $page->id)->delete();
+
+            foreach ($templateNames as $index => $templateName) {
+                $template = SectionTemplate::query()->where('name', $templateName)->firstOrFail();
+
+                PageSection::query()->create([
+                    'page_id' => $page->id,
+                    'section_template_id' => $template->id,
+                    'section_type' => $template->section_type,
+                    'heading' => null,
+                    'content' => null,
+                    'sort_order' => $index + 1,
+                    'is_published' => true,
+                ]);
             }
+        }
+    }
+
+    private function seedSectionTemplates(): void
+    {
+        $templates = [
+            [
+                'name' => 'Hero — home banner',
+                'section_type' => 'hero',
+                'heading' => 'Thoughtful, Compassionate Care You Can Trust',
+                'description' => 'Large top banner with headline, subheading, body, and image.',
+                'content' => [
+                    'subheading' => 'For Every Stage of Life',
+                    'body' => 'Feeling exhausted? Stuck? Not feeling like yourself? HeartWell offers nurse-guided wellness support for every stage of life.',
+                    'image_url' => self::IMG_HERO,
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Hero — inner page',
+                'section_type' => 'hero',
+                'heading' => 'Page headline here',
+                'description' => 'Simpler hero for inner pages (headline + short intro).',
+                'content' => [
+                    'body' => 'Short supporting line for this page.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Intro — home nurse-led care',
+                'section_type' => 'intro',
+                'heading' => 'Nurse-led care that meets you where you are',
+                'description' => 'Home page intro block.',
+                'content' => [
+                    'body' => 'HeartWell is mobile wellness led by Jacquie Wilson, BSN, RN, MBA — warm, clinically credentialed, and built around your whole story. We are not a spa, med spa, or IV menu. We offer thoughtful guidance for women navigating midlife transitions, burnout, and confidence shifts.',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'dusty_blue', 'text_align' => 'center'],
+                ],
+            ],
+            [
+                'name' => 'Avatar intro block',
+                'section_type' => 'avatar_intro',
+                'heading' => "You're Not Alone. You Deserve Support.",
+                'description' => 'Audience cards intro with unifying message.',
+                'content' => [
+                    'subheading' => 'Which of these feels most like you?',
+                    'unifying_message' => "I don't feel like myself anymore.",
+                    'card_columns' => '3',
+                    'max_cards' => 3,
+                    'layout' => ['container_width' => 'default', 'text_align' => 'center'],
+                ],
+            ],
+            [
+                'name' => 'Journey steps — 5 steps',
+                'section_type' => 'journey',
+                'heading' => 'What to expect',
+                'description' => 'Numbered step cards for Your Experience-style pages.',
+                'content' => [
+                    'steps' => [
+                        ['title' => 'Connect', 'description' => 'Reach out via waitlist, consultation, or booking.'],
+                        ['title' => 'Consult', 'description' => 'A nurse-led conversation about your goals.'],
+                        ['title' => 'Plan', 'description' => 'Together we map a pathway that fits your life.'],
+                        ['title' => 'Experience', 'description' => 'Your visit — calm, mobile, and centered on you.'],
+                        ['title' => 'Follow up', 'description' => 'Ongoing support so you never feel alone.'],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Founder teaser',
+                'section_type' => 'founder_teaser',
+                'heading' => 'Meet the Founder',
+                'description' => 'Photo, bio, credentials, and pronunciation.',
+                'content' => [
+                    'body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to bring thoughtful, compassionate care you can trust.',
+                    'image_url' => self::IMG_FOUNDER,
+                    'credentials' => ['BSN', 'RN', 'MBA'],
+                    'pronunciation' => 'Pronounced Jack-Kwa',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Features — differentiators',
+                'section_type' => 'features',
+                'heading' => 'What makes us different',
+                'description' => 'Grid of feature cards for Why HeartWell.',
+                'content' => [
+                    'features' => [
+                        ['title' => 'Nurse-led care', 'body' => 'Clinically credentialed guidance you can trust — not a generic spa menu.'],
+                        ['title' => 'Mobile wellness', 'body' => 'Care that comes to you with convenience and personalization.'],
+                        ['title' => 'Whole-person support', 'body' => 'We see your full story — not just a single symptom or service.'],
+                        ['title' => 'Compassion first', 'body' => 'Education without overwhelm. You are never just a transaction.'],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Group vs individual comparison',
+                'section_type' => 'group_individual',
+                'heading' => 'Individual visits vs group gatherings',
+                'description' => 'Two-column comparison block.',
+                'content' => [
+                    'body' => '<p>Individual visits are one-on-one wellness support. Group gatherings are hosted experiences — each guest still completes their own clinical intake.</p>',
+                    'columns' => [
+                        ['title' => 'Individual visit', 'body' => 'Book for yourself via Acuity. One nurse-led experience tailored to you.'],
+                        ['title' => 'Group gathering', 'body' => 'Host inquires here. Each guest completes their own secure HeartWell clinical intake before services.'],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'FAQ block',
+                'section_type' => 'faq',
+                'heading' => 'Common questions',
+                'description' => 'FAQ accordion — assign FAQs to this page slug in Website Content → FAQs.',
+                'content' => [
+                    'include_unassigned' => false,
+                    'layout' => ['container_width' => 'narrow', 'background' => 'taupe'],
+                ],
+            ],
+            [
+                'name' => 'Rich text — educational content',
+                'section_type' => 'rich_text',
+                'heading' => 'You are not alone in this',
+                'description' => 'Longer formatted content with optional image.',
+                'content' => [
+                    'body' => '<p>Hormonal shifts, burnout, and life transitions are common — and addressable. HeartWell connects how you feel with supportive pathways forward.</p>',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            [
+                'name' => 'Testimonials — grid',
+                'section_type' => 'testimonials',
+                'heading' => 'What Our Clients Say',
+                'description' => 'Client quotes grid — manage quotes under Website Content → Testimonials.',
+                'content' => [
+                    'subtitle' => 'Real stories from women who found support with HeartWell.',
+                    'display_mode' => 'grid',
+                    'count' => 6,
+                    'enabled' => true,
+                    'layout' => ['container_width' => 'default', 'background' => 'taupe'],
+                ],
+            ],
+            [
+                'name' => 'Pathways teaser',
+                'section_type' => 'pathways_teaser',
+                'heading' => 'Support Pathways',
+                'description' => 'Pathway accordion preview — pathways managed under Website Content → Support Pathways.',
+                'content' => [
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Standard CTA band',
+                'section_type' => 'cta',
+                'heading' => 'Ready to take the next step?',
+                'description' => 'Dual-button CTA with consultation link.',
+                'content' => [
+                    'body' => 'Book a visit or join the waitlist — we are here when you are ready.',
+                    'variant' => 'dual',
+                    'primary_label' => 'Book a Visit',
+                    'primary_url' => '/contact#book',
+                    'waitlist_label' => 'Join the Waitlist',
+                    'waitlist_url' => '/contact#waitlist',
+                    'show_consultation_link' => true,
+                    'consultation_prefix' => 'Prefer to talk first?',
+                    'consultation_label' => 'Request Consultation',
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'Contact forms block',
+                'section_type' => 'forms',
+                'heading' => 'How would you like to connect?',
+                'description' => 'Waitlist, consultation, booking, and group inquiry forms.',
+                'content' => [
+                    'section_subtitle' => 'Choose a path below — we are here when you are ready.',
+                    'waitlist_title' => 'Join the Waitlist',
+                    'waitlist_subtitle' => 'Be the first to know when new appointments open.',
+                    'consultation_title' => 'Request a Consultation',
+                    'consultation_subtitle' => 'Tell us a little about yourself — we will reach out personally.',
+                    'group_title' => 'Group Wellness Gathering',
+                    'group_subtitle' => 'Planning a group experience? Start here.',
+                    'forms' => ['waitlist', 'consultation', 'group_inquiry'],
+                    'contact_disclaimer' => config('heartwell.compliance.contact_disclaimer'),
+                    'privacy_summary' => config('heartwell.compliance.privacy_summary'),
+                    'clinical_portal_note' => config('heartwell.compliance.clinical_portal_note'),
+                    'group_intake_note' => config('heartwell.compliance.group_intake_note'),
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Hero — support pathways',
+                'section_type' => 'hero',
+                'heading' => 'Support Pathways',
+                'description' => 'Support Pathways page hero.',
+                'content' => [
+                    'body' => 'Empathetic guidance — not a treatment catalog. Explore nurse-led pathways designed to help you understand your options and choose support with confidence.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Rich text — support pathways guidance',
+                'section_type' => 'rich_text',
+                'heading' => 'Guidance, not a menu',
+                'description' => 'Support Pathways educational copy.',
+                'content' => [
+                    'body' => '<p>Every woman\'s experience is different. Support Pathways help you explore how HeartWell can meet you — whether you need recovery support, energy guidance, metabolic clarity, or confidence through transition.</p><p>Each pathway includes educational context and a clear next step. Your nurse-led team helps you decide what fits — without pressure or overwhelm.</p>',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            [
+                'name' => 'Pathways teaser — explore',
+                'section_type' => 'pathways_teaser',
+                'heading' => 'Explore your pathways',
+                'description' => 'Pathway accordion with explore heading.',
+                'content' => [
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'CTA — support pathways',
+                'section_type' => 'cta',
+                'heading' => 'Find the pathway that fits you',
+                'description' => 'Support Pathways page CTA.',
+                'content' => [
+                    'body' => 'Not sure where to start? Request a consultation — we will guide you.',
+                    'variant' => 'dual',
+                    'primary_label' => 'Book a Visit',
+                    'primary_url' => '/contact#book',
+                    'waitlist_label' => 'Join the Waitlist',
+                    'waitlist_url' => '/contact#waitlist',
+                    'show_consultation_link' => true,
+                    'consultation_label' => 'Request Consultation',
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'Hero — your experience',
+                'section_type' => 'hero',
+                'heading' => 'Your Experience with HeartWell',
+                'description' => 'Your Experience page hero.',
+                'content' => [
+                    'body' => 'A clear, supportive journey from first hello to ongoing care.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Intro — safety and clinical care',
+                'section_type' => 'intro',
+                'heading' => 'Safety and clinical care',
+                'description' => 'Clinical safety intro for Your Experience.',
+                'content' => [
+                    'body' => 'Every client completes clinical intake, screening, and clearance before services. HeartWell coordinates your experience; our licensed clinical partner maintains secure medical records. Clinical clearance is renewed every 6 months, or sooner if required.',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'CTA — your experience',
+                'section_type' => 'cta',
+                'heading' => 'Ready when you are',
+                'description' => 'Your Experience page CTA.',
+                'content' => [
+                    'body' => 'Take the first step — we will walk with you from hello to follow-up.',
+                    'variant' => 'dual',
+                    'primary_label' => 'Book a Visit',
+                    'primary_url' => '/contact#book',
+                    'waitlist_label' => 'Join the Waitlist',
+                    'waitlist_url' => '/contact#waitlist',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'Hero — why heartwell',
+                'section_type' => 'hero',
+                'heading' => 'Why HeartWell',
+                'description' => 'Why HeartWell page hero.',
+                'content' => [
+                    'body' => 'Nurse-led. Mobile-friendly. Rooted in whole-person wellness. For women navigating midlife transitions, burnout, and confidence shifts (typically ages 35–65). HeartWell is not a spa, med spa, or IV menu — we offer thoughtful guidance, education, and personalized support.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'CTA — start with conversation',
+                'section_type' => 'cta',
+                'heading' => 'Start with a conversation',
+                'description' => 'Why HeartWell page CTA.',
+                'content' => [
+                    'body' => 'We would love to hear your story and help you find the right support.',
+                    'variant' => 'dual',
+                    'show_consultation_link' => true,
+                    'consultation_label' => 'Request Consultation',
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'Hero — wellness journey',
+                'section_type' => 'hero',
+                'heading' => 'Your Wellness Journey',
+                'description' => 'Wellness Journey page hero.',
+                'content' => [
+                    'body' => 'Education and support for conditions and life transitions.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Rich text — wellness journey',
+                'section_type' => 'rich_text',
+                'heading' => 'You are not alone in this',
+                'description' => 'Wellness Journey educational copy.',
+                'content' => [
+                    'body' => '<p>Hormonal shifts, burnout, metabolic changes, and life transitions are common — and addressable. HeartWell connects how you feel with supportive pathways forward.</p><p>Whether you are navigating perimenopause, caregiver burnout, or changes in energy and confidence, education and nurse-led guidance can help you feel seen and supported.</p>',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            [
+                'name' => 'CTA — wellness journey',
+                'section_type' => 'cta',
+                'heading' => 'Take the next step on your journey',
+                'description' => 'Wellness Journey page CTA.',
+                'content' => [
+                    'body' => 'Join the waitlist or request a consultation — we are here when you are ready.',
+                    'variant' => 'dual',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'Hero — meet the founder',
+                'section_type' => 'hero',
+                'heading' => 'Meet the Founder',
+                'description' => 'Meet the Founder page hero.',
+                'content' => [
+                    'body' => 'Credentials: BSN, RN, MBA. A warm, clinical voice guiding your care.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'Founder teaser — full page',
+                'section_type' => 'founder_teaser',
+                'heading' => 'Led with heart and expertise',
+                'description' => 'Extended founder bio for Meet the Founder page.',
+                'content' => [
+                    'body' => 'Jacquie Wilson brings decades of nursing leadership and a passion for whole-person wellness to every HeartWell experience. Her clinical background and compassionate approach shape how HeartWell educates, guides, and supports clients through every stage of life.',
+                    'image_url' => self::IMG_FOUNDER,
+                    'credentials' => ['BSN', 'RN', 'MBA'],
+                    'pronunciation' => 'Pronounced Jack-Kwa',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            [
+                'name' => 'CTA — connect with team',
+                'section_type' => 'cta',
+                'heading' => 'Connect with Jacquie\'s team',
+                'description' => 'Meet the Founder page CTA.',
+                'content' => [
+                    'body' => 'Request a consultation to learn how HeartWell can support your wellness journey.',
+                    'variant' => 'dual',
+                    'show_consultation_link' => true,
+                    'consultation_label' => 'Request Consultation',
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            [
+                'name' => 'Hero — contact',
+                'section_type' => 'hero',
+                'heading' => 'Let\'s connect',
+                'description' => 'Contact page hero.',
+                'content' => [
+                    'body' => 'Join the waitlist, request a consultation, or inquire about group experiences.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+        ];
+
+        foreach ($templates as $index => $template) {
+            $content = $template['content'];
+            $layout = $content['layout'] ?? [];
+            unset($content['layout']);
+
+            SectionTemplate::query()->updateOrCreate(
+                ['name' => $template['name']],
+                [
+                    'section_type' => $template['section_type'],
+                    'heading' => $template['heading'],
+                    'description' => $template['description'],
+                    'content' => $content,
+                    'layout' => $layout,
+                    'sort_order' => $index + 1,
+                    'is_published' => true,
+                ],
+            );
         }
     }
 
@@ -174,24 +561,15 @@ class HeartWellSeeder extends Seeder
             'logo_mode' => 'image',
             'logo_text' => 'HeartWell Aesthetics & Wellness',
             'logo_tagline' => 'Compassionate Care for Every Stage of Life',
-            'logo_image_path' => 'cms/branding/heartwell-logo.png',
+            'logo_image_path' => 'cms/branding/heartwell-logo-trimmed.png',
+            'logo_trimmed_path' => 'cms/branding/heartwell-logo-trimmed.png',
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
-            'avatar_intro_heading' => "You're Not Alone. You Deserve Support.",
-            'avatar_intro_subtitle' => 'Which of these feels most like you?',
-            'avatar_unifying_message' => "I don't feel like myself anymore.",
-            'pathways_section_title' => 'Support Pathways',
-            'cta_section_heading' => 'Ready to take the next step?',
-            'cta_section_body' => 'Book a visit or join the waitlist — we are here when you are ready.',
+            'testimonials_enabled' => true,
+            'testimonials_count' => 6,
+            'testimonials_display_mode' => 'grid',
         ]]);
-        SiteSetting::query()->updateOrCreate(['key' => 'contact_forms'], ['value' => [
-            'waitlist_title' => 'Join the Waitlist',
-            'waitlist_subtitle' => 'Be the first to know when new appointments open.',
-            'consultation_title' => 'Request a Consultation',
-            'consultation_subtitle' => 'Tell us a little about yourself — we will reach out personally.',
-            'group_title' => 'Group Wellness Gathering',
-            'group_subtitle' => 'Planning a group experience? Start here.',
-        ]]);
+        SiteSetting::query()->updateOrCreate(['key' => 'contact_forms'], ['value' => []]);
         SiteSetting::query()->updateOrCreate(['key' => 'email_notifications'], ['value' => [
             'default_admin_emails' => ['majidk061@gmail.com'],
             'waitlist_admin_emails' => ['majidk061@gmail.com'],
@@ -203,6 +581,21 @@ class HeartWellSeeder extends Seeder
         SiteSetting::query()->updateOrCreate(['key' => 'seo'], ['value' => [
             'robots_index' => true,
             'default_meta_title' => config('heartwell.brand.name'),
+            'robots_txt_content' => SectionLayout::defaultRobotsTxt(),
+            'sitemap_enabled' => true,
+            'sitemap_extra_urls' => [
+                ['path' => '/clinical-intake', 'priority' => 0.5, 'changefreq' => 'monthly'],
+            ],
+        ]]);
+        SiteSetting::query()->updateOrCreate(['key' => 'theme'], ['value' => [
+            'site_width' => 'standard',
+            'default_container_width' => 'default',
+            'default_section_padding' => 'normal',
+            'default_section_background' => 'white',
+            'header_mode' => 'sticky',
+            'header_style' => 'transparent_blur',
+            'header_show_border' => true,
+            'colors' => SectionLayout::defaultThemeColors(),
         ]]);
     }
 
@@ -295,30 +688,48 @@ class HeartWellSeeder extends Seeder
         }
     }
 
+    private function seedFaqs(): void
+    {
+        $faqs = [
+            ['question' => 'How do I get started with HeartWell?', 'answer' => 'Join the waitlist, request a consultation, or book a visit when scheduling is available. A nurse-led team member will guide you through next steps including clinical intake before your first service.', 'page_slug' => 'wellness-journey'],
+            ['question' => 'Is clinical clearance required?', 'answer' => 'Yes. All clients complete secure clinical intake, health history, consent, and provider screening before receiving services. Clearance must be renewed every 6 months, or sooner if required.', 'page_slug' => 'wellness-journey'],
+            ['question' => 'What if I am not sure which pathway fits me?', 'answer' => 'That is completely normal. Request a consultation — we will listen to your story and help you explore support pathways without pressure.', 'page_slug' => 'wellness-journey'],
+            ['question' => 'Do you come to my location?', 'answer' => 'Yes. HeartWell is a mobile wellness practice. Visits are nurse-led and designed to meet you with convenience and personalization.', 'page_slug' => 'wellness-journey'],
+            ['question' => 'Can I host a group wellness gathering?', 'answer' => 'Yes. Hosts can inquire through our group form. Each guest who receives services must complete their own clinical intake before treatment.', 'page_slug' => 'wellness-journey'],
+        ];
+
+        foreach ($faqs as $index => $faq) {
+            Faq::query()->updateOrCreate(
+                ['question' => $faq['question']],
+                array_merge($faq, ['sort_order' => $index + 1, 'is_published' => true]),
+            );
+        }
+    }
+
     private function seedAutomationRules(): void
     {
         $rules = [
             [
                 'name' => 'Waitlist Welcome Email',
-                'trigger_type' => 'waitlist.joined',
+                'trigger_type' => 'waitlist_joined',
                 'channel' => 'email',
                 'template_ref' => 'waitlist_welcome',
             ],
             [
                 'name' => 'Waitlist Mailchimp Subscribe',
-                'trigger_type' => 'waitlist.joined',
+                'trigger_type' => 'waitlist_joined',
                 'channel' => 'mailchimp',
                 'template_ref' => null,
             ],
             [
                 'name' => 'Consultation Acknowledgement',
-                'trigger_type' => 'consultation.requested',
+                'trigger_type' => 'consultation_requested',
                 'channel' => 'email',
                 'template_ref' => 'consultation_ack',
             ],
             [
                 'name' => 'Lead Booked Confirmation',
-                'trigger_type' => 'lead.status_changed',
+                'trigger_type' => 'lead_status_changed',
                 'channel' => 'email',
                 'template_ref' => 'booking_confirmation',
                 'conditions' => ['status' => 'booked'],

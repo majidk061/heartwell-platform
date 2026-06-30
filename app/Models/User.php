@@ -3,40 +3,52 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Domains\Content\Support\CmsImage;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'is_active', 'invited_at'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
+
+    /** @var list<string> */
+    protected $fillable = [
+        'name',
+        'email',
+        'avatar_path',
+        'password',
+        'is_active',
+        'invited_at',
+    ];
+
+    /** @var list<string> */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->is_active !== false;
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function getFilamentAvatarUrl(): ?string
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'invited_at' => 'datetime',
-            'is_active' => 'boolean',
-            'password' => 'hashed',
-        ];
+        return CmsImage::url($this->avatar_path);
     }
+
+    /** @var array<string, string> */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'invited_at' => 'datetime',
+        'is_active' => 'boolean',
+        'password' => 'hashed',
+    ];
 }

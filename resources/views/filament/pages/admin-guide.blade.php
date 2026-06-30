@@ -22,15 +22,39 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-semibold text-primary-600 mb-1">Step {{ $index + 1 }}</p>
                             <h2 class="text-xl font-semibold text-gray-900">{{ $section['title'] }}</h2>
+                            @if(! empty($section['summary']))
+                                <p class="mt-1 text-sm text-gray-600">{{ $section['summary'] }}</p>
+                            @endif
                         </div>
                         @if(! empty($section['url']))
                             <a href="{{ $section['url'] }}"
                                class="shrink-0 inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-800">
-                                Open
+                                Open in admin
                                 <x-filament::icon icon="heroicon-m-arrow-top-right-on-square" class="h-4 w-4" />
                             </a>
                         @endif
                     </div>
+
+                    @if(($section['diagram'] ?? null) === 'library')
+                        <div class="px-6 pt-5">
+                            <div class="rounded-lg border border-dusty-blue/30 bg-white p-4 text-sm text-gray-700">
+                                <p class="font-medium text-gray-900 mb-2">Single source flow</p>
+                                <p><strong>Section Library</strong> (all content) → linked by → <strong>Page section row</strong> (placement only) → rendered on → <strong>Public website</strong></p>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if(($section['diagram'] ?? null) === 'placement')
+                        <div class="px-6 pt-5">
+                            <div class="rounded-lg border border-dusty-blue/30 bg-white p-4 text-sm text-gray-700 space-y-2">
+                                <p class="font-medium text-gray-900">Do / Don't</p>
+                                <p>✓ Insert from library, reorder, toggle Live</p>
+                                <p>✓ Edit content → Section Library</p>
+                                <p>✗ Do not type headline/body on the page section row</p>
+                            </div>
+                        </div>
+                    @endif
+
                     <ol class="p-6 space-y-3 list-decimal list-inside text-gray-700 text-sm leading-relaxed">
                         @foreach ($section['steps'] as $step)
                             <li class="pl-1">{{ $step }}</li>

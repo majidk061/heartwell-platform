@@ -3,6 +3,7 @@
 namespace App\Domains\Content\Actions;
 
 use App\Domains\Content\Models\SiteSetting;
+use App\Domains\Content\Support\SectionLayout;
 use App\Domains\Integrations\Services\SettingsResolver;
 
 class GetSiteSettingsAction
@@ -31,12 +32,27 @@ class GetSiteSettingsAction
             'social' => [],
             'contact_forms' => [],
             'home' => [],
+            'theme' => [
+                'site_width' => 'standard',
+                'default_container_width' => 'default',
+                'default_section_padding' => 'normal',
+                'default_section_background' => 'white',
+                'header_mode' => 'sticky',
+                'header_style' => 'transparent_blur',
+                'header_show_border' => true,
+                'colors' => SectionLayout::defaultThemeColors(),
+            ],
             'seo' => [
                 'ga4_measurement_id' => $resolver->get('ga4_measurement_id', 'HEARTWELL_GA4_MEASUREMENT_ID'),
                 'default_meta_title' => config('heartwell.brand.name'),
                 'default_meta_description' => null,
                 'default_og_image' => null,
                 'robots_index' => true,
+                'robots_txt_content' => SectionLayout::defaultRobotsTxt(),
+                'sitemap_enabled' => true,
+                'sitemap_extra_urls' => [
+                    ['path' => '/clinical-intake', 'priority' => 0.5, 'changefreq' => 'monthly'],
+                ],
             ],
         ];
 

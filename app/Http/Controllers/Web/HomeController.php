@@ -10,6 +10,6 @@ class HomeController extends Controller
 {
     public function __invoke(ShowHomePageAction $action): View
     {
-        return view('pages.home', $action->execute());
+        return view('pages.show', $action->execute());
     }
 }

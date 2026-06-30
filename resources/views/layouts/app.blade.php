@@ -7,9 +7,13 @@
 
     @php
         use App\Domains\Content\Support\CmsImage;
+        use App\Domains\Content\Support\SectionLayout;
 
+        $page = $page ?? null;
         $brandName = $siteSettings['brand']['name'] ?? config('heartwell.brand.name');
         $seo = $siteSettings['seo'] ?? [];
+        $theme = $siteSettings['theme'] ?? [];
+        $themeColors = array_merge(SectionLayout::defaultThemeColors(), $theme['colors'] ?? []);
         $pageTitle = $metaTitle ?? ($page?->meta_title ?? null);
         if (! $pageTitle && ! empty($page?->title)) {
             $pageTitle = ! empty($seo['default_meta_title'])
@@ -19,23 +23,43 @@
         $documentTitle = $pageTitle ?? ($seo['default_meta_title'] ?? $brandName);
         $metaDescription = $page?->meta_description ?? ($seo['default_meta_description'] ?? null);
         $ogImage = CmsImage::url($page?->og_image ?? ($seo['default_og_image'] ?? null));
-        $canonicalUrl = url()->current();
+        $canonicalUrl = filled($page?->canonical_url ?? null) ? $page->canonical_url : url()->current();
         $favicon = CmsImage::url($siteSettings['branding']['favicon_path'] ?? null);
         $ga4Id = $seo['ga4_measurement_id'] ?? null;
-        $robotsIndex = $seo['robots_index'] ?? true;
+        $robotsIndex = $page && $page->robots_index !== null
+            ? (bool) $page->robots_index
+            : ($seo['robots_index'] ?? true);
+        $ogType = $page?->og_type ?? 'website';
+        $twitterCard = $page?->twitter_card ?? ($ogImage ? 'summary_large_image' : 'summary');
+        $schemaType = $page?->schema_type ?? 'none';
+        $siteWidth = $theme['site_width'] ?? 'standard';
+        $headerMode = $theme['header_mode'] ?? 'sticky';
+        $headerStyle = $theme['header_style'] ?? 'transparent_blur';
+        $headerBorder = $theme['header_show_border'] ?? true;
+        $headerClasses = trim(implode(' ', array_filter([
+            $headerMode === 'sticky' ? 'hw-header--sticky' : 'hw-header--static',
+            $headerStyle === 'transparent_blur' ? 'hw-header--transparent' : 'hw-header--solid',
+            ! $headerBorder ? 'hw-header--no-border' : 'border-b border-hw-border',
+            'z-40',
+        ])));
     @endphp
 
     <title>{{ $documentTitle }}</title>
     @if($metaDescription)
         <meta name="description" content="{{ $metaDescription }}">
     @endif
+    @if($page?->focus_keyword)
+        <meta name="keywords" content="{{ $page->focus_keyword }}">
+    @endif
     @if(! $robotsIndex)
         <meta name="robots" content="noindex, nofollow">
+    @else
+        <meta name="robots" content="index, follow">
     @endif
 
     <link rel="canonical" href="{{ $canonicalUrl }}">
 
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{{ $ogType }}">
     <meta property="og:title" content="{{ $documentTitle }}">
     @if($metaDescription)
         <meta property="og:description" content="{{ $metaDescription }}">
@@ -46,7 +70,7 @@
     <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:site_name" content="{{ $brandName }}">
 
-    <meta name="twitter:card" content="{{ $ogImage ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:card" content="{{ $twitterCard }}">
     <meta name="twitter:title" content="{{ $documentTitle }}">
     @if($metaDescription)
         <meta name="twitter:description" content="{{ $metaDescription }}">
@@ -57,6 +81,33 @@
 
     @if($favicon)
         <link rel="icon" href="{{ $favicon }}" type="image/png">
+    @endif
+
+    <style>:root {
+        --color-navy: {{ $themeColors['navy'] }};
+        --color-heading: {{ $themeColors['heading'] }};
+        --color-dusty-blue: {{ $themeColors['dusty_blue'] }};
+        --color-blush: {{ $themeColors['blush'] }};
+        --color-taupe: {{ $themeColors['taupe'] }};
+        --color-text: {{ $themeColors['text'] }};
+        --color-muted: {{ $themeColors['muted'] }};
+        --color-border: {{ $themeColors['border'] }};
+        --color-blush-light: {{ $themeColors['blush_light'] }};
+        --color-dusty-blue-light: {{ $themeColors['dusty_blue_light'] }};
+        --color-taupe-light: {{ $themeColors['taupe_light'] }};
+        --color-white: {{ $themeColors['white'] }};
+    }</style>
+
+    @if($schemaType !== 'none')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => $schemaType,
+                'name' => $documentTitle,
+                'description' => $metaDescription,
+                'url' => $canonicalUrl,
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+        </script>
     @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -71,13 +122,13 @@
         </script>
     @endif
 </head>
-<body class="bg-hw-white font-body text-hw-text antialiased min-h-screen flex flex-col" x-data="{ mobileOpen: false }">
+<body class="bg-hw-white font-body text-hw-text antialiased min-h-screen flex flex-col" data-site-width="{{ $siteWidth }}" x-data="{ mobileOpen: false }">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 btn-primary">Skip to content</a>
 
-    <header class="sticky top-0 z-40 bg-hw-white/95 backdrop-blur border-b border-hw-border">
+    <header class="{{ $headerClasses }}">
         <div class="hw-container">
             <div class="grid grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto] items-center gap-4 min-h-[var(--header-height)]">
-                <x-site-logo variant="light" />
+                <x-site-logo variant="light" context="header" />
 
                 <nav class="hidden xl:flex items-center justify-center gap-x-5" aria-label="Main">
                     @foreach(($siteSettings['navigation'] ?? config('heartwell.navigation')) as $item)
@@ -90,9 +141,8 @@
                 </nav>
 
                 <div class="hidden xl:flex items-center justify-end gap-2 shrink-0">
-                    <a href="{{ route('contact') }}#book" class="btn-primary btn-sm">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
-                    <a href="{{ route('contact') }}#consultation" class="btn-secondary btn-sm">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
-                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                    <a href="{{ route('contact') }}#book" class="btn-primary btn-sm hw-header-cta">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
+                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm hw-header-cta">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
 
                 <button type="button"
@@ -118,7 +168,6 @@
                 @endforeach
                 <div class="pt-4 mt-2 border-t border-hw-border flex flex-col gap-3">
                     <a href="{{ route('contact') }}#book" class="btn-primary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
-                    <a href="{{ route('contact') }}#consultation" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                     <a href="{{ route('contact') }}#waitlist" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
                 </div>
             </nav>
@@ -154,7 +203,7 @@
         <div class="hw-container py-10 md:py-12">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 <div>
-                    <x-site-logo variant="dark" :show-tagline="false" class="justify-self-start" />
+                    <x-site-logo variant="dark" context="footer" :show-tagline="false" class="justify-self-start" />
                     <p class="text-sm text-hw-taupe mt-4">{{ $siteSettings['brand']['promise'] ?? config('heartwell.brand.promise') }}</p>
                     @if(! empty($footer['email']) || ! empty($footer['phone']))
                         <div class="mt-4 space-y-1 text-sm text-hw-taupe-light">
@@ -215,8 +264,8 @@
                     <p class="font-semibold mb-3">Get Started</p>
                     <div class="flex flex-col sm:flex-row md:flex-col gap-3">
                         <a href="{{ route('contact') }}#book" class="btn-primary btn-sm text-center">{{ $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label') }}</a>
-                        <a href="{{ route('contact') }}#consultation" class="btn-secondary border-hw-white text-hw-white hover:bg-hw-white hover:text-hw-navy btn-sm text-center">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }}</a>
                         <a href="{{ route('contact') }}#waitlist" class="btn-secondary border-hw-white text-hw-white hover:bg-hw-white hover:text-hw-navy btn-sm text-center">{{ $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                        <a href="{{ route('contact') }}#consultation" class="text-sm text-hw-taupe-light hover:text-hw-white transition-colors py-2 text-center md:text-left">{{ $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label') }} →</a>
                     </div>
                 </div>
             </div>

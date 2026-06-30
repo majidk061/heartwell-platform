@@ -93,7 +93,7 @@ class EmailTemplateSeeder extends Seeder
                 'audience' => 'user',
                 'subject' => 'Set your HeartWell admin password',
                 'heading' => 'Welcome to HeartWell Admin',
-                'body' => '<p>Hi {{name}},</p><p>You have been invited to manage the HeartWell website. Click the button below to set your password.</p>',
+                'body' => '<p>Hi {{name}},</p><p>You have been invited to manage the HeartWell website. Click the button below to set your password.</p><p>If the button does not work, copy and paste this link into your browser:<br><a href="{{reset_url}}">{{reset_url}}</a></p><p>This link expires in 60 minutes.</p>',
                 'button_label' => 'Set your password',
                 'button_url' => '{{reset_url}}',
             ],

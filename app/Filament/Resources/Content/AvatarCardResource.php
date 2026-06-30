@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\AvatarCard;
 use App\Filament\Concerns\AuthorizesWithPermissions;
+use App\Filament\Concerns\ConfiguresCmsImageFields;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Concerns\ConfiguresReorderableTables;
@@ -17,6 +18,7 @@ use Filament\Tables\Table;
 class AvatarCardResource extends Resource
 {
     use AuthorizesWithPermissions;
+    use ConfiguresCmsImageFields;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
     use ConfiguresReorderableTables;
@@ -56,16 +58,13 @@ class AvatarCardResource extends Resource
                     Forms\Components\Textarea::make('subtext')
                         ->rows(3)
                         ->columnSpanFull(),
-                    Forms\Components\FileUpload::make('image_path')
-                        ->label('Card image')
-                        ->image()
-                        ->imageEditor()
-                        ->imageEditorAspectRatios(['4:5'])
-                        ->maxSize(2048)
-                        ->disk('public')
-                        ->directory('cms/avatar-cards')
-                        ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::avatarCardUploadHelper())
-                        ->columnSpanFull(),
+                    static::cmsImagePreviewPlaceholder('image_path', 'Current card image'),
+                    static::cmsImageUploadField(
+                        'image_path',
+                        'Card image',
+                        'cms/avatar-cards',
+                        \App\Filament\Concerns\ConfiguresHeartWellAdminUx::avatarCardUploadHelper(),
+                    )->imageEditorAspectRatios(['4:5'])->columnSpanFull(),
                 ]),
                 static::formSection('Link & display', 'heroicon-o-arrow-top-right-on-square', [
                     Forms\Components\TextInput::make('cta_label')

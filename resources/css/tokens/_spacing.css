@@ -13,11 +13,14 @@
   --space-24: 6rem;
 
   --container-max: 72rem;
+  --container-wide: 84rem;
+  --container-full: 100%;
   --content-narrow: min(48rem, 100%);
   --content-form: min(36rem, 100%);
+  --content-prose: min(42rem, 100%);
   --container-padding: var(--space-4);
   --section-padding-y: var(--space-12);
-  --header-height: 4.5rem;
+  --header-height: 5rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;

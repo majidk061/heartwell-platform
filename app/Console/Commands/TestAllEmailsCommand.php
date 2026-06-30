@@ -2,63 +2,49 @@
 
 namespace App\Console\Commands;
 
-use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
-use App\Domains\Integrations\Models\EmailTemplate;
-use App\Domains\Integrations\Services\SettingsResolver;
+use App\Domains\Integrations\Actions\GetTestRecipientEmailAction;
+use App\Domains\Integrations\Actions\SendTestEmailsAction;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class TestAllEmailsCommand extends Command
 {
-    protected $signature = 'heartwell:test-emails {email : Recipient address for all test emails}';
+    protected $signature = 'heartwell:test-emails {email? : Recipient address; defaults to Test email recipient in admin}';
 
-    protected $description = 'Send all enabled email templates to the given address using configured SMTP';
+    protected $description = 'Send SMTP test and all enabled email templates to the test recipient';
 
-    public function handle(SettingsResolver $settingsResolver, SendTemplatedEmailAction $sendTemplatedEmail): int
-    {
-        $email = $this->argument('email');
-        $settingsResolver->mergeIntoConfig();
+    public function handle(
+        GetTestRecipientEmailAction $getTestRecipientEmail,
+        SendTestEmailsAction $sendTestEmails,
+    ): int {
+        $email = $getTestRecipientEmail->execute($this->argument('email'));
 
-        $sampleData = [
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => $email,
-            'phone' => '555-0100',
-            'message' => 'This is a test message from HeartWell.',
-            'event_name' => 'Wellness Gathering',
-            'guest_count' => '8',
-            'booking_date' => now()->addWeek()->toDateString(),
-            'host_name' => 'Test Host',
-            'name' => 'Test Admin',
-            'source' => 'website',
-            'reset_url' => url('/admin'),
-        ];
-
-        $this->info('Sending SMTP connectivity test…');
-
-        try {
-            Mail::raw('HeartWell SMTP connectivity test.', fn ($message) => $message->to($email)->subject('HeartWell SMTP Test'));
-            $this->line('  ✓ SMTP raw test');
-        } catch (\Throwable $e) {
-            $this->error('  ✗ SMTP failed: '.$e->getMessage());
+        if (! filled($email)) {
+            $this->error('No test recipient configured. Set Test email recipient on Email / SMTP settings or pass an email argument.');
 
             return self::FAILURE;
         }
 
-        $templates = EmailTemplate::query()->where('is_enabled', true)->orderBy('key')->get();
+        $this->info("Sending tests to {$email}…");
 
-        if ($templates->isEmpty()) {
-            $this->warn('No enabled email templates found. Run EmailTemplateSeeder.');
+        try {
+            $result = $sendTestEmails->sendAllTemplateTests($email);
+        } catch (\Throwable $e) {
+            $this->error('Failed: '.$e->getMessage());
 
-            return self::SUCCESS;
+            return self::FAILURE;
         }
 
-        foreach ($templates as $template) {
-            $sent = $sendTemplatedEmail->execute($template->key, $email, $sampleData);
-            $this->line($sent ? "  ✓ {$template->key}" : "  ✗ {$template->key} (disabled or missing)");
+        $this->line('  ✓ SMTP connectivity test');
+
+        foreach ($result['sent'] as $key) {
+            $this->line("  ✓ {$key}");
         }
 
-        $this->info("Done. Check inbox: {$email}");
+        foreach ($result['skipped'] as $key) {
+            $this->line("  ✗ {$key} (disabled or missing)");
+        }
+
+        $this->info("Done. Check inbox: {$result['email']}");
 
         return self::SUCCESS;
     }

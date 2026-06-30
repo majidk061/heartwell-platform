@@ -2,35 +2,23 @@
 
 namespace App\Console\Commands;
 
-use App\Domains\Content\Models\Page;
+use App\Domains\Content\Actions\GenerateSitemapAction;
 use Illuminate\Console\Command;
-use Spatie\Sitemap\Sitemap;
-use Spatie\Sitemap\Tags\Url;
 
 class GenerateSitemapCommand extends Command
 {
     protected $signature = 'heartwell:sitemap';
 
-    protected $description = 'Generate public/sitemap.xml for all published pages';
+    protected $description = 'Warm the sitemap cache for all published pages';
 
-    public function handle(): int
+    public function handle(GenerateSitemapAction $action): int
     {
-        $sitemap = Sitemap::create();
+        GenerateSitemapAction::forgetCache();
+        $xml = $action->cached();
 
-        $sitemap->add(Url::create('/')->setPriority(1.0));
-        $sitemap->add(Url::create('/clinical-intake')->setPriority(0.5));
+        file_put_contents(public_path('sitemap.xml'), $xml);
 
-        Page::query()->where('is_published', true)->each(function (Page $page) use ($sitemap) {
-            if ($page->slug === 'home') {
-                return;
-            }
-            $sitemap->add(Url::create('/'.$page->slug)->setLastModificationDate($page->updated_at));
-        });
-
-        $path = public_path('sitemap.xml');
-        $sitemap->writeToFile($path);
-
-        $this->info("Sitemap written to {$path}");
+        $this->info('Sitemap cache warmed and written to public/sitemap.xml');
 
         return self::SUCCESS;
     }

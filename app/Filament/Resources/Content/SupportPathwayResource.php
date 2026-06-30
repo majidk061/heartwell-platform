@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Content;
 use App\Domains\Content\Models\SupportPathway;
 use App\Domains\CRM\Enums\AvatarType;
 use App\Filament\Concerns\AuthorizesWithPermissions;
+use App\Filament\Concerns\ConfiguresCmsImageFields;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Concerns\ConfiguresReorderableTables;
@@ -18,6 +19,7 @@ use Filament\Tables\Table;
 class SupportPathwayResource extends Resource
 {
     use AuthorizesWithPermissions;
+    use ConfiguresCmsImageFields;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
     use ConfiguresReorderableTables;
@@ -57,16 +59,13 @@ class SupportPathwayResource extends Resource
                     Forms\Components\Textarea::make('intro')
                         ->rows(4)
                         ->columnSpanFull(),
-                    Forms\Components\FileUpload::make('image_path')
-                        ->label('Pathway image')
-                        ->image()
-                        ->imageEditor()
-                        ->imageEditorAspectRatios(['16:9'])
-                        ->maxSize(2048)
-                        ->disk('public')
-                        ->directory('cms/pathways')
-                        ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::pathwayUploadHelper())
-                        ->columnSpanFull(),
+                    static::cmsImagePreviewPlaceholder('image_path', 'Current pathway image'),
+                    static::cmsImageUploadField(
+                        'image_path',
+                        'Pathway image',
+                        'cms/pathways',
+                        \App\Filament\Concerns\ConfiguresHeartWellAdminUx::pathwayUploadHelper(),
+                    )->imageEditorAspectRatios(['16:9'])->columnSpanFull(),
                 ]),
                 static::formSection('Accordion content', 'heroicon-o-list-bullet', [
                     Forms\Components\Repeater::make('accordion_content')

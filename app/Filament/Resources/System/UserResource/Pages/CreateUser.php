@@ -13,14 +13,32 @@ class CreateUser extends HeartWellCreateRecord
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
-        $user = app(InviteAdminUserAction::class)->execute($data);
+        try {
+            $user = app(InviteAdminUserAction::class)->execute($data);
 
-        Notification::make()
-            ->title('Invite sent to '.$user->email)
-            ->success()
-            ->send();
+            Notification::make()
+                ->title('Invite sent to '.$user->email)
+                ->success()
+                ->send();
 
-        return $user;
+            return $user;
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            $user = \App\Models\User::query()->where('email', $data['email'] ?? '')->first();
+
+            Notification::make()
+                ->title('User saved but invite email failed')
+                ->body($exception->getMessage())
+                ->warning()
+                ->send();
+
+            if ($user) {
+                return $user;
+            }
+
+            throw $exception;
+        }
     }
 
     protected function getCreatedNotificationTitle(): ?string

@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Domains\Content\Actions\GetSiteSettingsAction;
 use App\Filament\Concerns\FormatsEmptyValues;
+use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Dashboard;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -41,7 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->profile(isSimple: false)
+            ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->brandName(fn () => app(GetSiteSettingsAction::class)->execute()['brand']['name'] ?? config('heartwell.brand.name'))
             ->brandLogo(fn () => view('filament.admin.logo'))

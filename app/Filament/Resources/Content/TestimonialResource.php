@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\Testimonial;
 use App\Filament\Concerns\AuthorizesWithPermissions;
+use App\Filament\Concerns\ConfiguresCmsImageFields;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
 use App\Filament\Concerns\ConfiguresReorderableTables;
@@ -17,6 +18,7 @@ use Filament\Tables\Table;
 class TestimonialResource extends Resource
 {
     use AuthorizesWithPermissions;
+    use ConfiguresCmsImageFields;
     use ConfiguresHeartWellForms;
     use ConfiguresHeartWellTables;
     use ConfiguresReorderableTables;
@@ -48,15 +50,13 @@ class TestimonialResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->prefixIcon('heroicon-o-user'),
-                    Forms\Components\FileUpload::make('image_path')
-                        ->label('Author photo')
-                        ->image()
-                        ->imageEditor()
-                        ->imageEditorAspectRatios(['1:1'])
-                        ->maxSize(2048)
-                        ->disk('public')
-                        ->directory('cms/testimonials')
-                        ->helperText(\App\Filament\Concerns\ConfiguresHeartWellAdminUx::testimonialUploadHelper()),
+                    static::cmsImagePreviewPlaceholder('image_path', 'Current author photo'),
+                    static::cmsImageUploadField(
+                        'image_path',
+                        'Author photo',
+                        'cms/testimonials',
+                        \App\Filament\Concerns\ConfiguresHeartWellAdminUx::testimonialUploadHelper(),
+                    ),
                     Forms\Components\Textarea::make('quote')
                         ->required()
                         ->rows(4)

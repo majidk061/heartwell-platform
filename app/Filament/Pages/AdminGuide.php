@@ -3,10 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\AuthorizesWithPermissions;
-use App\Filament\Pages\ManageIntegrations;
-use App\Filament\Pages\ManageMailSettings;
-use App\Filament\Pages\ManageSiteSettings;
 use App\Filament\Resources\Content\PageResource;
+use App\Filament\Resources\Content\SectionTemplateResource;
 use App\Filament\Resources\CRM\LeadResource;
 use App\Filament\Resources\System\UserResource;
 use Filament\Pages\Page;
@@ -37,11 +35,11 @@ class AdminGuide extends Page
 
     public function getSubheading(): ?string
     {
-        return 'Everything you need to manage the HeartWell website — step by step.';
+        return 'Visual workflow for Pages, Section Library, draft/publish, and revisions.';
     }
 
     /**
-     * @return array<int, array{id: string, icon: string, title: string, steps: list<string>, url?: string}>
+     * @return array<int, array{id: string, icon: string, title: string, summary: string, steps: list<string>, url?: string, diagram?: string}>
      */
     public function getSections(): array
     {
@@ -50,39 +48,77 @@ class AdminGuide extends Page
                 'id' => 'getting-started',
                 'icon' => 'heroicon-o-sparkles',
                 'title' => 'Getting started',
+                'summary' => 'Log in, permissions, and where to find website content.',
                 'steps' => [
                     'Log in at /admin with your email and password.',
-                    'Use the dashboard quick links to jump to common tasks.',
-                    'Super admins see System Settings; editors manage content and leads only.',
-                    'Use Forgot password on the login page if you are locked out (SMTP must be configured).',
+                    'Website Content holds pages, Section Library, FAQs, testimonials, and pathways.',
+                    'Super admins manage System Settings; editors manage content and leads.',
                 ],
                 'url' => Dashboard::getUrl(),
             ],
             [
-                'id' => 'sections',
-                'icon' => 'heroicon-o-squares-2x2',
-                'title' => 'Editing pages & sections',
+                'id' => 'section-library',
+                'icon' => 'heroicon-o-rectangle-stack',
+                'title' => 'Section Library (edit content here)',
+                'summary' => 'Single source of truth — headline, body, layout, and CTAs live only in the library.',
+                'diagram' => 'library',
                 'steps' => [
-                    'Go to Website Content → Pages and click Edit on the page you want.',
-                    'Open the Page sections tab.',
-                    'Click Add section to create a new block (Hero, Intro, FAQ, etc.).',
-                    'Click Edit content on any row — a slide-over panel opens for headline, body, and images.',
-                    'Drag the handle on the left of each row to change display order.',
-                    'Use Preview on the pages list to open the live public page.',
-                    'When uploading images, use the crop tool — hero images should be 4:3.',
+                    'Open Website Content → Section Library.',
+                    'Create a template: Step 1 choose section type (Hero, FAQ, Forms, …), Step 2 name it and fill content.',
+                    'Use Save draft while working; Publish when ready for the live site.',
+                    'Revision history tab stores past versions — restore if needed.',
+                    'Need different hero text on Contact vs Home? Create two library templates — never duplicate text on the page row.',
+                ],
+                'url' => SectionTemplateResource::getUrl('index'),
+            ],
+            [
+                'id' => 'page-sections',
+                'icon' => 'heroicon-o-squares-2x2',
+                'title' => 'Pages → Page sections (placement only)',
+                'summary' => 'Pages only store which library template appears, in what order, and whether it is live on that page.',
+                'diagram' => 'placement',
+                'steps' => [
+                    'Open Website Content → Pages → Edit a page → Page sections tab.',
+                    'Insert from library to add a template to this page.',
+                    'Drag rows to reorder. Toggle Live on each placement row.',
+                    'Click Edit content — opens Section Library for that template (use Back to page sections when done).',
+                    'Change template swaps which library entry is linked without copying content.',
                 ],
                 'url' => PageResource::getUrl('index'),
+            ],
+            [
+                'id' => 'draft-publish',
+                'icon' => 'heroicon-o-eye',
+                'title' => 'Draft vs Publish',
+                'summary' => 'Draft content stays hidden from visitors; published content appears on the public site.',
+                'steps' => [
+                    'Save draft — keeps working copy invisible on the website.',
+                    'Publish — makes the page or template live (syncs Show on website).',
+                    'Draft pages: use Preview draft from the pages list or page edit header.',
+                    'Published pages: Preview live opens the public URL.',
+                ],
+            ],
+            [
+                'id' => 'revisions',
+                'icon' => 'heroicon-o-clock',
+                'title' => 'Revision history',
+                'summary' => 'WordPress-style snapshots on each save, with one-click restore.',
+                'steps' => [
+                    'On Page edit or Section Library edit, open the Revision history tab.',
+                    'Each row shows date, author, and optional note.',
+                    'Restore saves the current version first, then applies the selected snapshot.',
+                    'Up to 25 revisions are kept per record.',
+                ],
             ],
             [
                 'id' => 'site-settings',
                 'icon' => 'heroicon-o-cog-6-tooth',
                 'title' => 'Site Settings',
+                'summary' => 'Logo, navigation, theme colors, SEO defaults, and compliance copy.',
                 'steps' => [
-                    'Set Logo style to Text, Image, or Both.',
-                    'Upload a logo image (crop to wide 10:3 ratio).',
-                    'Drag menu items in the Navigation repeater to reorder the header menu.',
-                    'Edit primary and secondary button labels and anchors.',
-                    'Set footer contact info, compliance text, and Google Analytics ID.',
+                    'Set logo mode, navigation order, CTAs, and footer compliance text.',
+                    'Theme & Layout controls site width, header style, and brand colors.',
+                    'SEO tab controls robots.txt and sitemap defaults.',
                 ],
                 'url' => ManageSiteSettings::getUrl(),
             ],
@@ -90,25 +126,21 @@ class AdminGuide extends Page
                 'id' => 'crm',
                 'icon' => 'heroicon-o-user-group',
                 'title' => 'Leads & CRM',
+                'summary' => 'Pipeline for waitlist, consultation, and booking leads.',
                 'steps' => [
-                    'Open Leads & CRM → Leads to see the pipeline tabs (New, Contacted, etc.).',
-                    'Click a lead name to open the full view.',
-                    'Use Mark contacted when you have reached out to a new lead.',
-                    'Use Change status to move leads through the pipeline with optional notes.',
-                    'Use Add note to append timestamped internal notes.',
-                    'Assign to me or bulk-assign from the list page.',
+                    'Open Leads & CRM → Leads for pipeline tabs.',
+                    'Change status, add notes, and assign leads from the list or detail view.',
                 ],
                 'url' => LeadResource::getUrl('index'),
             ],
             [
                 'id' => 'integrations',
                 'icon' => 'heroicon-o-puzzle-piece',
-                'title' => 'Integrations & Acuity booking',
+                'title' => 'Integrations & Acuity',
+                'summary' => 'Booking embed and webhook configuration.',
                 'steps' => [
-                    'Acuity Scheduling is the online appointment booking service (like Calendly).',
-                    'When the client provides Acuity credentials, enter the Embed URL under Integrations → Acuity.',
-                    'Until Acuity is connected, visitors use Waitlist and Consultation forms on /contact.',
-                    'Bookings sync to Admin → Bookings when webhooks are configured.',
+                    'Enter Acuity Embed URL when credentials are available.',
+                    'Until then, visitors use waitlist and consultation forms on /contact.',
                 ],
                 'url' => ManageIntegrations::getUrl(),
             ],
@@ -116,12 +148,10 @@ class AdminGuide extends Page
                 'id' => 'team',
                 'icon' => 'heroicon-o-users',
                 'title' => 'Team members',
+                'summary' => 'Admin users, roles, and invites.',
                 'steps' => [
-                    'Super admins: System Settings → Team Members.',
-                    'Create a user with name, email, and roles.',
-                    'The invitee receives an email with a link to set their password.',
-                    'Use Resend invite if they did not receive the email.',
-                    'Super admin accounts cannot be deleted and always have full access.',
+                    'System Settings → Team Members to invite editors.',
+                    'Audit trail on content shows who last updated each page or template.',
                 ],
                 'url' => UserResource::getUrl('index'),
             ],
@@ -129,12 +159,11 @@ class AdminGuide extends Page
                 'id' => 'email',
                 'icon' => 'heroicon-o-envelope',
                 'title' => 'Email & notifications',
+                'summary' => 'SMTP, templates, and form notification recipients.',
                 'steps' => [
-                    'Configure SMTP under Email / SMTP (host, port, SSL, username, password).',
-                    'Use Send test email to verify delivery.',
-                    'Edit templates under Email Templates (subject, heading, body, logo).',
+                    'Configure SMTP and send a test email.',
+                    'Edit templates under Email Templates.',
                     'Set per-form admin recipients under Email Notifications.',
-                    'Run php artisan heartwell:test-emails you@example.com to test all templates.',
                 ],
                 'url' => ManageMailSettings::getUrl(),
             ],

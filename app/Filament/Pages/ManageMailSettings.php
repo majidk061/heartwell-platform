@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Domains\Integrations\Actions\GetTestRecipientEmailAction;
+use App\Domains\Integrations\Actions\SendTestEmailsAction;
 use App\Domains\Integrations\Exceptions\MailNotConfiguredException;
 use App\Domains\Integrations\Services\MailChannelResolver;
 use App\Domains\Integrations\Services\SettingsResolver;
@@ -12,7 +14,6 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Mail;
 
 class ManageMailSettings extends Page implements HasForms
 {
@@ -67,6 +68,7 @@ class ManageMailSettings extends Page implements HasForms
     public function mount(): void
     {
         $r = app(SettingsResolver::class);
+        $testRecipient = app(GetTestRecipientEmailAction::class)->execute();
 
         $this->form->fill([
             'mail_mailer' => $r->get('mail_mailer', 'MAIL_MAILER') ?? 'smtp',
@@ -78,40 +80,62 @@ class ManageMailSettings extends Page implements HasForms
             'mail_from_address' => $r->get('mail_from_address', 'MAIL_FROM_ADDRESS'),
             'mail_from_name' => $r->get('mail_from_name', 'MAIL_FROM_NAME'),
             'admin_alert_email' => $r->get('admin_alert_email', 'SENDGRID_ADMIN_ALERT_EMAIL'),
-            'test_recipient_email' => 'majidk061@gmail.com',
+            'test_recipient_email' => $testRecipient,
         ]);
     }
 
     public function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('mail_mailer')
-                ->label('Mail driver')
-                ->options(['smtp' => 'SMTP', 'log' => 'Log only (testing)'])
-                ->required(),
-            Forms\Components\TextInput::make('mail_host')->label('SMTP host'),
-            Forms\Components\TextInput::make('mail_port')->label('SMTP port')->numeric(),
-            Forms\Components\Select::make('mail_encryption')
-                ->label('Encryption')
-                ->options(['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None']),
-            Forms\Components\TextInput::make('mail_username')->label('SMTP username'),
-            Forms\Components\TextInput::make('mail_password')
-                ->label('SMTP password')
-                ->password()
-                ->revealable()
-                ->helperText('Leave blank to keep the current password.'),
-            Forms\Components\TextInput::make('mail_from_address')->label('From email')->email()->required(),
-            Forms\Components\TextInput::make('mail_from_name')->label('From name')->required(),
-            Forms\Components\TextInput::make('admin_alert_email')
-                ->label('Admin alert email')
-                ->email()
-                ->helperText('Internal notifications for new leads and form submissions.'),
-            Forms\Components\TextInput::make('test_recipient_email')
-                ->label('Test email recipient')
-                ->email()
-                ->default('majidk061@gmail.com')
-                ->helperText('Address used when you click Send test email.'),
-        ])->columns(2)->statePath('data');
+            Forms\Components\Tabs::make('EmailSettings')->tabs([
+                Forms\Components\Tabs\Tab::make('SMTP connection')
+                    ->icon('heroicon-o-server-stack')
+                    ->schema([
+                        Forms\Components\Select::make('mail_mailer')
+                            ->label('Mail driver')
+                            ->options(['smtp' => 'SMTP', 'log' => 'Log only (testing)'])
+                            ->required(),
+                        Forms\Components\TextInput::make('mail_host')->label('SMTP host'),
+                        Forms\Components\TextInput::make('mail_port')->label('SMTP port')->numeric(),
+                        Forms\Components\Select::make('mail_encryption')
+                            ->label('Encryption')
+                            ->options(['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None']),
+                        Forms\Components\TextInput::make('mail_username')->label('SMTP username'),
+                        Forms\Components\TextInput::make('mail_password')
+                            ->label('SMTP password')
+                            ->password()
+                            ->revealable()
+                            ->helperText('Leave blank to keep the current password.')
+                            ->columnSpanFull(),
+                    ])->columns(2),
+                Forms\Components\Tabs\Tab::make('Sending identity')
+                    ->icon('heroicon-o-identification')
+                    ->schema([
+                        Forms\Components\TextInput::make('mail_from_address')
+                            ->label('From email')
+                            ->email()
+                            ->required(),
+                        Forms\Components\TextInput::make('mail_from_name')
+                            ->label('From name')
+                            ->required(),
+                        Forms\Components\TextInput::make('admin_alert_email')
+                            ->label('Admin alert email')
+                            ->email()
+                            ->helperText('Internal notifications for new leads and form submissions.')
+                            ->columnSpanFull(),
+                    ])->columns(2),
+                Forms\Components\Tabs\Tab::make('Testing')
+                    ->icon('heroicon-o-beaker')
+                    ->schema([
+                        Forms\Components\TextInput::make('test_recipient_email')
+                            ->label('Test email recipient')
+                            ->email()
+                            ->required()
+                            ->helperText('All test emails from this page and the heartwell:test-emails command use this address.')
+                            ->columnSpanFull(),
+                    ]),
+            ])->columnSpanFull(),
+        ])->statePath('data');
     }
 
     public function save(): void
@@ -120,7 +144,17 @@ class ManageMailSettings extends Page implements HasForms
         $r = app(SettingsResolver::class);
         $userId = auth()->id();
 
-        foreach (['mail_mailer', 'mail_host', 'mail_port', 'mail_encryption', 'mail_username', 'mail_from_address', 'mail_from_name', 'admin_alert_email'] as $key) {
+        foreach ([
+            'mail_mailer',
+            'mail_host',
+            'mail_port',
+            'mail_encryption',
+            'mail_username',
+            'mail_from_address',
+            'mail_from_name',
+            'admin_alert_email',
+            'test_recipient_email',
+        ] as $key) {
             if (filled($data[$key] ?? null)) {
                 $r->set($key, (string) $data[$key], 'mail', $userId);
             }
@@ -147,22 +181,35 @@ class ManageMailSettings extends Page implements HasForms
     public function testEmail(): void
     {
         $this->save();
-        $to = $this->data['test_recipient_email'] ?? auth()->user()?->email;
-
-        if (! $to) {
-            Notification::make()->title('Enter a test recipient email')->danger()->send();
-
-            return;
-        }
 
         try {
-            Mail::raw('HeartWell test email — your SMTP settings are working.', function ($message) use ($to) {
-                $message->to($to)->subject('HeartWell SMTP Test');
-            });
+            $to = app(SendTestEmailsAction::class)->sendConnectivityTest(
+                $this->form->getState()['test_recipient_email'] ?? null,
+            );
 
             Notification::make()->title('Test email sent to '.$to)->success()->send();
         } catch (\Throwable $e) {
             Notification::make()->title('Test failed')->body($e->getMessage())->danger()->send();
+        }
+    }
+
+    public function testAllTemplates(): void
+    {
+        $this->save();
+
+        try {
+            $result = app(SendTestEmailsAction::class)->sendAllTemplateTests(
+                $this->form->getState()['test_recipient_email'] ?? null,
+            );
+
+            $count = count($result['sent']);
+
+            Notification::make()
+                ->title("Sent {$count} template test(s) to {$result['email']}")
+                ->success()
+                ->send();
+        } catch (\Throwable $e) {
+            Notification::make()->title('Template tests failed')->body($e->getMessage())->danger()->send();
         }
     }
 }

@@ -56,6 +56,36 @@ Alpine.data('formHandler', () => ({
     },
 }));
 
+Alpine.data('testimonialCarousel', (config) => ({
+    index: 0,
+    visible: config.visible ?? 1,
+    total: config.total ?? 0,
+    autoplay: config.autoplay ?? false,
+    interval: (config.interval ?? 6) * 1000,
+    timer: null,
+    get maxIndex() {
+        return Math.max(0, this.total - this.visible);
+    },
+    init() {
+        if (this.autoplay && ! window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            this.timer = setInterval(() => {
+                this.index = this.index >= this.maxIndex ? 0 : this.index + 1;
+            }, this.interval);
+        }
+    },
+    destroy() {
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
+    },
+    next() {
+        this.index = Math.min(this.index + 1, this.maxIndex);
+    },
+    prev() {
+        this.index = Math.max(this.index - 1, 0);
+    },
+}));
+
 Alpine.start();
 
 document.addEventListener('DOMContentLoaded', () => {

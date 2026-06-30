@@ -1,90 +1,112 @@
 @php
-    $forms = $siteSettings['contact_forms'] ?? [];
+    use App\Domains\Content\Support\SectionLayout;
+
+    $formsContent = ($formsSection ?? null)?->content ?? [];
+    $sectionHeading = ($formsSection ?? null)?->heading ?? 'How would you like to connect?';
+    $sectionSubtitle = $formsContent['section_subtitle'] ?? 'Choose a path below — we are here when you are ready.';
+    $activeForms = $formsContent['forms'] ?? ['waitlist', 'consultation', 'book', 'group_inquiry'];
     $ctas = $ctas ?? ($siteSettings['ctas'] ?? config('heartwell.ctas'));
     $compliance = $compliance ?? ($siteSettings['compliance'] ?? config('heartwell.compliance'));
-    $acuityEnabled = filled(config('integrations.acuity.embed_url'));
-    $defaultTab = $acuityEnabled ? 'book' : 'waitlist';
+    $forms = array_merge($siteSettings['contact_forms'] ?? [], [
+        'waitlist_title' => $formsContent['waitlist_title'] ?? ($siteSettings['contact_forms']['waitlist_title'] ?? 'Join the Waitlist'),
+        'waitlist_subtitle' => $formsContent['waitlist_subtitle'] ?? ($siteSettings['contact_forms']['waitlist_subtitle'] ?? 'Be the first to know when appointments open in your area.'),
+        'consultation_title' => $formsContent['consultation_title'] ?? ($siteSettings['contact_forms']['consultation_title'] ?? 'Request a Consultation'),
+        'consultation_subtitle' => $formsContent['consultation_subtitle'] ?? ($siteSettings['contact_forms']['consultation_subtitle'] ?? 'Tell us a little about yourself — we will reach out personally.'),
+        'group_title' => $formsContent['group_title'] ?? ($siteSettings['contact_forms']['group_title'] ?? 'Group Wellness Gathering'),
+        'group_subtitle' => $formsContent['group_subtitle'] ?? ($siteSettings['contact_forms']['group_subtitle'] ?? 'Planning a group experience? Start here.'),
+    ]);
+    $contactDisclaimer = $formsContent['contact_disclaimer'] ?? ($compliance['contact_disclaimer'] ?? config('heartwell.compliance.contact_disclaimer'));
+    $privacySummary = $formsContent['privacy_summary'] ?? ($compliance['privacy_summary'] ?? null);
+    $clinicalPortalNote = $formsContent['clinical_portal_note'] ?? ($compliance['clinical_portal_note'] ?? config('heartwell.compliance.clinical_portal_note'));
+    $groupIntakeNote = $formsContent['group_intake_note'] ?? ($compliance['group_intake_note'] ?? config('heartwell.compliance.group_intake_note'));
+    $acuityEnabled = filled(config('integrations.acuity.embed_url')) && in_array('book', $activeForms, true);
+    $defaultTab = $acuityEnabled && in_array('book', $activeForms, true)
+        ? 'book'
+        : (in_array('waitlist', $activeForms, true) ? 'waitlist' : ($activeForms[0] ?? 'waitlist'));
+
+    $layout = ($formsSection ?? null)
+        ? SectionLayout::resolve($formsContent, $themeDefaults ?? ($siteSettings['theme'] ?? []), 'forms')
+        : ['container_width' => 'default', 'section_padding' => 'normal', 'background' => 'white', 'text_align' => 'center'];
+
+    $sectionClass = SectionLayout::sectionClasses($layout).' border-t border-hw-border hw-contact-section';
 @endphp
 
 <section
-    class="hw-section bg-hw-white border-t border-hw-border hw-contact-section"
+    class="{{ $sectionClass }}"
     x-data="{
         activeTab: '{{ $defaultTab }}',
         acuityEnabled: @js($acuityEnabled),
         init() {
+            this.syncFromHash();
+            window.addEventListener('hashchange', () => this.syncFromHash());
+        },
+        syncFromHash() {
             const hash = window.location.hash.replace('#', '');
             const tabs = ['waitlist', 'consultation', 'book', 'group-inquiry'];
             if (tabs.includes(hash)) {
                 this.activeTab = hash;
-            } else if (! this.acuityEnabled) {
+            } else if (! this.acuityEnabled && ! tabs.includes(this.activeTab)) {
                 this.activeTab = 'waitlist';
             }
-            this.$watch('activeTab', (tab) => {
-                history.replaceState(null, '', `#${tab}`);
+            this.$nextTick(() => {
+                if (tabs.includes(this.activeTab)) {
+                    document.getElementById('contact-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         },
         setTab(tab) {
             this.activeTab = tab;
+            history.replaceState(null, '', `#${tab}`);
             this.$nextTick(() => {
                 document.getElementById('contact-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         }
     }"
 >
-    <x-layout.page-container narrow>
-        <div class="text-center mb-6 md:mb-8">
-            <h2 class="font-heading text-xl md:text-2xl text-hw-heading mb-1">How would you like to connect?</h2>
-            <p class="text-hw-muted text-sm md:text-base max-w-xl mx-auto">Choose a path below — forms open right here, no long scrolling.</p>
+    <x-layout.page-container :width="$layout['container_width']">
+        <div class="text-center mb-8 md:mb-10">
+            <h2 class="hw-section-title">{{ $sectionHeading }}</h2>
+            @if($sectionSubtitle)
+                <p class="text-hw-muted text-base md:text-lg max-w-2xl mx-auto mt-3">{{ $sectionSubtitle }}</p>
+            @endif
         </div>
 
-        <nav class="hw-contact-nav md:hidden mb-4" aria-label="Contact sections">
-            <a href="#waitlist" @click.prevent="setTab('waitlist')" :class="activeTab === 'waitlist' ? 'hw-contact-tab--active' : ''">{{ $forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join Waitlist') }}</a>
-            <a href="#consultation" @click.prevent="setTab('consultation')" :class="activeTab === 'consultation' ? 'hw-contact-tab--active' : ''">{{ $forms['consultation_title'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Request Consultation') }}</a>
+        <nav class="hw-contact-nav mb-6 lg:hidden" aria-label="Contact sections">
+            @if(in_array('waitlist', $activeForms, true))
+                <a href="#waitlist" @click.prevent="setTab('waitlist')" :class="activeTab === 'waitlist' ? 'hw-contact-tab--active' : ''">{{ $forms['waitlist_title'] }}</a>
+            @endif
+            @if(in_array('consultation', $activeForms, true))
+                <a href="#consultation" @click.prevent="setTab('consultation')" :class="activeTab === 'consultation' ? 'hw-contact-tab--active' : ''">{{ $forms['consultation_title'] }}</a>
+            @endif
             @if($acuityEnabled)
                 <a href="#book" @click.prevent="setTab('book')" :class="activeTab === 'book' ? 'hw-contact-tab--active' : ''">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
             @endif
-            <a href="#group-inquiry" @click.prevent="setTab('group-inquiry')" :class="activeTab === 'group-inquiry' ? 'hw-contact-tab--active' : ''">{{ $forms['group_title'] ?? 'Group Gathering' }}</a>
+            @if(in_array('group_inquiry', $activeForms, true))
+                <a href="#group-inquiry" @click.prevent="setTab('group-inquiry')" :class="activeTab === 'group-inquiry' ? 'hw-contact-tab--active' : ''">{{ $forms['group_title'] }}</a>
+            @endif
         </nav>
 
-        <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
-            <div class="hidden lg:block lg:col-span-4 lg:sticky lg:top-24 lg:self-start space-y-3">
-                <x-contact-option-card
-                    id="waitlist"
-                    :title="$forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join the Waitlist')"
-                    description="Be first to know when appointments open."
-                    icon="bell"
-                    :featured="! $acuityEnabled"
-                />
-                <x-contact-option-card
-                    id="consultation"
-                    :title="$forms['consultation_title'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Request Consultation')"
-                    description="Tell us about yourself — we will be in touch."
-                    icon="chat"
-                />
-                @if($acuityEnabled)
-                    <x-contact-option-card
-                        id="book"
-                        :title="$ctas['primary']['label'] ?? 'Book a Visit'"
-                        description="Schedule your individual wellness visit."
-                        icon="calendar"
-                        :featured="true"
-                    />
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-10">
+            <div class="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
+                @if(in_array('waitlist', $activeForms, true))
+                    <x-contact-option-card id="waitlist" :title="$forms['waitlist_title']" description="Be first to know when appointments open." icon="bell" :featured="! $acuityEnabled" />
                 @endif
-                <x-contact-option-card
-                    id="group-inquiry"
-                    :title="$forms['group_title'] ?? 'Group Wellness Gathering'"
-                    description="Host a private wellness experience."
-                    icon="users"
-                />
+                @if(in_array('consultation', $activeForms, true))
+                    <x-contact-option-card id="consultation" :title="$forms['consultation_title']" description="Tell us about yourself — we will be in touch." icon="chat" />
+                @endif
+                @if($acuityEnabled)
+                    <x-contact-option-card id="book" :title="$ctas['primary']['label'] ?? 'Book a Visit'" description="Schedule your individual wellness visit." icon="calendar" :featured="true" />
+                @endif
+                @if(in_array('group_inquiry', $activeForms, true))
+                    <x-contact-option-card id="group-inquiry" :title="$forms['group_title']" description="Host a private wellness experience." icon="users" />
+                @endif
             </div>
 
-            <div id="contact-panel" class="lg:col-span-8 scroll-mt-24">
-                <div x-show="activeTab === 'waitlist'" x-cloak class="hw-contact-panel {{ ! $acuityEnabled ? 'hw-contact-panel--featured' : '' }}">
-                    <x-layout.section-heading
-                        :title="$forms['waitlist_title'] ?? ($ctas['secondary']['waitlist']['label'] ?? 'Join the Waitlist')"
-                        :subtitle="$forms['waitlist_subtitle'] ?? 'Be the first to know when appointments open in your area.'"
-                    />
-                    <form method="POST" action="{{ route('contact.waitlist') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4" x-data="{ loading: false }" @submit="loading = true">
+            <div id="contact-panel" class="lg:col-span-7 scroll-mt-24">
+                @if(in_array('waitlist', $activeForms, true))
+                <div x-show="activeTab === 'waitlist'" x-cloak class="hw-contact-panel" :class="activeTab === 'waitlist' ? 'hw-contact-panel--active' : ''">
+                    <x-layout.section-heading :title="$forms['waitlist_title']" :subtitle="$forms['waitlist_subtitle']" />
+                    <form method="POST" action="{{ route('contact.waitlist') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4 mt-6" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
                         <div>
@@ -107,13 +129,12 @@
                         </div>
                     </form>
                 </div>
+                @endif
 
-                <div x-show="activeTab === 'consultation'" x-cloak class="hw-contact-panel">
-                    <x-layout.section-heading
-                        :title="$forms['consultation_title'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Request Consultation')"
-                        :subtitle="$forms['consultation_subtitle'] ?? 'Tell us a little about yourself — we\'ll be in touch soon.'"
-                    />
-                    <form method="POST" action="{{ route('contact.consultation') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4" x-data="{ loading: false }" @submit="loading = true">
+                @if(in_array('consultation', $activeForms, true))
+                <div x-show="activeTab === 'consultation'" x-cloak class="hw-contact-panel" :class="activeTab === 'consultation' ? 'hw-contact-panel--active' : ''">
+                    <x-layout.section-heading :title="$forms['consultation_title']" :subtitle="$forms['consultation_subtitle']" />
+                    <form method="POST" action="{{ route('contact.consultation') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4 mt-6" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
                         <div>
@@ -140,22 +161,21 @@
                         </div>
                     </form>
                 </div>
+                @endif
 
-                <div x-show="activeTab === 'book'" class="hw-contact-panel hw-contact-panel--featured">
-                    <x-layout.section-heading
-                        :title="$ctas['primary']['label'] ?? 'Book a Visit'"
-                        subtitle="Schedule your individual wellness visit."
-                    />
+                @if($acuityEnabled)
+                <div x-show="activeTab === 'book'" class="hw-contact-panel hw-contact-panel--featured" :class="activeTab === 'book' ? 'hw-contact-panel--active' : ''">
+                    <x-layout.section-heading :title="$ctas['primary']['label'] ?? 'Book a Visit'" subtitle="Schedule your individual wellness visit." />
                     @if(config('integrations.acuity.embed_url'))
-                        <div class="mt-4 w-full overflow-hidden rounded-xl shadow-md border border-hw-border">
+                        <div class="mt-6 w-full overflow-hidden rounded-xl shadow-md border border-hw-border">
                             <iframe src="{{ config('integrations.acuity.embed_url') }}" class="w-full min-h-[400px] md:min-h-[600px] border-0" title="Book a Visit"></iframe>
                         </div>
                         <p class="mt-4 text-sm text-hw-muted leading-relaxed">
-                            {{ $compliance['clinical_portal_note'] ?? ($compliance['hydreight_note'] ?? config('heartwell.compliance.clinical_portal_note')) }}
+                            {{ $clinicalPortalNote }}
                             <a href="{{ route('clinical-intake') }}" class="text-hw-dusty-blue font-medium hover:text-hw-heading">Continue to clinical intake →</a>
                         </p>
                     @else
-                        <div class="rounded-lg border border-hw-border bg-hw-dusty-blue-light px-5 py-6 text-center space-y-3">
+                        <div class="rounded-lg border border-hw-border bg-hw-dusty-blue-light px-5 py-6 text-center space-y-3 mt-6">
                             <p class="font-heading text-lg text-hw-heading">Online scheduling is coming soon</p>
                             <p class="text-hw-muted text-base">Join the waitlist or request a consultation — we will reach out to help you book your visit.</p>
                             <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
@@ -165,18 +185,14 @@
                         </div>
                     @endif
                 </div>
+                @endif
 
-                <div x-show="activeTab === 'group-inquiry'" x-cloak class="hw-contact-panel">
-                    <x-layout.section-heading
-                        :title="$forms['group_title'] ?? 'Group Wellness Gathering'"
-                        :subtitle="$forms['group_subtitle'] ?? 'Tell us about your gathering.'"
-                    />
-                    @php
-                        $groupNote = $compliance['group_intake_note'] ?? config('heartwell.compliance.group_intake_note');
-                    @endphp
-                    @if(! empty($groupNote))
-                        <div class="rounded-lg border border-hw-border bg-hw-blush/30 px-4 py-3 text-sm text-hw-muted mb-6">
-                            {{ $groupNote }}
+                @if(in_array('group_inquiry', $activeForms, true))
+                <div x-show="activeTab === 'group-inquiry'" x-cloak class="hw-contact-panel" :class="activeTab === 'group-inquiry' ? 'hw-contact-panel--active' : ''">
+                    <x-layout.section-heading :title="$forms['group_title']" :subtitle="$forms['group_subtitle']" />
+                    @if(! empty($groupIntakeNote))
+                        <div class="rounded-lg border border-hw-border bg-hw-blush/30 px-4 py-3 text-sm text-hw-muted mb-6 mt-4">
+                            {{ $groupIntakeNote }}
                         </div>
                     @endif
                     <form method="POST" action="{{ route('contact.group-inquiry') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4" x-data="{ loading: false }" @submit="loading = true">
@@ -207,17 +223,18 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
 
-        <div class="mt-10 pt-8 border-t border-hw-border space-y-3">
+        <div class="mt-10 pt-8 border-t border-hw-border space-y-3 max-w-3xl">
+            @if(! empty($contactDisclaimer))
             <p class="text-sm text-hw-muted leading-relaxed">
-                {{ $compliance['contact_disclaimer'] ?? config('heartwell.compliance.contact_disclaimer') }}
+                {{ $contactDisclaimer }}
             </p>
-            @if(! empty($compliance['privacy_summary']))
-                <p class="text-xs text-hw-muted leading-relaxed">
-                    {{ $compliance['privacy_summary'] }}
-                </p>
+            @endif
+            @if(! empty($privacySummary))
+                <p class="text-xs text-hw-muted leading-relaxed">{{ $privacySummary }}</p>
             @endif
         </div>
     </x-layout.page-container>

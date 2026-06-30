@@ -1,9 +1,18 @@
-@props(['narrow' => false, 'form' => false, 'class' => ''])
+@props(['narrow' => false, 'form' => false, 'width' => null, 'class' => ''])
 
 @php
-    $containerClass = match (true) {
-        $form => 'hw-container-form',
-        $narrow => 'hw-container-narrow',
+    $resolvedWidth = $width ?? match (true) {
+        $form => 'form',
+        $narrow => 'narrow',
+        default => 'default',
+    };
+
+    $containerClass = match ($resolvedWidth) {
+        'full' => 'hw-container-full',
+        'wide' => 'hw-container-wide',
+        'narrow' => 'hw-container-narrow',
+        'form' => 'hw-container-form',
+        'prose' => 'hw-container-prose',
         default => 'hw-container',
     };
 @endphp

@@ -45,6 +45,68 @@
       max(var(--container-padding), env(safe-area-inset-right, 0px));
   }
 
+  .hw-container-wide {
+    @apply mx-auto w-full;
+    max-width: var(--container-wide);
+    padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+      max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
+
+  .hw-container-full {
+    @apply mx-auto w-full;
+    max-width: var(--container-full);
+    padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+      max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
+
+  .hw-container-prose {
+    @apply mx-auto w-full;
+    max-width: var(--content-prose);
+    padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+      max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
+
+  .hw-section--padding-none {
+    @apply py-0;
+  }
+
+  .hw-section--padding-compact {
+    @apply py-8 md:py-10;
+  }
+
+  .hw-section--padding-spacious {
+    @apply py-16 md:py-24;
+  }
+
+  [data-site-width="wide"] {
+    --container-max: var(--container-wide);
+  }
+
+  [data-site-width="full"] {
+    --container-max: var(--container-full);
+  }
+
+  .hw-header--static {
+    @apply relative;
+  }
+
+  .hw-header--sticky {
+    @apply sticky top-0 z-40;
+  }
+
+  .hw-header--transparent {
+    @apply bg-hw-white backdrop-blur;
+    background-color: color-mix(in srgb, var(--color-white) 80%, transparent);
+  }
+
+  .hw-header--solid {
+    @apply bg-hw-white;
+  }
+
+  .hw-header--no-border {
+    @apply border-b-0;
+  }
+
   .hw-section {
     @apply py-section;
   }
@@ -74,6 +136,17 @@
 
   .hw-contact-section {
     @apply py-8 md:py-10;
+  }
+
+  .hw-header-cta {
+    @apply whitespace-nowrap shrink-0;
+    min-height: 40px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .hw-footer-logo-card {
+    @apply inline-flex rounded-xl bg-white px-4 py-3 shadow-md;
   }
 
   .hw-contact-nav {
@@ -138,5 +211,9 @@
 
   .hw-contact-panel--featured {
     @apply border-hw-navy bg-white shadow-md;
+  }
+
+  .hw-contact-panel--active {
+    @apply ring-2 ring-hw-dusty-blue border-hw-dusty-blue;
   }
 }

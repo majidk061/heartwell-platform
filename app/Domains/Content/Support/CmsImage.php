@@ -6,6 +6,20 @@ use Illuminate\Support\Facades\Storage;
 
 class CmsImage
 {
+    public static function isExternalUrl(?string $path): bool
+    {
+        if (blank($path)) {
+            return false;
+        }
+
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
+    }
+
+    public static function isStoredPath(?string $path): bool
+    {
+        return filled($path) && ! self::isExternalUrl($path);
+    }
+
     public static function url(?string $path): ?string
     {
         if (empty($path)) {

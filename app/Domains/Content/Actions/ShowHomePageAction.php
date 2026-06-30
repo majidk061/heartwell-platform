@@ -5,7 +5,6 @@ namespace App\Domains\Content\Actions;
 use App\Domains\Content\Models\AvatarCard;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\SupportPathway;
-use App\Domains\Content\Models\Testimonial;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ShowHomePageAction
@@ -17,8 +16,8 @@ class ShowHomePageAction
     {
         $page = Page::query()
             ->where('slug', 'home')
-            ->where('is_published', true)
-            ->with('publishedSections')
+            ->published()
+            ->with(['publishedSections.template'])
             ->first();
 
         if (! $page) {
@@ -26,9 +25,10 @@ class ShowHomePageAction
         }
 
         $siteSettings = app(GetSiteSettingsAction::class)->execute();
+        $sections = app(ResolvePageSectionsAction::class)->execute($page->publishedSections);
 
         $avatarCards = AvatarCard::query()
-            ->where('is_published', true)
+            ->published()
             ->orderBy('sort_order')
             ->get();
 
@@ -36,18 +36,25 @@ class ShowHomePageAction
             $avatarCards = collect(array_values(config('heartwell.avatar_cards')));
         }
 
+        $testimonialSettings = $sections->firstWhere('section_type', 'testimonials')?->content ?? [];
+        $homeTestimonialSettings = array_merge($siteSettings['home'] ?? [], [
+            'testimonials_enabled' => $testimonialSettings['enabled'] ?? ($siteSettings['home']['testimonials_enabled'] ?? true),
+            'testimonials_count' => $testimonialSettings['count'] ?? ($siteSettings['home']['testimonials_count'] ?? 6),
+            'testimonials_display_mode' => $testimonialSettings['display_mode'] ?? ($siteSettings['home']['testimonials_display_mode'] ?? 'grid'),
+            'testimonials_carousel_visible' => $testimonialSettings['carousel_visible'] ?? ($siteSettings['home']['testimonials_carousel_visible'] ?? 1),
+            'testimonials_carousel_autoplay' => $testimonialSettings['carousel_autoplay'] ?? ($siteSettings['home']['testimonials_carousel_autoplay'] ?? false),
+            'testimonials_carousel_interval' => $testimonialSettings['carousel_interval'] ?? ($siteSettings['home']['testimonials_carousel_interval'] ?? 6),
+        ]);
+
         return [
             'page' => $page,
-            'sections' => $page->publishedSections,
+            'sections' => $sections,
             'pathways' => SupportPathway::query()
-                ->where('is_published', true)
+                ->published()
                 ->orderBy('sort_order')
                 ->get(),
-            'testimonials' => Testimonial::query()
-                ->where('is_published', true)
-                ->orderBy('sort_order')
-                ->limit(3)
-                ->get(),
+            'testimonials' => app(GetPublishedTestimonialsAction::class)->execute(['home' => $homeTestimonialSettings]),
+            'testimonialSettings' => $homeTestimonialSettings,
             'avatarCards' => $avatarCards,
             'siteSettings' => $siteSettings,
             'ctas' => $siteSettings['ctas'],

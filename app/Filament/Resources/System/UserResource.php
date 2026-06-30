@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\System;
 
-use App\Domains\Admin\Actions\InviteAdminUserAction;
+use App\Domains\Admin\Actions\SendAdminPasswordResetInviteAction;
 use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
@@ -15,7 +15,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Password;
 use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
@@ -103,32 +102,39 @@ class UserResource extends Resource
                     ->icon('heroicon-o-envelope')
                     ->visible(fn (User $record) => filled($record->invited_at))
                     ->action(function (User $record) {
-                        app(InviteAdminUserAction::class)->execute([
-                            'name' => $record->name,
-                            'email' => $record->email,
-                            'roles' => $record->roles->pluck('name')->all(),
-                            'permissions' => $record->permissions->pluck('name')->all(),
-                            'is_active' => $record->is_active,
-                        ], $record);
+                        try {
+                            app(SendAdminPasswordResetInviteAction::class)->execute($record, true);
 
-                        Notification::make()->title('Invite resent')->success()->send();
+                            $record->update(['invited_at' => now()]);
+
+                            Notification::make()->title('Invite resent')->success()->send();
+                        } catch (\Throwable $exception) {
+                            report($exception);
+
+                            Notification::make()
+                                ->title('Invite email failed')
+                                ->body($exception->getMessage())
+                                ->danger()
+                                ->send();
+                        }
                     }),
                 Tables\Actions\Action::make('forceReset')
                     ->label('Force password reset')
                     ->icon('heroicon-o-key')
                     ->action(function (User $record) {
-                        $token = Password::broker('users')->createToken($record);
-                        $resetUrl = route('filament.admin.auth.password-reset.reset', [
-                            'token' => $token,
-                            'email' => $record->email,
-                        ]);
+                        try {
+                            app(SendAdminPasswordResetInviteAction::class)->execute($record, true);
 
-                        \Illuminate\Support\Facades\Mail::raw(
-                            "Reset your HeartWell admin password: {$resetUrl}",
-                            fn ($message) => $message->to($record->email)->subject('Reset your HeartWell password'),
-                        );
+                            Notification::make()->title('Password reset email sent')->success()->send();
+                        } catch (\Throwable $exception) {
+                            report($exception);
 
-                        Notification::make()->title('Password reset email sent')->success()->send();
+                            Notification::make()
+                                ->title('Password reset email failed')
+                                ->body($exception->getMessage())
+                                ->danger()
+                                ->send();
+                        }
                     }),
                 Tables\Actions\DeleteAction::make()
                     ->visible(fn (User $record) => ! $record->hasRole('super_admin')),

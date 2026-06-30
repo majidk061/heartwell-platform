@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Content;
 
 use App\Domains\Content\Models\Faq;
+use App\Domains\Content\Models\Page;
 use App\Filament\Concerns\AuthorizesWithPermissions;
 use App\Filament\Concerns\ConfiguresHeartWellForms;
 use App\Filament\Concerns\ConfiguresHeartWellTables;
@@ -53,11 +54,12 @@ class FaqResource extends Resource
                         ->required()
                         ->rows(5)
                         ->columnSpanFull(),
-                    Forms\Components\TextInput::make('page_slug')
-                        ->label('Page slug')
-                        ->helperText('Leave blank for global FAQs.')
-                        ->maxLength(255)
-                        ->prefixIcon('heroicon-o-link'),
+                    Forms\Components\Select::make('page_slug')
+                        ->label('Page')
+                        ->options(fn () => Page::query()->orderBy('sort_order')->pluck('title', 'slug'))
+                        ->required()
+                        ->searchable()
+                        ->helperText('FAQ appears only on pages that include an FAQ section with this slug.'),
                 ], 1),
                 static::formSection('Publishing', 'heroicon-o-eye', [
                     Forms\Components\Toggle::make('is_published')
@@ -75,8 +77,12 @@ class FaqResource extends Resource
                 Tables\Columns\IconColumn::make('is_published')->boolean(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Edit')
+                    ->icon('heroicon-o-pencil-square')
+                    ->slideOver(),
             ])
+            ->recordAction(Tables\Actions\EditAction::class)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

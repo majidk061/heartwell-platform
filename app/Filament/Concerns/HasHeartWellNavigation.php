@@ -5,7 +5,6 @@ namespace App\Filament\Concerns;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 
 trait HasHeartWellNavigation
@@ -16,7 +15,7 @@ trait HasHeartWellNavigation
     protected function getFormActions(): array
     {
         return [
-            $this->getSaveFormAction(),
+            $this->getPrimaryFormAction(),
             Action::make('saveAndBack')
                 ->label('Save & back to list')
                 ->color('gray')
@@ -26,6 +25,13 @@ trait HasHeartWellNavigation
                 }),
             $this->getCancelFormAction(),
         ];
+    }
+
+    protected function getPrimaryFormAction(): Action
+    {
+        return $this instanceof CreateRecord
+            ? $this->getCreateFormAction()
+            : $this->getSaveFormAction();
     }
 
     protected function getCancelFormAction(): Action

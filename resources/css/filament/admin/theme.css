@@ -303,3 +303,58 @@
 .fi-pagination-item.fi-active {
     @apply border-[#7ba7bc] bg-[#e8f0f4] text-[#1b2b4b];
 }
+
+/* Admin profile — sidebar + tabbed panels */
+.hw-profile-shell {
+    @apply w-full;
+}
+
+.hw-profile-sidebar-cover {
+    @apply relative overflow-hidden;
+}
+
+.hw-profile-sidebar-avatar {
+    @apply rounded-full border-4 border-white bg-white shadow-md;
+    width: 6.5rem;
+    height: 6.5rem;
+}
+
+.hw-profile-avatar-image {
+    @apply h-full w-full rounded-full object-cover;
+}
+
+.hw-profile-avatar-fallback {
+    @apply flex h-full w-full items-center justify-center rounded-full bg-[#e8f0f4] text-xl font-semibold text-[#1b2b4b];
+}
+
+.hw-profile-tab-button {
+    @apply flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-600 transition;
+}
+
+.hw-profile-tab-button:hover {
+    @apply bg-gray-50 text-gray-900;
+}
+
+.hw-profile-tab-button-active {
+    @apply bg-[#e8f0f4] text-[#1b2b4b];
+}
+
+.hw-profile-panel {
+    @apply overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm;
+}
+
+.hw-profile-panel-header {
+    @apply border-b border-gray-100 px-6 py-5;
+}
+
+.hw-profile-panel-body {
+    @apply px-6 py-5;
+}
+
+.hw-profile-panel-actions {
+    @apply mt-6 flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end;
+}
+
+.hw-profile-shell .fi-fo-file-upload-avatar {
+    @apply mx-auto;
+}
