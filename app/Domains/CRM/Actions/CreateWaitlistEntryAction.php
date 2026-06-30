@@ -46,9 +46,16 @@ class CreateWaitlistEntryAction
      */
     private function findOrCreateLead(array $data): Lead
     {
+        $avatarType = isset($data['avatar_type'])
+            ? AvatarType::tryFrom($data['avatar_type'])
+            : null;
+        $avatarTags = $this->avatarInterestTags($data['interests'] ?? []);
+
         $lead = Lead::query()->where('email', $data['email'])->first();
 
         if ($lead) {
+            $this->syncLeadAvatar($lead, $avatarType, $avatarTags);
+
             return $lead;
         }
 
@@ -58,10 +65,41 @@ class CreateWaitlistEntryAction
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'source' => LeadSource::Waitlist,
-            'avatar_type' => isset($data['avatar_type'])
-                ? AvatarType::tryFrom($data['avatar_type'])
-                : null,
+            'avatar_type' => $avatarType,
+            'tags' => $avatarTags !== [] ? $avatarTags : null,
             'status' => LeadStatus::NewLead,
         ]);
+    }
+
+    /**
+     * @param  array<int, string>  $interests
+     * @return array<int, string>
+     */
+    private function avatarInterestTags(array $interests): array
+    {
+        return array_values(array_unique(array_map(
+            fn (string $interest) => 'avatar:'.$interest,
+            $interests,
+        )));
+    }
+
+    /**
+     * @param  array<int, string>  $avatarTags
+     */
+    private function syncLeadAvatar(Lead $lead, ?AvatarType $avatarType, array $avatarTags): void
+    {
+        $updates = [];
+
+        if ($avatarType !== null) {
+            $updates['avatar_type'] = $avatarType;
+        }
+
+        if ($avatarTags !== []) {
+            $updates['tags'] = array_values(array_unique(array_merge($lead->tags ?? [], $avatarTags)));
+        }
+
+        if ($updates !== []) {
+            $lead->update($updates);
+        }
     }
 }

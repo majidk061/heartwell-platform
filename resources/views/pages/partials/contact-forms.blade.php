@@ -121,6 +121,7 @@
                             <label for="waitlist_phone" class="hw-form-label">Phone (optional)</label>
                             <input type="tel" name="phone" id="waitlist_phone" value="{{ old('phone') }}" class="hw-form-field">
                         </div>
+                        <x-forms.avatar-selector />
                         <div class="md:col-span-2">
                             <button type="submit" class="btn-primary w-full sm:w-auto" :disabled="loading">
                                 <span x-show="!loading">{{ $ctas['secondary']['waitlist']['label'] ?? 'Join the Waitlist' }}</span>
@@ -153,6 +154,7 @@
                             <label for="consult_message" class="hw-form-label">How can we support you?</label>
                             <textarea name="message" id="consult_message" rows="4" class="hw-form-field min-h-[120px]">{{ old('message') }}</textarea>
                         </div>
+                        <x-forms.avatar-selector />
                         <div class="md:col-span-2">
                             <button type="submit" class="btn-primary w-full sm:w-auto" :disabled="loading">
                                 <span x-show="!loading">{{ $ctas['secondary']['consultation']['label'] ?? 'Request Consultation' }}</span>
@@ -204,11 +206,11 @@
                         </div>
                         <div>
                             <label for="group_email" class="hw-form-label">Email</label>
-                            <input type="email" name="email" id="group_email" required value="{{ old('email') }}" class="hw-form-field">
+                            <input type="email" name="host_email" id="group_email" required value="{{ old('host_email') }}" class="hw-form-field">
                         </div>
                         <div>
                             <label for="group_phone" class="hw-form-label">Phone</label>
-                            <input type="tel" name="phone" id="group_phone" value="{{ old('phone') }}" class="hw-form-field">
+                            <input type="tel" name="host_phone" id="group_phone" value="{{ old('host_phone') }}" class="hw-form-field">
                         </div>
                         <div>
                             <label for="group_count" class="hw-form-label">Expected Guests</label>
@@ -216,7 +218,7 @@
                         </div>
                         <div class="md:col-span-2">
                             <label for="group_details" class="hw-form-label">Event Details</label>
-                            <textarea name="event_details" id="group_details" rows="3" required class="hw-form-field min-h-[100px]">{{ old('event_details') }}</textarea>
+                            <textarea name="message" id="group_details" rows="3" required class="hw-form-field min-h-[100px]">{{ old('message') }}</textarea>
                         </div>
                         <div class="md:col-span-2">
                             <button type="submit" class="btn-primary w-full sm:w-auto" :disabled="loading">Submit Group Inquiry</button>

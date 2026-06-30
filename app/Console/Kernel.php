@@ -10,6 +10,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('heartwell:process-automation')->everyMinute();
+        $schedule->command('heartwell:process-clinical-clearance')->daily();
     }
 
     protected function commands(): void

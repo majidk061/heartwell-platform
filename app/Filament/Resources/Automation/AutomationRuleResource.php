@@ -51,8 +51,9 @@ class AutomationRuleResource extends Resource
                         ->required(),
                     Forms\Components\Select::make('channel')
                         ->options([
-                            'email' => 'Email (SendGrid)',
+                            'email' => 'Email (SendGrid / SMTP)',
                             'mailchimp' => 'Mailchimp',
+                            'sms' => 'SMS (Twilio)',
                         ])
                         ->required(),
                     Forms\Components\TextInput::make('template_ref')

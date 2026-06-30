@@ -22,6 +22,19 @@ class EvaluateAutomationRulesAction
     {
         $rules = $this->matcher->match($triggerType, $context);
 
-        return $rules->map(fn ($rule) => $this->executor->execute($rule, $context));
+        return $rules->map(function ($rule) use ($context) {
+            if ($rule->delay_minutes > 0) {
+                return AutomationLog::query()->create([
+                    'automation_rule_id' => $rule->id,
+                    'lead_id' => $context['lead_id'] ?? null,
+                    'status' => 'scheduled',
+                    'channel' => $rule->channel,
+                    'payload' => $context,
+                    'executed_at' => now()->addMinutes($rule->delay_minutes),
+                ]);
+            }
+
+            return $this->executor->execute($rule, $context);
+        });
     }
 }

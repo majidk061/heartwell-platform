@@ -11,7 +11,9 @@ class WebhookController extends Controller
 {
     public function acuity(Request $request, AcuityServiceInterface $acuity): JsonResponse
     {
-        $acuity->handleWebhook($request->all());
+        if (! $acuity->handleWebhook($request->all(), $request)) {
+            return response()->json(['ok' => false, 'message' => 'Invalid webhook secret.'], 403);
+        }
 
         return response()->json(['ok' => true]);
     }

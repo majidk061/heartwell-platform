@@ -12,7 +12,7 @@ interface AcuityServiceInterface
     /**
      * @param  array<string, mixed>  $payload
      */
-    public function handleWebhook(array $payload): bool;
+    public function handleWebhook(array $payload, ?\Illuminate\Http\Request $request = null): bool;
 
     public function isConfigured(): bool;
 }

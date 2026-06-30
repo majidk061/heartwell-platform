@@ -6,6 +6,7 @@ use App\Domains\Integrations\Services\AcuityService;
 use App\Domains\Integrations\Services\MailchimpService;
 use App\Domains\Integrations\Services\SendGridService;
 use App\Domains\Integrations\Services\SettingsResolver;
+use App\Domains\Integrations\Services\TwilioSmsService;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -82,6 +83,10 @@ class ManageIntegrations extends Page implements HasForms
             'sendgrid_template_booking' => $r->get('sendgrid_template_booking', 'SENDGRID_TEMPLATE_BOOKING_CONFIRMATION'),
             'hydreight_enabled' => (bool) ($r->get('hydreight_enabled') ?? config('integrations.hydreight.enabled')),
             'hydreight_portal_url' => $r->get('hydreight_portal_url', 'HYDREIGHT_PORTAL_URL'),
+            'twilio_enabled' => (bool) ($r->get('twilio_enabled') ?? config('integrations.twilio.enabled')),
+            'twilio_account_sid' => $r->get('twilio_account_sid', 'TWILIO_ACCOUNT_SID'),
+            'twilio_auth_token' => '',
+            'twilio_from_number' => $r->get('twilio_from_number', 'TWILIO_FROM_NUMBER'),
         ]);
     }
 
@@ -93,8 +98,13 @@ class ManageIntegrations extends Page implements HasForms
                     Forms\Components\Toggle::make('acuity_enabled')->label('Enable Acuity booking'),
                     Forms\Components\TextInput::make('acuity_user_id')->label('User ID'),
                     Forms\Components\TextInput::make('acuity_api_key')->label('API key')->password()->revealable(),
-                    Forms\Components\TextInput::make('acuity_webhook_secret')->label('Webhook secret')->password()->revealable(),
-                    Forms\Components\TextInput::make('acuity_embed_url')->label('Embed URL')->url()->columnSpanFull(),
+                    Forms\Components\TextInput::make('acuity_webhook_secret')
+                        ->label('Webhook secret')
+                        ->password()
+                        ->revealable()
+                        ->helperText('Register webhook URL in Acuity: '.url('/webhooks/acuity').'?secret=YOUR_SECRET'),
+                    Forms\Components\TextInput::make('acuity_embed_url')->label('Embed URL')->url()->columnSpanFull()
+                        ->helperText('When set, Contact page shows the Book tab with Acuity scheduling. Configure confirmation and reminder emails in Acuity admin using HeartWell branding — Acuity sends scheduling messages; HeartWell sends clinical intake and visit follow-ups.'),
                 ])->columns(2),
                 Forms\Components\Tabs\Tab::make('Mailchimp')->schema([
                     Forms\Components\Toggle::make('mailchimp_enabled')->label('Enable Mailchimp'),
@@ -113,8 +123,16 @@ class ManageIntegrations extends Page implements HasForms
                 ])->columns(2),
                 Forms\Components\Tabs\Tab::make('Hydreight')->schema([
                     Forms\Components\Toggle::make('hydreight_enabled')->label('Enable clinical portal link'),
-                    Forms\Components\TextInput::make('hydreight_portal_url')->label('Portal URL')->url()->columnSpanFull(),
+                    Forms\Components\TextInput::make('hydreight_portal_url')->label('Portal URL')->url()->columnSpanFull()
+                        ->helperText('HeartWell-branded handoff lives at /clinical-intake — clients never see Hydreight by name on the public site.'),
                 ]),
+                Forms\Components\Tabs\Tab::make('Twilio SMS')->schema([
+                    Forms\Components\Toggle::make('twilio_enabled')->label('Enable SMS reminders'),
+                    Forms\Components\TextInput::make('twilio_account_sid')->label('Account SID'),
+                    Forms\Components\TextInput::make('twilio_auth_token')->label('Auth token')->password()->revealable(),
+                    Forms\Components\TextInput::make('twilio_from_number')->label('From number')->tel()
+                        ->helperText('When disabled or unconfigured, SMS sends are logged locally without calling Twilio.'),
+                ])->columns(2),
             ])->columnSpanFull(),
         ])->statePath('data');
     }
@@ -140,6 +158,9 @@ class ManageIntegrations extends Page implements HasForms
             'sendgrid_template_booking' => $data['sendgrid_template_booking'] ?? null,
             'hydreight_enabled' => $data['hydreight_enabled'] ? '1' : '0',
             'hydreight_portal_url' => $data['hydreight_portal_url'] ?? null,
+            'twilio_enabled' => $data['twilio_enabled'] ? '1' : '0',
+            'twilio_account_sid' => $data['twilio_account_sid'] ?? null,
+            'twilio_from_number' => $data['twilio_from_number'] ?? null,
         ];
 
         foreach ($plain as $key => $value) {
@@ -148,7 +169,7 @@ class ManageIntegrations extends Page implements HasForms
             }
         }
 
-        foreach (['acuity_api_key', 'acuity_webhook_secret', 'mailchimp_api_key', 'sendgrid_api_key'] as $secret) {
+        foreach (['acuity_api_key', 'acuity_webhook_secret', 'mailchimp_api_key', 'sendgrid_api_key', 'twilio_auth_token'] as $secret) {
             if (filled($data[$secret] ?? null)) {
                 $r->set($secret, $data[$secret], 'integrations', $userId);
             }
@@ -189,6 +210,17 @@ class ManageIntegrations extends Page implements HasForms
             Notification::make()->title('Acuity configured')->success()->send();
         } else {
             Notification::make()->title('Acuity not configured')->warning()->send();
+        }
+    }
+
+    public function testTwilio(): void
+    {
+        $this->save();
+
+        if (app(TwilioSmsService::class)->isConfigured()) {
+            Notification::make()->title('Twilio configured')->success()->send();
+        } else {
+            Notification::make()->title('Twilio not configured (stub mode)')->warning()->send();
         }
     }
 }

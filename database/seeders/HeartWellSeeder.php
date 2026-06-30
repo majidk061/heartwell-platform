@@ -565,18 +565,19 @@ class HeartWellSeeder extends Seeder
             'logo_trimmed_path' => 'cms/branding/heartwell-logo-trimmed.png',
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'home'], ['value' => [
-            'testimonials_enabled' => true,
+            'testimonials_enabled' => false,
             'testimonials_count' => 6,
             'testimonials_display_mode' => 'grid',
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'contact_forms'], ['value' => []]);
+        $adminEmail = config('mail.from.address', 'admin@heartwellwellness.com');
         SiteSetting::query()->updateOrCreate(['key' => 'email_notifications'], ['value' => [
-            'default_admin_emails' => ['majidk061@gmail.com'],
-            'waitlist_admin_emails' => ['majidk061@gmail.com'],
-            'consultation_admin_emails' => ['majidk061@gmail.com'],
-            'group_inquiry_admin_emails' => ['majidk061@gmail.com'],
-            'booking_admin_emails' => ['majidk061@gmail.com'],
-            'new_lead_admin_emails' => ['majidk061@gmail.com'],
+            'default_admin_emails' => [$adminEmail],
+            'waitlist_admin_emails' => [$adminEmail],
+            'consultation_admin_emails' => [$adminEmail],
+            'group_inquiry_admin_emails' => [$adminEmail],
+            'booking_admin_emails' => [$adminEmail],
+            'new_lead_admin_emails' => [$adminEmail],
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'seo'], ['value' => [
             'robots_index' => true,
@@ -733,6 +734,19 @@ class HeartWellSeeder extends Seeder
                 'channel' => 'email',
                 'template_ref' => 'booking_confirmation',
                 'conditions' => ['status' => 'booked'],
+            ],
+            [
+                'name' => 'Group Inquiry Acknowledgement',
+                'trigger_type' => 'group_inquiry_submitted',
+                'channel' => 'email',
+                'template_ref' => 'group_inquiry_ack',
+            ],
+            [
+                'name' => 'Group Inquiry Follow-up',
+                'trigger_type' => 'group_inquiry_submitted',
+                'channel' => 'email',
+                'template_ref' => 'group_followup_resources',
+                'delay_minutes' => 1440,
             ],
         ];
 

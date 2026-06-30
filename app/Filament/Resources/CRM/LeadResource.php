@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CRM;
 
 use App\Domains\CRM\Actions\TransitionLeadStatusAction;
 use App\Domains\CRM\Enums\AvatarType;
+use App\Domains\CRM\Enums\ClinicalClearanceStatus;
 use App\Domains\CRM\Enums\LeadPriority;
 use App\Domains\CRM\Enums\LeadSource;
 use App\Domains\CRM\Enums\LeadStatus;
@@ -87,6 +88,16 @@ class LeadResource extends Resource
                 Forms\Components\Toggle::make('marketing_consent')->label('Marketing consent'),
                 Forms\Components\TagsInput::make('tags'),
             ]),
+            static::formSection('Clinical clearance', 'heroicon-o-shield-check', [
+                Forms\Components\Select::make('clinical_clearance_status')
+                    ->label('Clearance status')
+                    ->options(collect(ClinicalClearanceStatus::cases())->mapWithKeys(
+                        fn (ClinicalClearanceStatus $status) => [$status->value => $status->label()]
+                    ))
+                    ->default(ClinicalClearanceStatus::Pending->value),
+                Forms\Components\DateTimePicker::make('clinical_cleared_at')->label('Cleared at'),
+                Forms\Components\DateTimePicker::make('clinical_clearance_expires_at')->label('Expires at'),
+            ]),
             static::formSection('Notes', 'heroicon-o-document-text', [
                 Forms\Components\Textarea::make('notes')->rows(4)->columnSpanFull(),
             ], 1),
@@ -113,6 +124,16 @@ class LeadResource extends Resource
                         LeadStatus::Completed => 'success',
                         LeadStatus::FollowUp => 'danger',
                     }),
+                Tables\Columns\TextColumn::make('clinical_clearance_status')
+                    ->label('Clearance')
+                    ->badge()
+                    ->formatStateUsing(fn (?ClinicalClearanceStatus $state) => $state?->label() ?? '—')
+                    ->color(fn (?ClinicalClearanceStatus $state) => match ($state) {
+                        ClinicalClearanceStatus::Cleared => 'success',
+                        ClinicalClearanceStatus::Expired => 'danger',
+                        default => 'warning',
+                    })
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('priority')->badge()->toggleable(),
                 Tables\Columns\TextColumn::make('source_page')->toggleable(),
                 Tables\Columns\TextColumn::make('next_follow_up_at')->dateTime()->sortable()->toggleable(),

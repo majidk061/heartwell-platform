@@ -45,3 +45,22 @@ php artisan heartwell:process-automation
 ```
 
 Schedule via cron in production.
+
+## Planning → GitHub issues → task-wise execution
+
+When planning multi-step work:
+
+1. **Plan** — scope + acceptance criteria per deliverable.
+2. **Create GitHub issues** — one issue per task, with priority labels.
+3. **Execute one issue at a time** — implement, test, close, then next.
+
+```bash
+./scripts/gh-bootstrap-labels.sh          # once per repo
+./scripts/gh-task.sh next                 # pick next P0/P1 issue
+./scripts/gh-task.sh view 1               # read issue details
+./scripts/gh-task.sh close 1 --comment "Shipped: …"
+./scripts/create-implementation-issues.sh # creative brief backlog (already created)
+```
+
+Backlog index: `docs/IMPLEMENTATION_ISSUES.md`  
+Cursor rule: `.cursor/rules/planning-and-github-tasks.mdc`

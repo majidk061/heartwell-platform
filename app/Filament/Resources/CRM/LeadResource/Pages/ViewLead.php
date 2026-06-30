@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\CRM\LeadResource\Pages;
 
 use App\Domains\CRM\Actions\TransitionLeadStatusAction;
+use App\Domains\CRM\Actions\UpdateClinicalClearanceAction;
+use App\Domains\CRM\Enums\ClinicalClearanceStatus;
 use App\Domains\CRM\Enums\LeadStatus;
 use App\Domains\CRM\Models\Lead;
 use App\Filament\Resources\CRM\LeadResource;
-use App\Filament\Resources\Pages\HeartWellEditRecord;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Infolists;
@@ -78,6 +79,19 @@ class ViewLead extends ViewRecord
                         Notification::make()->title('Invalid transition')->danger()->send();
                     }
                 }),
+            Actions\Action::make('markClinicalCleared')
+                ->label('Mark clinical clearance')
+                ->icon('heroicon-o-shield-check')
+                ->visible(fn (Lead $record) => ! $record->hasValidClinicalClearance())
+                ->requiresConfirmation()
+                ->action(function (Lead $record): void {
+                    app(UpdateClinicalClearanceAction::class)->execute(
+                        $record,
+                        ClinicalClearanceStatus::Cleared,
+                    );
+                    $this->record = $record->fresh(['statusHistory', 'assignedUser']);
+                    Notification::make()->title('Clinical clearance recorded (6-month expiry)')->success()->send();
+                }),
             Actions\Action::make('addNote')
                 ->label('Add note')
                 ->icon('heroicon-o-document-plus')
@@ -121,6 +135,14 @@ class ViewLead extends ViewRecord
                 Infolists\Components\TextEntry::make('last_contacted_at')->dateTime(),
                 Infolists\Components\TextEntry::make('next_follow_up_at')->dateTime(),
                 Infolists\Components\IconEntry::make('marketing_consent')->boolean()->label('Marketing consent'),
+            ])->columns(3),
+            Infolists\Components\Section::make('Clinical clearance')->schema([
+                Infolists\Components\TextEntry::make('clinical_clearance_status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (?ClinicalClearanceStatus $state) => $state?->label() ?? 'Pending intake'),
+                Infolists\Components\TextEntry::make('clinical_cleared_at')->dateTime()->label('Cleared at'),
+                Infolists\Components\TextEntry::make('clinical_clearance_expires_at')->dateTime()->label('Expires at'),
             ])->columns(3),
             Infolists\Components\Section::make('Notes')
                 ->schema([

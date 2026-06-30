@@ -6,10 +6,12 @@ use App\Domains\Content\Actions\GetSiteSettingsAction;
 use App\Domains\Integrations\Contracts\AcuityServiceInterface;
 use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
+use App\Domains\Integrations\Contracts\SmsServiceInterface;
 use App\Domains\Integrations\Services\AcuityService;
 use App\Domains\Integrations\Services\MailchimpService;
 use App\Domains\Integrations\Services\SendGridService;
 use App\Domains\Integrations\Services\SettingsResolver;
+use App\Domains\Integrations\Services\TwilioSmsService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MailchimpServiceInterface::class, MailchimpService::class);
         $this->app->bind(SendGridServiceInterface::class, SendGridService::class);
         $this->app->bind(AcuityServiceInterface::class, AcuityService::class);
+        $this->app->bind(SmsServiceInterface::class, TwilioSmsService::class);
     }
 
     /**

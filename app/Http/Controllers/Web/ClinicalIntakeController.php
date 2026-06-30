@@ -9,9 +9,12 @@ class ClinicalIntakeController extends Controller
 {
     public function __invoke(): View
     {
+        $portalUrl = config('integrations.hydreight.portal_url');
+        $portalEnabled = (bool) config('integrations.hydreight.enabled') && filled($portalUrl);
+
         return view('pages.clinical-intake', [
-            'portal_url' => config('integrations.hydreight.portal_url'),
-            'enabled' => config('integrations.hydreight.enabled'),
+            'portalUrl' => $portalUrl,
+            'portalEnabled' => $portalEnabled,
             'note' => config('heartwell.compliance.clinical_portal_note'),
             'brand' => config('heartwell.brand'),
         ]);

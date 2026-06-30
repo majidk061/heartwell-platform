@@ -2,13 +2,21 @@
 
 namespace App\Http\Requests\CRM;
 
+use App\Http\Requests\Concerns\NormalizesContactFormInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GroupInquiryStoreRequest extends FormRequest
 {
+    use NormalizesContactFormInput;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeGroupInquiryAliases();
     }
 
     /**

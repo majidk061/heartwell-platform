@@ -2,8 +2,8 @@
 
 namespace App\Domains\Integrations\Services;
 
-use App\Domains\Integrations\Models\EncryptedSetting;
 use App\Domains\Automation\Models\AutomationLog;
+use App\Domains\Integrations\Models\EncryptedSetting;
 use Illuminate\Support\Facades\Crypt;
 
 class SettingsResolver
@@ -107,6 +107,10 @@ class SettingsResolver
             'integrations.sendgrid.admin_alert_email' => $r->get('sendgrid_admin_alert_email', 'SENDGRID_ADMIN_ALERT_EMAIL') ?? config('integrations.sendgrid.admin_alert_email'),
             'integrations.hydreight.enabled' => (bool) ($r->get('hydreight_enabled') ?? config('integrations.hydreight.enabled')),
             'integrations.hydreight.portal_url' => $r->get('hydreight_portal_url', 'HYDREIGHT_PORTAL_URL') ?? config('integrations.hydreight.portal_url'),
+            'integrations.twilio.enabled' => (bool) ($r->get('twilio_enabled') ?? config('integrations.twilio.enabled')),
+            'integrations.twilio.account_sid' => $r->get('twilio_account_sid', 'TWILIO_ACCOUNT_SID') ?? config('integrations.twilio.account_sid'),
+            'integrations.twilio.auth_token' => $r->get('twilio_auth_token', 'TWILIO_AUTH_TOKEN') ?? config('integrations.twilio.auth_token'),
+            'integrations.twilio.from_number' => $r->get('twilio_from_number', 'TWILIO_FROM_NUMBER') ?? config('integrations.twilio.from_number'),
             'heartwell.ga4_measurement_id' => $r->get('ga4_measurement_id', 'HEARTWELL_GA4_MEASUREMENT_ID') ?? config('heartwell.ga4_measurement_id'),
         ]);
     }

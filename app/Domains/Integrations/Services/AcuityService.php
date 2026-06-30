@@ -2,8 +2,10 @@
 
 namespace App\Domains\Integrations\Services;
 
+use App\Domains\Booking\Actions\SyncBookingFromAcuityWebhookAction;
 use App\Domains\Booking\Events\BookingSynced;
 use App\Domains\Integrations\Contracts\AcuityServiceInterface;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -31,25 +33,43 @@ class AcuityService implements AcuityServiceInterface
         }
     }
 
-    public function handleWebhook(array $payload): bool
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    public function handleWebhook(array $payload, ?Request $request = null): bool
     {
-        if (! $this->isConfigured()) {
-            Log::info('[Acuity stub] handleWebhook', ['payload' => $payload]);
+        if ($request !== null && ! $this->validateWebhookSecret($request)) {
+            return false;
+        }
 
-            if (($payload['action'] ?? '') === 'scheduled') {
-                BookingSynced::dispatch($payload);
-            }
+        $action = (string) ($payload['action'] ?? '');
+
+        if (! in_array($action, ['scheduled', 'rescheduled', 'canceled'], true)) {
+            Log::info('[Acuity] webhook ignored', ['action' => $action]);
 
             return true;
         }
 
-        Log::info('[Acuity] handleWebhook', ['action' => $payload['action'] ?? 'unknown']);
+        $normalized = app(SyncBookingFromAcuityWebhookAction::class)->execute($payload);
 
-        if (($payload['action'] ?? '') === 'scheduled') {
-            BookingSynced::dispatch($payload);
+        if ($action !== 'canceled') {
+            BookingSynced::dispatch($normalized);
         }
 
         return true;
+    }
+
+    public function validateWebhookSecret(Request $request): bool
+    {
+        $secret = config('integrations.acuity.webhook_secret');
+
+        if (blank($secret)) {
+            return true;
+        }
+
+        $provided = (string) ($request->query('secret') ?? $request->header('X-Acuity-Webhook-Secret', ''));
+
+        return hash_equals((string) $secret, $provided);
     }
 
     public function isConfigured(): bool
@@ -59,5 +79,10 @@ class AcuityService implements AcuityServiceInterface
         return ($config['enabled'] ?? false)
             && filled($config['user_id'])
             && filled($config['api_key']);
+    }
+
+    public function hasEmbed(): bool
+    {
+        return filled(config('integrations.acuity.embed_url'));
     }
 }

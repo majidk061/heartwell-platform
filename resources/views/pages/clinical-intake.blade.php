@@ -10,8 +10,8 @@
             </p>
             <p class="text-hw-text mt-4 text-base">{{ $siteSettings['compliance']['clinical_portal_note'] ?? config('heartwell.compliance.clinical_portal_note') }}</p>
             <p class="text-sm text-hw-muted mt-6">HeartWell remains your primary point of contact for scheduling and support.</p>
-            @if(config('integrations.hydreight.portal_url'))
-                <a href="{{ config('integrations.hydreight.portal_url') }}" class="btn-primary sm:w-auto inline-flex mt-8" target="_blank" rel="noopener">
+            @if($portalEnabled ?? false)
+                <a href="{{ $portalUrl }}" class="btn-primary sm:w-auto inline-flex mt-8" target="_blank" rel="noopener noreferrer">
                     Continue to Secure Clinical Portal
                 </a>
             @else

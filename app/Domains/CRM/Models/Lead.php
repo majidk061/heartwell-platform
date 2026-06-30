@@ -4,6 +4,7 @@ namespace App\Domains\CRM\Models;
 
 use App\Domains\Booking\Models\Booking;
 use App\Domains\CRM\Enums\AvatarType;
+use App\Domains\CRM\Enums\ClinicalClearanceStatus;
 use App\Domains\CRM\Enums\LeadPriority;
 use App\Domains\CRM\Enums\LeadSource;
 use App\Domains\CRM\Enums\LeadStatus;
@@ -26,6 +27,9 @@ class Lead extends Model
         'source_page',
         'avatar_type',
         'status',
+        'clinical_clearance_status',
+        'clinical_cleared_at',
+        'clinical_clearance_expires_at',
         'priority',
         'preferred_contact_method',
         'notes',
@@ -47,6 +51,9 @@ class Lead extends Model
         'source' => LeadSource::class,
         'avatar_type' => AvatarType::class,
         'status' => LeadStatus::class,
+        'clinical_clearance_status' => ClinicalClearanceStatus::class,
+        'clinical_cleared_at' => 'datetime',
+        'clinical_clearance_expires_at' => 'datetime',
         'priority' => LeadPriority::class,
         'preferred_contact_method' => PreferredContactMethod::class,
         'last_contacted_at' => 'datetime',
@@ -90,5 +97,18 @@ class Lead extends Model
     public function fullName(): string
     {
         return trim("{$this->first_name} {$this->last_name}");
+    }
+
+    public function hasValidClinicalClearance(): bool
+    {
+        if ($this->clinical_clearance_status !== ClinicalClearanceStatus::Cleared) {
+            return false;
+        }
+
+        if ($this->clinical_clearance_expires_at === null) {
+            return true;
+        }
+
+        return $this->clinical_clearance_expires_at->isFuture();
     }
 }

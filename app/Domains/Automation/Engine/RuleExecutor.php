@@ -4,6 +4,7 @@ namespace App\Domains\Automation\Engine;
 
 use App\Domains\Automation\Models\AutomationLog;
 use App\Domains\Automation\Models\AutomationRule;
+use App\Domains\Integrations\Actions\SendSmsAction;
 use App\Domains\Integrations\Actions\SendTemplatedEmailAction;
 use App\Domains\Integrations\Contracts\MailchimpServiceInterface;
 use App\Domains\Integrations\Contracts\SendGridServiceInterface;
@@ -18,6 +19,7 @@ class RuleExecutor
         private readonly SendGridServiceInterface $sendGrid,
         private readonly MailChannelResolver $mailChannel,
         private readonly SendTemplatedEmailAction $sendTemplatedEmail,
+        private readonly SendSmsAction $sendSms,
     ) {}
 
     /**
@@ -26,11 +28,7 @@ class RuleExecutor
     public function execute(AutomationRule $rule, array $context = []): AutomationLog
     {
         try {
-            $result = match ($rule->channel) {
-                'email' => $this->executeEmail($rule, $context),
-                'mailchimp' => $this->executeMailchimp($rule, $context),
-                default => ['status' => 'skipped', 'message' => "Unsupported channel: {$rule->channel}"],
-            };
+            $result = $this->process($rule, $context);
 
             return AutomationLog::create([
                 'automation_rule_id' => $rule->id,
@@ -56,6 +54,20 @@ class RuleExecutor
                 'executed_at' => now(),
             ]);
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    public function process(AutomationRule $rule, array $context): array
+    {
+        return match ($rule->channel) {
+            'email' => $this->executeEmail($rule, $context),
+            'mailchimp' => $this->executeMailchimp($rule, $context),
+            'sms' => $this->executeSms($rule, $context),
+            default => ['status' => 'skipped', 'message' => "Unsupported channel: {$rule->channel}"],
+        };
     }
 
     /**
@@ -102,5 +114,19 @@ class RuleExecutor
         );
 
         return ['status' => 'sent', 'member_id' => $memberId];
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function executeSms(AutomationRule $rule, array $context): array
+    {
+        $templateKey = $rule->template_ref ?? 'appointment_reminder_sms';
+        $phone = $context['phone'] ?? '';
+
+        $sent = $this->sendSms->executeTemplate($templateKey, $phone, $context);
+
+        return ['status' => $sent ? 'sent' : 'skipped', 'channel' => 'sms'];
     }
 }
