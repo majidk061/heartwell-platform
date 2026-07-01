@@ -23,7 +23,7 @@ class SectionLayout
     public const HEADER_MODES = ['sticky', 'static'];
 
     /** @var list<string> */
-    public const HEADER_STYLES = ['solid', 'transparent_blur'];
+    public const HEADER_STYLES = ['solid', 'solid_cream', 'transparent_blur', 'transparent'];
 
     /**
      * @param  array<string, mixed>  $content

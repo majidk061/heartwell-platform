@@ -33,15 +33,6 @@
         $twitterCard = $page?->twitter_card ?? ($ogImage ? 'summary_large_image' : 'summary');
         $schemaType = $page?->schema_type ?? 'none';
         $siteWidth = $theme['site_width'] ?? 'standard';
-        $headerMode = $theme['header_mode'] ?? 'sticky';
-        $headerStyle = $theme['header_style'] ?? 'transparent_blur';
-        $headerBorder = $theme['header_show_border'] ?? true;
-        $headerClasses = trim(implode(' ', array_filter([
-            $headerMode === 'sticky' ? 'hw-header--sticky' : 'hw-header--static',
-            $headerStyle === 'transparent_blur' ? 'hw-header--transparent' : 'hw-header--solid',
-            ! $headerBorder ? 'hw-header--no-border' : 'border-b border-hw-border',
-            'z-40',
-        ])));
         $navStyle = $theme['navigation_style'] ?? [];
         $navHoverColor = $navStyle['hover_color'] ?? '#e8967a';
         $navActiveColor = $navStyle['active_color'] ?? '#e8967a';

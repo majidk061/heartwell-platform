@@ -199,7 +199,7 @@ class HeartWellSeeder extends Seeder
                     'design_variant' => 'full_bleed_overlay',
                     'subheading' => 'For Every Stage of Life',
                     'intro_question' => 'Feeling exhausted? Stuck? Not feeling like yourself?',
-                    'body' => 'Many women continue showing up every day while quietly feeling exhausted, depleted, stressed, or unlike themselves. HeartWell provides personalized, nurse-guided wellness support designed to help restore energy, recovery, confidence, and overall well-being.',
+                    'body' => "Many women continue showing up every day while quietly feeling exhausted, depleted, stressed, or unlike themselves.\n\nHeartWell provides personalized, nurse-guided wellness support designed to help restore energy, recovery, confidence, and overall well-being.",
                     'image_url' => self::IMG_HERO,
                     'show_consultation_link' => false,
                     'layout' => ['container_width' => 'full', 'section_padding' => 'none', 'background' => 'white'],
@@ -680,9 +680,16 @@ class HeartWellSeeder extends Seeder
             'default_section_padding' => 'normal',
             'default_section_background' => 'white',
             'header_mode' => 'sticky',
-            'header_style' => 'transparent_blur',
+            'header_style' => 'solid_cream',
             'header_show_border' => true,
             'colors' => SectionLayout::defaultThemeColors(),
+            'navigation_style' => [
+                'hover_effect' => 'color',
+                'hover_color' => '#e8967a',
+                'active_style' => 'underline',
+                'active_color' => '#e8967a',
+                'header_cta_count' => 2,
+            ],
         ]]);
     }
 

@@ -119,13 +119,12 @@ class ManageSiteSettings extends Page implements HasForms
             'default_section_padding' => $settings['theme']['default_section_padding'] ?? 'normal',
             'default_section_background' => $settings['theme']['default_section_background'] ?? 'white',
             'header_mode' => $settings['theme']['header_mode'] ?? 'sticky',
-            'header_style' => $settings['theme']['header_style'] ?? 'transparent_blur',
+            'header_style' => $settings['theme']['header_style'] ?? 'solid_cream',
             'header_show_border' => $settings['theme']['header_show_border'] ?? true,
             'nav_hover_effect' => $settings['theme']['navigation_style']['hover_effect'] ?? 'color',
             'nav_hover_color' => $settings['theme']['navigation_style']['hover_color'] ?? '#e8967a',
             'nav_active_style' => $settings['theme']['navigation_style']['active_style'] ?? 'underline',
             'nav_active_color' => $settings['theme']['navigation_style']['active_color'] ?? '#e8967a',
-            'header_cta_count' => (int) ($settings['theme']['navigation_style']['header_cta_count'] ?? 3),
             ...collect(static::defaultThemeColors())->mapWithKeys(fn ($color, $key) => ['theme_color_'.$key => $settings['theme']['colors'][$key] ?? $color])->all(),
         ]);
     }
@@ -261,14 +260,18 @@ class ManageSiteSettings extends Page implements HasForms
                                         'sticky' => 'Sticky (follows scroll)',
                                         'static' => 'Static (scrolls away)',
                                     ])
-                                    ->default('sticky'),
+                                    ->default('sticky')
+                                    ->helperText('Sticky keeps the header visible while scrolling.'),
                                 Forms\Components\Select::make('header_style')
-                                    ->label('Header style')
+                                    ->label('Header background')
                                     ->options([
+                                        'solid_cream' => 'Solid cream (client mock)',
                                         'solid' => 'Solid white',
-                                        'transparent_blur' => 'Transparent with blur',
+                                        'transparent_blur' => 'Transparent with blur (over hero)',
+                                        'transparent' => 'Fully transparent (over hero)',
                                     ])
-                                    ->default('transparent_blur'),
+                                    ->default('solid_cream')
+                                    ->helperText('Transparent styles work best with sticky on hero banners.'),
                                 Forms\Components\Toggle::make('header_show_border')
                                     ->label('Show header border')
                                     ->default(true),
@@ -298,10 +301,6 @@ class ManageSiteSettings extends Page implements HasForms
                                         Forms\Components\ColorPicker::make('nav_active_color')
                                             ->label('Active color')
                                             ->default('#e8967a'),
-                                        Forms\Components\Select::make('header_cta_count')
-                                            ->label('Header CTA buttons')
-                                            ->options(['2' => 'Two (client mock)', '3' => 'Three (includes consultation)'])
-                                            ->default('3'),
                                     ])
                                     ->columns(2)
                                     ->columnSpanFull(),
@@ -485,7 +484,7 @@ class ManageSiteSettings extends Page implements HasForms
             'default_section_padding' => $data['default_section_padding'] ?? 'normal',
             'default_section_background' => $data['default_section_background'] ?? 'white',
             'header_mode' => $data['header_mode'] ?? 'sticky',
-            'header_style' => $data['header_style'] ?? 'transparent_blur',
+            'header_style' => $data['header_style'] ?? 'solid_cream',
             'header_show_border' => (bool) ($data['header_show_border'] ?? true),
             'colors' => $colors,
             'navigation_style' => [
@@ -493,7 +492,7 @@ class ManageSiteSettings extends Page implements HasForms
                 'hover_color' => $data['nav_hover_color'] ?? '#e8967a',
                 'active_style' => $data['nav_active_style'] ?? 'underline',
                 'active_color' => $data['nav_active_color'] ?? '#e8967a',
-                'header_cta_count' => (int) ($data['header_cta_count'] ?? 3),
+                'header_cta_count' => 2,
             ],
         ]]);
 

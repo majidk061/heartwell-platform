@@ -1,15 +1,31 @@
 @php
-    $navStyle = $siteSettings['theme']['navigation_style'] ?? [];
+    $theme = $siteSettings['theme'] ?? [];
+    $navStyle = $theme['navigation_style'] ?? [];
     $hoverEffect = $navStyle['hover_effect'] ?? 'color';
     $activeStyle = $navStyle['active_style'] ?? 'underline';
-    $headerCtaCount = (int) ($navStyle['header_cta_count'] ?? 3);
+    $headerMode = $theme['header_mode'] ?? 'sticky';
+    $headerStyle = $theme['header_style'] ?? 'solid_cream';
+    $headerBorder = $theme['header_show_border'] ?? true;
     $primaryCta = $siteSettings['ctas']['primary']['label'] ?? config('heartwell.ctas.primary.label');
     $waitlistCta = $siteSettings['ctas']['secondary']['waitlist']['label'] ?? config('heartwell.ctas.secondary.waitlist.label');
-    $consultationCta = $siteSettings['ctas']['secondary']['consultation']['label'] ?? config('heartwell.ctas.secondary.consultation.label');
+
+    $headerStyleClass = match ($headerStyle) {
+        'transparent_blur' => 'hw-header--transparent',
+        'transparent' => 'hw-header--transparent-clear',
+        'solid' => 'hw-header--solid',
+        default => 'hw-header--solid-cream',
+    };
+
+    $headerClasses = trim(implode(' ', array_filter([
+        $headerMode === 'sticky' ? 'hw-header--sticky' : 'hw-header--static',
+        $headerStyleClass,
+        ! $headerBorder ? 'hw-header--no-border' : 'border-b border-hw-border',
+        'hw-header w-full',
+    ])));
 
     $navLinkClass = function (string $route) use ($activeStyle, $hoverEffect): string {
         $active = request()->routeIs($route);
-        $base = 'text-sm font-medium whitespace-nowrap transition-colors min-h-[44px] inline-flex items-center px-1';
+        $base = 'hw-header__nav-link font-medium whitespace-nowrap transition-colors min-h-[44px] inline-flex items-center px-0.5';
 
         if ($active) {
             return trim($base.' hw-nav-link hw-nav-link--active hw-nav-link--active-'.$activeStyle);
@@ -19,12 +35,12 @@
     };
 @endphp
 
-<header class="{{ $headerClasses }}" data-nav-hover="{{ $hoverEffect }}" data-nav-active="{{ $activeStyle }}">
-    <div class="hw-container">
-        <div class="grid grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto] items-center gap-4 min-h-[var(--header-height)]">
-            <x-site-logo variant="light" context="header" />
+<header class="{{ $headerClasses }}" data-nav-hover="{{ $hoverEffect }}" data-nav-active="{{ $activeStyle }}" data-header-mode="{{ $headerMode }}" data-header-style="{{ $headerStyle }}">
+    <div class="hw-container-wide">
+        <div class="hw-header__inner">
+            <x-site-logo variant="light" context="header" class="hw-header__logo" />
 
-            <nav class="hidden xl:flex items-center justify-center gap-x-5" aria-label="Main">
+            <nav class="hw-header__nav" aria-label="Main">
                 @foreach(($siteSettings['navigation'] ?? config('heartwell.navigation')) as $item)
                     <a href="{{ route($item['route']) }}"
                        class="{{ $navLinkClass($item['route']) }}"
@@ -34,10 +50,7 @@
                 @endforeach
             </nav>
 
-            <div class="hidden xl:flex items-center justify-end gap-2 shrink-0">
-                @if($headerCtaCount >= 3)
-                    <a href="{{ route('contact') }}#consultation" class="btn-secondary btn-sm hw-header-cta hidden 2xl:inline-flex">{{ $consultationCta }}</a>
-                @endif
+            <div class="hw-header__actions">
                 <a href="{{ route('contact') }}#book" class="btn-primary btn-sm hw-header-cta">{{ $primaryCta }}</a>
                 <a href="{{ route('contact') }}#waitlist" class="btn-secondary btn-sm hw-header-cta">{{ $waitlistCta }}</a>
             </div>
@@ -55,7 +68,7 @@
     </div>
 
     <div id="mobile-nav" x-show="mobileOpen" x-transition x-cloak class="xl:hidden border-t border-hw-border bg-hw-white">
-        <nav class="hw-container py-4 flex flex-col gap-1" aria-label="Mobile">
+        <nav class="hw-container-wide py-4 flex flex-col gap-1" aria-label="Mobile">
             @foreach(($siteSettings['navigation'] ?? config('heartwell.navigation')) as $item)
                 <a href="{{ route($item['route']) }}"
                    class="py-3 px-2 text-base font-medium text-hw-text hover:text-hw-heading min-h-[44px] flex items-center"
@@ -64,9 +77,6 @@
                 </a>
             @endforeach
             <div class="pt-4 mt-2 border-t border-hw-border flex flex-col gap-3">
-                @if($headerCtaCount >= 3)
-                    <a href="{{ route('contact') }}#consultation" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $consultationCta }}</a>
-                @endif
                 <a href="{{ route('contact') }}#book" class="btn-primary w-full text-center" @click="mobileOpen = false">{{ $primaryCta }}</a>
                 <a href="{{ route('contact') }}#waitlist" class="btn-secondary w-full text-center" @click="mobileOpen = false">{{ $waitlistCta }}</a>
             </div>

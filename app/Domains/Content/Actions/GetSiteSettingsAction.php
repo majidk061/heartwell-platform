@@ -38,7 +38,7 @@ class GetSiteSettingsAction
                 'default_section_padding' => 'normal',
                 'default_section_background' => 'white',
                 'header_mode' => 'sticky',
-                'header_style' => 'transparent_blur',
+                'header_style' => 'solid_cream',
                 'header_show_border' => true,
                 'colors' => SectionLayout::defaultThemeColors(),
                 'navigation_style' => [
@@ -46,7 +46,7 @@ class GetSiteSettingsAction
                     'hover_color' => '#e8967a',
                     'active_style' => 'underline',
                     'active_color' => '#e8967a',
-                    'header_cta_count' => 3,
+                    'header_cta_count' => 2,
                 ],
             ],
             'seo' => [
@@ -76,6 +76,8 @@ class GetSiteSettingsAction
         if (! empty($defaults['seo']['ga4_measurement_id'])) {
             config(['heartwell.ga4_measurement_id' => $defaults['seo']['ga4_measurement_id']]);
         }
+
+        $defaults['theme']['navigation_style']['header_cta_count'] = 2;
 
         return $defaults;
     }

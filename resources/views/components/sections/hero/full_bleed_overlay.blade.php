@@ -2,6 +2,7 @@
 
 @php
     use App\Domains\Content\Support\SectionLayout;
+    use Illuminate\Support\Str;
 
     $src = $imageUrl;
     if ($src && ! str_starts_with($src, 'http')) {
@@ -13,6 +14,10 @@
         : ['container_width' => 'full', 'section_padding' => 'none', 'background' => 'white', 'text_align' => 'left'];
 
     $sectionClass = SectionLayout::sectionClasses($layout);
+    $bodyParagraphs = array_values(array_filter(array_map(
+        static fn (string $paragraph): string => trim($paragraph),
+        preg_split('/\n\s*\n/', trim((string) ($body ?? ''))) ?: []
+    )));
 @endphp
 
 <section class="{{ $sectionClass }} hw-hero hw-hero--overlay relative overflow-hidden min-h-[32rem] md:min-h-[36rem] lg:min-h-[34rem] flex items-center">
@@ -35,10 +40,20 @@
                 <p class="hw-hero-tagline font-heading text-xl md:text-2xl lg:text-[1.65rem] italic mt-3 leading-snug">{{ $tagline }}</p>
             @endif
             @if($introQuestion)
-                <p class="font-heading text-lg md:text-xl text-hw-heading mt-5 md:mt-6 leading-snug">{{ $introQuestion }}</p>
+                <p class="hw-hero-intro-question">
+                    @if(preg_match('/^(Feeling\b)/i', $introQuestion, $introMatch))
+                        <span class="hw-hero-intro-question__lead">{{ $introMatch[1] }}</span>{{ Str::after($introQuestion, $introMatch[1]) }}
+                    @else
+                        {{ $introQuestion }}
+                    @endif
+                </p>
             @endif
-            @if($body)
-                <p class="text-base md:text-[1.05rem] text-hw-text mt-4 md:mt-5 leading-relaxed">{{ $body }}</p>
+            @if($bodyParagraphs !== [])
+                <div class="hw-hero-body">
+                    @foreach($bodyParagraphs as $paragraph)
+                        <p>{{ $paragraph }}</p>
+                    @endforeach
+                </div>
             @endif
             <div class="mt-7 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ ($siteSettings['ctas']['primary']['label'] ?? null) ?: config('heartwell.ctas.primary.label') }}</a>
