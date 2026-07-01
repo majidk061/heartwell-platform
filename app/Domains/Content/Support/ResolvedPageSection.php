@@ -39,10 +39,12 @@ class ResolvedPageSection
     public static function mergeTemplateContent(SectionTemplate $template): array
     {
         $content = is_array($template->content) ? $template->content : [];
-        $layout = is_array($template->layout) ? $template->layout : ($content['layout'] ?? []);
+        $contentLayout = is_array($content['layout'] ?? null) ? $content['layout'] : [];
+        $columnLayout = is_array($template->layout) ? $template->layout : [];
+        $mergedLayout = array_merge($contentLayout, $columnLayout);
 
-        if ($layout !== []) {
-            $content['layout'] = array_merge($content['layout'] ?? [], $layout);
+        if ($mergedLayout !== []) {
+            $content['layout'] = $mergedLayout;
         }
 
         return $content;

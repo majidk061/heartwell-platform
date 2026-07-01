@@ -29,6 +29,7 @@ class GetSiteSettingsAction
             'ctas' => config('heartwell.ctas'),
             'compliance' => config('heartwell.compliance'),
             'footer' => ['email' => null, 'phone' => null, 'address' => null],
+            'footer_columns' => config('heartwell.footer_columns'),
             'social' => [],
             'contact_forms' => [],
             'home' => [],

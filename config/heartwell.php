@@ -6,6 +6,7 @@ return [
         'name' => 'HeartWell Aesthetics & Wellness',
         'tagline' => 'For Every Stage of Life',
         'promise' => 'Thoughtful, Compassionate Care You Can Trust',
+        'footer_tagline' => 'Compassionate Care for Every Stage of Life',
         'domain' => env('HEARTWELL_DOMAIN', 'heartwellwellness.com'),
     ],
 
@@ -71,6 +72,36 @@ return [
         [
             'label' => 'Contact / Waitlist',
             'route' => 'contact',
+        ],
+    ],
+
+    'footer_columns' => [
+        [
+            'title' => 'YOUR EXPERIENCE',
+            'links' => [
+                ['label' => 'Wellness Journey', 'route' => 'wellness-journey'],
+                ['label' => 'How It Works', 'route' => 'your-experience'],
+                ['label' => 'What to Expect', 'route' => 'your-experience'],
+                ['label' => 'Safety & Standards', 'route' => 'why-heartwell'],
+            ],
+        ],
+        [
+            'title' => 'WHY HEARTWELL',
+            'links' => [
+                ['label' => 'Whole-Person Care', 'route' => 'why-heartwell'],
+                ['label' => 'Our Approach', 'route' => 'why-heartwell'],
+                ['label' => 'Expert-Guided Care', 'route' => 'why-heartwell'],
+                ['label' => 'Flexible & Convenient', 'route' => 'your-experience'],
+            ],
+        ],
+        [
+            'title' => 'COMPANY',
+            'links' => [
+                ['label' => 'Meet the Founder', 'route' => 'meet-the-founder'],
+                ['label' => 'About HeartWell', 'route' => 'why-heartwell'],
+                ['label' => 'Contact / Waitlist', 'route' => 'contact'],
+                ['label' => 'Privacy Policy', 'route' => 'contact'],
+            ],
         ],
     ],
 

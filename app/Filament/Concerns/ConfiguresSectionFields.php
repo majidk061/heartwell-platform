@@ -80,6 +80,7 @@ trait ConfiguresSectionFields
             $content = is_array($data['content'] ?? null) ? $data['content'] : [];
             $content['layout'] = array_merge($content['layout'] ?? [], $layout);
             $data['content'] = $content;
+            $data['layout'] = $content['layout'];
         }
 
         unset(
@@ -98,7 +99,9 @@ trait ConfiguresSectionFields
      */
     protected static function hydrateLayoutFromContent(array $data): array
     {
-        $layout = is_array($data['content']['layout'] ?? null) ? $data['content']['layout'] : [];
+        $contentLayout = is_array($data['content']['layout'] ?? null) ? $data['content']['layout'] : [];
+        $columnLayout = is_array($data['layout'] ?? null) ? $data['layout'] : [];
+        $layout = array_merge($contentLayout, $columnLayout);
 
         $data['layout_container_width'] = $layout['container_width'] ?? null;
         $data['layout_section_padding'] = $layout['section_padding'] ?? null;

@@ -1,1 +1,1 @@
-@include('components.sections.cta.centered_band', get_defined_vars())
+@include('components.sections.cta.inline_action_bar', get_defined_vars())

@@ -56,7 +56,7 @@
             @if($isHome && $pathways->isNotEmpty())
                 @php
                     $barContent = [
-                        'design_variant' => $sectionContent['pathway_bar_variant'] ?? 'divided_bar',
+                        'design_variant' => $sectionContent['pathway_bar_variant'] ?? 'labeled_inline_dividers',
                     ];
                     $barView = section_view('pathway_bar', $barContent);
                 @endphp

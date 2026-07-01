@@ -24,55 +24,57 @@
     $logoUrl = CmsImage::url($displayPath);
     $href = $href ?? route('home');
     $imageOnly = $mode === 'image';
-    $showText = in_array($mode, ['text', 'both'], true);
-    $showTaglineText = $showTagline && $showText && ! $imageOnly;
     $isHeader = $context === 'header';
     $isFooter = $context === 'footer';
+    $hasLogoImage = in_array($mode, ['image', 'both'], true) && filled($logoUrl);
+    $showFooterWordmark = $isFooter && ! $hasLogoImage;
+    $showText = (! $isFooter && in_array($mode, ['text', 'both'], true)) || $showFooterWordmark;
+    $showTaglineText = $showTagline && $showText && ! $imageOnly && ! $isFooter;
 @endphp
 
 <a
     href="{{ $href }}"
-    {{ $attributes->merge(['class' => 'inline-flex items-center shrink-0 justify-self-start '.($isHeader ? 'py-1' : '')]) }}
+    {{ $attributes->merge(['class' => trim('inline-flex shrink-0 justify-self-start '.($isHeader ? 'items-center py-1' : '').($isFooter ? ' flex-col items-start' : ' items-center'))]) }}
 >
-    @if(in_array($mode, ['image', 'both'], true) && $logoUrl)
-        @if($isFooter)
-            <span class="hw-footer-logo-card inline-flex">
-                <img
-                    src="{{ $logoUrl }}"
-                    alt="{{ $logoText }}"
-                    class="h-16 sm:h-[4.5rem] w-auto max-w-[220px] object-contain object-left"
-                    width="220"
-                    height="72"
-                    decoding="async"
-                >
-            </span>
-        @else
-            <img
-                src="{{ $logoUrl }}"
-                alt="{{ $logoText }}"
-                @class([
-                    'w-auto object-contain object-left',
-                    'h-11 sm:h-12 max-w-[10rem] sm:max-w-[11.5rem]' => $isHeader,
-                    'h-14 sm:h-16 md:h-[4.5rem] max-w-[240px]' => ! $isHeader && $imageOnly,
-                    'h-8 sm:h-10' => ! $isHeader && ! $imageOnly,
-                ])
-                @if($isHeader)
-                    width="184"
-                    height="48"
-                @endif
-                decoding="async"
-            >
-        @endif
+    @if($hasLogoImage)
+        <img
+            src="{{ $logoUrl }}"
+            alt="{{ $logoText }}"
+            @class([
+                'w-auto object-contain object-left',
+                'h-11 sm:h-12 max-w-[10rem] sm:max-w-[11.5rem]' => $isHeader,
+                'h-[4.5rem] sm:h-20 max-w-[13rem]' => $isFooter,
+                'h-14 sm:h-16 md:h-[4.5rem] max-w-[240px]' => ! $isHeader && ! $isFooter && $imageOnly,
+                'h-8 sm:h-10' => ! $isHeader && ! $isFooter && ! $imageOnly,
+            ])
+            @if($isHeader)
+                width="184"
+                height="48"
+            @elseif($isFooter)
+                width="208"
+                height="80"
+            @endif
+            decoding="async"
+        >
     @endif
+
     @if($showText)
-        <div @class(['flex flex-col min-w-0', 'ml-3' => ! $isFooter && in_array($mode, ['image', 'both'], true) && $logoUrl])>
-            <span class="font-heading text-lg sm:text-xl font-semibold truncate {{ $isDark ? 'text-hw-white' : 'text-hw-heading' }}">
-                {{ $logoText }}
-            </span>
-            @if($showTaglineText && $tagline)
-                <span class="text-xs truncate hidden sm:block {{ $isDark ? 'text-hw-taupe' : 'text-hw-muted' }}">
-                    {{ $tagline }}
+        <div @class([
+            'flex flex-col min-w-0',
+            'ml-3' => ! $isFooter && $hasLogoImage,
+        ])>
+            @if($showFooterWordmark)
+                <span class="hw-site-footer__brand-name">HeartWell</span>
+                <span class="hw-site-footer__brand-sub">Aesthetics &amp; Wellness</span>
+            @else
+                <span class="font-heading text-lg sm:text-xl font-semibold truncate {{ $isDark ? 'text-hw-white' : 'text-hw-heading' }}">
+                    {{ $logoText }}
                 </span>
+                @if($showTaglineText && $tagline)
+                    <span class="text-xs truncate hidden sm:block {{ $isDark ? 'text-hw-taupe' : 'text-hw-muted' }}">
+                        {{ $tagline }}
+                    </span>
+                @endif
             @endif
         </div>
     @endif

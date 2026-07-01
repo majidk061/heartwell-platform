@@ -36,9 +36,12 @@ class SectionDesignRegistry
                 'photo_right' => 'Photo right',
             ],
             'cta' => [
-                'default' => 'Card in section (classic)',
+                'default' => 'Inline action bar (client mock)',
+                'inline_action_bar' => 'Inline action bar — text left, buttons right',
+                'elevated_card' => 'Elevated card in section',
+                'split_guidance' => 'Split editorial — copy left, action panel right',
                 'centered_band' => 'Centered cream band (client mock)',
-                'band_full_width' => 'Full-width band — dual buttons',
+                'band_full_width' => 'Full-width inline bar',
                 'single_primary' => 'Single primary button',
             ],
             'intro' => [
