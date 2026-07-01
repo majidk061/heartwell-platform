@@ -9,6 +9,10 @@
 
     $containerClass = match ($resolvedWidth) {
         'full' => 'hw-container-full',
+        'near_full' => 'hw-container-near-full',
+        'extra_wide' => 'hw-container-extra-wide',
+        'expanded' => 'hw-container-expanded',
+        'comfortable' => 'hw-container-comfortable',
         'wide' => 'hw-container-wide',
         'narrow' => 'hw-container-narrow',
         'form' => 'hw-container-form',

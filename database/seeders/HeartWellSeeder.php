@@ -258,7 +258,7 @@ class HeartWellSeeder extends Seeder
                     'subheading' => 'Which of these feels most like you?',
                     'max_cards' => 3,
                     'show_unifying_message' => false,
-                    'layout' => ['container_width' => 'default', 'text_align' => 'center'],
+                    'layout' => ['container_width' => 'extra_wide', 'text_align' => 'center'],
                 ],
             ],
             [

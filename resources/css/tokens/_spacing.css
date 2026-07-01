@@ -13,7 +13,11 @@
   --space-24: 6rem;
 
   --container-max: 72rem;
+  --container-comfortable: 78rem;
   --container-wide: 84rem;
+  --container-expanded: 96rem;
+  --container-extra-wide: 102rem;
+  --container-near-full: 120rem;
   --container-full: 100%;
   --content-narrow: min(48rem, 100%);
   --content-form: min(36rem, 100%);

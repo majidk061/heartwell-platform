@@ -114,9 +114,13 @@ trait ConfiguresSectionFields
     public static function layoutSelectOptions(): array
     {
         return [
-            'full' => 'Full width',
-            'wide' => 'Wide',
-            'default' => 'Standard',
+            'full' => 'Full width (100%)',
+            'near_full' => 'Near full (120rem)',
+            'extra_wide' => 'Extra wide (102rem)',
+            'expanded' => 'Expanded (96rem)',
+            'wide' => 'Wide (84rem)',
+            'comfortable' => 'Comfortable (78rem)',
+            'default' => 'Standard (72rem)',
             'narrow' => 'Narrow',
             'form' => 'Form width',
             'prose' => 'Prose / reading width',

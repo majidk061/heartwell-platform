@@ -5,7 +5,7 @@ namespace App\Domains\Content\Support;
 class SectionLayout
 {
     /** @var list<string> */
-    public const CONTAINER_WIDTHS = ['full', 'wide', 'default', 'narrow', 'form', 'prose'];
+    public const CONTAINER_WIDTHS = ['full', 'near_full', 'extra_wide', 'comfortable', 'expanded', 'wide', 'default', 'narrow', 'form', 'prose'];
 
     /** @var list<string> */
     public const SECTION_PADDINGS = ['none', 'compact', 'normal', 'spacious'];
