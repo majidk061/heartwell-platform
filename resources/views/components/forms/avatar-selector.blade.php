@@ -4,11 +4,11 @@
     $avatarCards = $cards ?? array_values(config('heartwell.avatar_cards', []));
 @endphp
 
-<fieldset class="md:col-span-2 space-y-3">
+<fieldset class="md:col-span-2 hw-avatar-selector">
     <legend class="hw-form-label">Which feels most like you? <span class="text-hw-muted font-normal">(optional)</span></legend>
-    <p class="text-sm text-hw-muted">You may choose one primary option below, or select all that resonate.</p>
+    <p class="hw-avatar-selector__hint">Choose one primary option, or select all that resonate.</p>
 
-    <div class="grid gap-3 sm:grid-cols-3">
+    <div class="hw-avatar-selector__grid">
         @foreach($avatarCards as $card)
             @php
                 $type = $card['type'] ?? '';
@@ -16,7 +16,7 @@
                 $checkedSingle = old($name) === $type;
                 $checkedMulti = in_array($type, old($multiName, []), true);
             @endphp
-            <label class="relative flex flex-col rounded-lg border border-hw-border bg-hw-white p-4 cursor-pointer hover:border-hw-dusty-blue transition-colors has-[:checked]:border-hw-dusty-blue has-[:checked]:ring-2 has-[:checked]:ring-hw-dusty-blue/30">
+            <label @class(['hw-avatar-option', 'hw-avatar-option--selected' => $checkedSingle || $checkedMulti])>
                 <input
                     type="radio"
                     name="{{ $name }}"
@@ -24,14 +24,16 @@
                     class="sr-only"
                     @checked($checkedSingle)
                 >
-                <input
-                    type="checkbox"
-                    name="{{ $multiName }}[]"
-                    value="{{ $type }}"
-                    class="absolute top-3 right-3 h-4 w-4 rounded border-hw-border text-hw-dusty-blue focus:ring-hw-dusty-blue"
-                    @checked($checkedMulti)
-                >
-                <span class="font-heading text-sm text-hw-heading pr-6">{{ $headline }}</span>
+                <span class="hw-avatar-option__checkbox-wrap">
+                    <input
+                        type="checkbox"
+                        name="{{ $multiName }}[]"
+                        value="{{ $type }}"
+                        class="hw-form-checkbox"
+                        @checked($checkedMulti)
+                    >
+                </span>
+                <span class="hw-avatar-option__label">{{ $headline }}</span>
             </label>
         @endforeach
     </div>

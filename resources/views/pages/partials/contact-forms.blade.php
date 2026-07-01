@@ -25,10 +25,10 @@
         : (in_array('waitlist', $activeForms, true) ? 'waitlist' : ($activeForms[0] ?? 'waitlist'));
 
     $layout = ($formsSection ?? null)
-        ? SectionLayout::resolve($formsContent, $themeDefaults ?? ($siteSettings['theme'] ?? []), 'forms')
-        : ['container_width' => 'default', 'section_padding' => 'normal', 'background' => 'white', 'text_align' => 'center'];
+        ? SectionLayout::resolve($formsContent, $themeDefaults ?? ($siteSettings['theme'] ?? []), 'forms', ['text_align' => 'left'])
+        : ['container_width' => 'default', 'section_padding' => 'normal', 'background' => 'white', 'text_align' => 'left'];
 
-    $sectionClass = SectionLayout::sectionClasses($layout).' border-t border-hw-border hw-contact-section';
+    $sectionClass = SectionLayout::sectionClasses($layout).' border-t border-hw-border hw-contact-section hw-contact-section--forms';
 @endphp
 
 <section
@@ -94,7 +94,7 @@
             @endif
         </nav>
 
-        <div class="grid lg:grid-cols-12 gap-6 lg:gap-10">
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-10 text-left">
             <div class="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
                 @if(in_array('waitlist', $activeForms, true))
                     <x-contact-option-card id="waitlist" :title="$forms['waitlist_title']" description="Be first to know when appointments open." icon="bell" :featured="! $acuityEnabled" />

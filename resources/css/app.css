@@ -230,11 +230,119 @@
   }
 
   .hw-form-label {
-    @apply block text-sm font-medium text-hw-text mb-2;
+    @apply block text-sm font-medium text-hw-text mb-2 text-left;
   }
 
   .hw-form-group {
-    @apply space-y-5;
+    @apply space-y-5 text-left;
+  }
+
+  .hw-contact-section--forms .hw-contact-panel,
+  .hw-contact-section--forms .hw-form-group,
+  .hw-contact-section--forms fieldset {
+    text-align: left;
+  }
+
+  .hw-form-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0;
+    border: 2px solid var(--color-border);
+    border-radius: 0.3rem;
+    background-color: var(--color-white);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .hw-form-checkbox:hover {
+    border-color: var(--color-dusty-blue);
+  }
+
+  .hw-form-checkbox:focus-visible {
+    outline: 2px solid var(--color-dusty-blue);
+    outline-offset: 2px;
+  }
+
+  .hw-form-checkbox:checked {
+    background-color: var(--color-heading);
+    border-color: var(--color-heading);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8.5L6.5 11.5L12.5 4.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.75rem;
+  }
+
+  .hw-avatar-selector {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .hw-avatar-selector__hint {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin-bottom: 0.875rem;
+    text-align: left;
+  }
+
+  .hw-avatar-selector__grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .hw-avatar-selector__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .hw-avatar-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    min-height: 5.5rem;
+    padding: 1rem 1rem 1rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background-color: var(--color-white);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .hw-avatar-option:hover {
+    border-color: var(--color-dusty-blue);
+  }
+
+  .hw-avatar-option:has(.hw-form-checkbox:checked),
+  .hw-avatar-option:has(input[type='radio']:checked),
+  .hw-avatar-option--selected {
+    border-color: var(--color-dusty-blue);
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 35%, var(--color-white));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-dusty-blue) 25%, transparent);
+  }
+
+  .hw-avatar-option__checkbox-wrap {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hw-avatar-option__label {
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    color: var(--color-heading);
+    padding-right: 1.75rem;
   }
 
   .hw-contact-section {
@@ -997,17 +1105,18 @@
   }
 
   .hw-contact-nav a {
-    @apply shrink-0 px-4 py-2 text-sm font-medium rounded-full border border-hw-border;
+    @apply shrink-0 px-4 py-2 text-sm font-medium rounded-full border border-hw-border bg-white;
     @apply text-hw-text hover:text-hw-heading transition-colors min-h-[44px] flex items-center;
   }
 
   .hw-contact-nav a:hover {
     background-color: color-mix(in srgb, var(--color-dusty-blue-light) 30%, transparent);
+    border-color: color-mix(in srgb, var(--color-dusty-blue) 40%, var(--color-border));
   }
 
   .hw-contact-tab--active {
-    @apply border-hw-dusty-blue text-hw-heading;
-    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 40%, transparent);
+    @apply border-hw-dusty-blue text-hw-heading font-semibold;
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 45%, transparent);
   }
 
   .hw-contact-card {
@@ -1020,7 +1129,11 @@
     background-color: color-mix(in srgb, var(--color-dusty-blue-light) 20%, transparent);
   }
 
-  .hw-contact-card--featured {
+  .hw-contact-card--featured:not(.hw-contact-card--active) {
+    @apply border-hw-border bg-white shadow-none;
+  }
+
+  .hw-contact-card--featured.hw-contact-card--active {
     @apply border-hw-navy;
   }
 
@@ -1042,16 +1155,16 @@
   }
 
   .hw-contact-panel {
-    @apply rounded-xl border border-hw-border p-6 md:p-8;
-    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 20%, transparent);
+    @apply rounded-xl border border-hw-border bg-white p-6 md:p-8 text-left;
   }
 
   .hw-contact-panel--featured {
-    @apply border-hw-navy bg-white shadow-md;
+    @apply border-hw-border bg-white shadow-sm;
   }
 
   .hw-contact-panel--active {
-    @apply ring-2 ring-hw-dusty-blue border-hw-dusty-blue;
+    @apply border-hw-dusty-blue;
+    background-color: color-mix(in srgb, var(--color-dusty-blue-light) 12%, var(--color-white));
   }
 
   .hw-hero-tagline {
