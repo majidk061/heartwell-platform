@@ -1,12 +1,7 @@
 @php
     use App\Domains\Content\Support\CmsImage;
-    use Illuminate\Support\Facades\Storage;
 
-    $trimmed = 'cms/branding/heartwell-logo-trimmed.png';
-    $logoPath = ($siteSettings['branding']['logo_image_path'] ?? null);
-    if (Storage::disk('public')->exists($trimmed)) {
-        $logoPath = $trimmed;
-    }
+    $logoPath = $siteSettings['branding']['logo_image_path'] ?? null;
     $logoUrl = CmsImage::url($logoPath);
     $logoAlt = $siteSettings['branding']['logo_text'] ?? ($siteSettings['brand']['name'] ?? 'HeartWell');
 @endphp

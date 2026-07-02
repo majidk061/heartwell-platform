@@ -78,8 +78,6 @@ class GetSiteSettingsAction
             config(['heartwell.ga4_measurement_id' => $defaults['seo']['ga4_measurement_id']]);
         }
 
-        $defaults['theme']['navigation_style']['header_cta_count'] = 2;
-
         return $defaults;
     }
 }

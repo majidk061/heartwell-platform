@@ -1,15 +1,23 @@
-@props(['pathways', 'title' => null])
+@props(['pathways', 'title' => null, 'section' => null, 'themeDefaults' => null])
 
 @php
     use App\Domains\Content\Support\CmsImage;
+    use App\Domains\Content\Support\SectionLayout;
 
     $title = $title ?? ($siteSettings['home']['pathways_section_title'] ?? 'Support Pathways');
     $ctas = $siteSettings['ctas'] ?? config('heartwell.ctas');
+    $sectionContent = $section?->content ?? [];
+    $layout = $section
+        ? SectionLayout::resolve($sectionContent, $themeDefaults ?? ($siteSettings['theme'] ?? []), 'pathways_teaser')
+        : ['container_width' => 'default', 'section_padding' => 'normal', 'background' => 'white'];
+    $sectionClass = SectionLayout::sectionClasses($layout);
 @endphp
 
-<section class="bg-hw-white hw-section">
-    <x-layout.page-container>
-        <h2 class="hw-section-title text-center mb-8 md:mb-10">{{ $title }}</h2>
+<section class="{{ $sectionClass }}">
+    <x-layout.page-container :width="$layout['container_width']">
+        @if($title)
+            <h2 class="hw-section-title text-center mb-8 md:mb-10">{{ $title }}</h2>
+        @endif
         <div class="space-y-4" x-data="pathwayAccordion(null)">
             @foreach($pathways as $pathway)
                 @php

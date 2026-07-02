@@ -37,7 +37,15 @@ class CmsImage
         }
 
         if (Storage::disk('public')->exists($path)) {
-            return Storage::disk('public')->url($path);
+            $url = Storage::disk('public')->url($path);
+            $fullPath = Storage::disk('public')->path($path);
+            $version = @filemtime($fullPath);
+
+            if ($version) {
+                $url .= (str_contains($url, '?') ? '&' : '?').'v='.$version;
+            }
+
+            return $url;
         }
 
         return asset('storage/'.$path);

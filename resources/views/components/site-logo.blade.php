@@ -17,8 +17,8 @@
     $basePath = $isDark
         ? ($branding['logo_white_path'] ?? $branding['logo_image_path'] ?? null)
         : ($branding['logo_image_path'] ?? null);
-    $trimmedPath = $branding['logo_trimmed_path'] ?? 'cms/branding/heartwell-logo-trimmed.png';
-    $displayPath = ($context !== 'default' && Storage::disk('public')->exists($trimmedPath))
+    $trimmedPath = $branding['logo_trimmed_path'] ?? null;
+    $displayPath = ($context !== 'default' && filled($trimmedPath) && Storage::disk('public')->exists($trimmedPath))
         ? $trimmedPath
         : $basePath;
     $logoUrl = CmsImage::url($displayPath);

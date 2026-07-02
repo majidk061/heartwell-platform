@@ -1,24 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    @php
-        $hero = $sections->firstWhere('type', 'hero') ?? $sections->firstWhere('section_type', 'hero');
-    @endphp
-
-    @if($page->slug !== 'home' && $hero)
-        <x-layout.page-hero
-            :title="$hero->heading ?? $page->title"
-            :subheading="$hero->subheading"
-            :body="$hero->body"
-        />
-    @endif
-
     @include('pages.partials.sections', [
-        'sections' => $page->slug === 'home'
-            ? $sections
-            : ($hero && $page->slug !== 'home'
-                ? $sections->filter(fn ($s) => ! in_array($s->section_type ?? $s->type, ['hero']))
-                : $sections),
+        'sections' => $sections,
         'page' => $page,
         'pathways' => $pathways ?? collect(),
         'faqs' => $faqs ?? collect(),

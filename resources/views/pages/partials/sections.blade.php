@@ -76,19 +76,6 @@
                     'section' => $section,
                     'themeDefaults' => $themeDefaults,
                 ])
-            @else
-                <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="dusty_blue">
-                    @if($section->heading)
-                        <x-layout.section-heading :title="$section->heading" />
-                    @endif
-                    @if($section->body ?? ($sectionContent['body'] ?? null))
-                        <p class="text-base md:text-lg text-hw-text mt-4 leading-relaxed">{{ $section->body ?? $sectionContent['body'] }}</p>
-                    @endif
-                    @php $introImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)); @endphp
-                    @if($introImage)
-                        <img src="{{ $introImage }}" alt="" class="mt-8 mx-auto rounded-lg max-w-xl w-full aspect-video object-cover">
-                    @endif
-                </x-section-shell>
             @endif
             @break
 
@@ -105,55 +92,23 @@
             @break
 
         @case('journey')
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults">
-                @if($section->heading)
-                    <x-layout.section-heading :title="$section->heading" centered />
-                @endif
-                @php
-                    $steps = $sectionContent['steps'] ?? [];
-                    $stepCount = count($steps);
-                    $gridClass = match (true) {
-                        $stepCount <= 2 => 'sm:grid-cols-2',
-                        $stepCount === 3 => 'sm:grid-cols-2 lg:grid-cols-3',
-                        $stepCount === 4 => 'sm:grid-cols-2 lg:grid-cols-4',
-                        default => 'sm:grid-cols-2 lg:grid-cols-5',
-                    };
-                @endphp
-                @if(! empty($steps))
-                    <ol class="grid grid-cols-1 {{ $gridClass }} gap-6 mt-8">
-                        @foreach($steps as $index => $step)
-                            <li class="flex flex-col items-center text-center p-6 rounded-xl bg-hw-taupe-light/50 border border-hw-border">
-                                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-hw-heading text-hw-white text-sm font-semibold mb-4">{{ $index + 1 }}</span>
-                                <span class="font-heading text-lg text-hw-heading">{{ is_array($step) ? ($step['title'] ?? '') : $step }}</span>
-                                @if(is_array($step) && ! empty($step['description']))
-                                    <p class="text-sm text-hw-muted mt-2 leading-relaxed">{{ $step['description'] }}</p>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ol>
-                @endif
-            </x-section-shell>
+            @php $journeyView = section_view('journey', $sectionContent); @endphp
+            @if($journeyView)
+                @include($journeyView, [
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @endif
             @break
 
         @case('features')
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults">
-                @if($section->heading)
-                    <x-layout.section-heading :title="$section->heading" centered />
-                @endif
-                @php $features = $sectionContent['features'] ?? []; @endphp
-                @if(! empty($features))
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 md:mt-10">
-                        @foreach($features as $feature)
-                            <div class="p-6 rounded-xl border border-hw-border bg-hw-taupe-light/30">
-                                <h3 class="font-heading text-lg text-hw-heading">{{ $feature['title'] ?? '' }}</h3>
-                                @if(! empty($feature['body']))
-                                    <p class="text-hw-text mt-3 text-sm leading-relaxed">{{ $feature['body'] }}</p>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </x-section-shell>
+            @php $featuresView = section_view('features', $sectionContent); @endphp
+            @if($featuresView)
+                @include($featuresView, [
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @endif
             @break
 
         @case('group_individual')
@@ -183,20 +138,13 @@
             @break
 
         @case('rich_text')
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-align="left">
-                @if($section->heading)
-                    <x-layout.section-heading :title="$section->heading" />
-                @endif
-                @php $richImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)); @endphp
-                @if($richImage)
-                    <img src="{{ $richImage }}" alt="" class="mb-8 rounded-lg w-full max-h-96 object-cover">
-                @endif
-                @if(! empty($sectionContent['body']))
-                    <div class="prose prose-hw max-w-none text-hw-text leading-relaxed">
-                        {!! $sectionContent['body'] !!}
-                    </div>
-                @endif
-            </x-section-shell>
+            @php $richTextView = section_view('rich_text', $sectionContent); @endphp
+            @if($richTextView)
+                @include($richTextView, [
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @endif
             @break
 
         @case('founder_teaser')
@@ -317,7 +265,3 @@
             </x-section-shell>
     @endswitch
 @endforeach
-
-@if($page && $page->slug === 'support-pathways' && $pathways->isNotEmpty() && ! $sections->contains(fn ($s) => ($s->section_type ?? $s->type) === 'pathways_teaser'))
-    <x-pathway-accordion :pathways="$pathways" title="Support Pathways" />
-@endif
