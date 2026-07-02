@@ -10,8 +10,8 @@ use App\Domains\Content\Models\PageSection;
 use App\Domains\Content\Models\SectionTemplate;
 use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\SupportPathway;
+use App\Domains\Content\Support\ClientCopyCatalog;
 use App\Domains\Content\Support\SectionLayout;
-use App\Domains\CRM\Enums\AvatarType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -72,8 +72,11 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 2,
                 'templates' => [
                     'Hero — support pathways',
-                    'Rich text — support pathways guidance',
-                    'Pathways teaser — explore',
+                    'Intro — clinical intake clearance',
+                    'Rich text — IV injection add-ons',
+                    'Pathways teaser — guided cards',
+                    'Rich text — final treatment selection',
+                    'Journey — Hydreight portal flow',
                     'CTA — support pathways',
                 ],
             ],
@@ -102,7 +105,8 @@ class HeartWellSeeder extends Seeder
                 'sort_order' => 5,
                 'templates' => [
                     'Hero — wellness journey',
-                    'Rich text — wellness journey',
+                    'Rich text — wellness journey intro',
+                    'Features — tailored to your life',
                     'FAQ block',
                     'CTA — wellness journey',
                 ],
@@ -634,6 +638,29 @@ class HeartWellSeeder extends Seeder
                 ],
             );
         }
+
+        $this->seedClientCopyTemplates();
+    }
+
+    private function seedClientCopyTemplates(): void
+    {
+        foreach (ClientCopyCatalog::sectionTemplates() as $name => $template) {
+            $content = $template['content'];
+            $layout = $content['layout'] ?? [];
+            unset($content['layout']);
+
+            SectionTemplate::query()->updateOrCreate(
+                ['name' => $name],
+                [
+                    'section_type' => $template['section_type'],
+                    'heading' => $template['heading'],
+                    'description' => $template['description'],
+                    'content' => $content,
+                    'layout' => $layout,
+                    'is_published' => true,
+                ],
+            );
+        }
     }
 
     private function seedSiteSettings(): void
@@ -695,86 +722,17 @@ class HeartWellSeeder extends Seeder
 
     private function seedAvatarCards(): void
     {
-        $cards = [
-            ['slug' => 'depleted', 'headline' => "I'm functioning… but exhausted.", 'subtext' => 'Low energy, fatigue, burnout, and brain fog — you deserve support that meets you where you are.', 'cta_label' => 'Explore Energy & Recovery', 'pathway_slug' => 'energy-wellness', 'image_path' => self::IMG_DEPLETED],
-            ['slug' => 'frustrated', 'headline' => "I'm trying, but I feel stuck.", 'subtext' => 'Weight changes, metabolism shifts, and resistance despite effort — clarity is possible.', 'cta_label' => 'Explore Metabolic Support', 'pathway_slug' => 'metabolic-weight', 'image_path' => self::IMG_METABOLIC],
-            ['slug' => 'confidence', 'headline' => 'How I see myself is changing.', 'subtext' => 'Appearance changes, self-image shifts, and confidence concerns — support for every stage of life.', 'cta_label' => 'Explore Confidence & Aesthetic Support', 'pathway_slug' => 'confidence-aesthetic', 'image_path' => self::IMG_CONFIDENCE],
+        $imageMap = [
+            'depleted' => self::IMG_DEPLETED,
+            'frustrated' => self::IMG_METABOLIC,
+            'confidence' => self::IMG_CONFIDENCE,
         ];
 
-        foreach ($cards as $index => $card) {
+        foreach (ClientCopyCatalog::avatarCards() as $index => $card) {
             AvatarCard::query()->updateOrCreate(
                 ['slug' => $card['slug']],
-                array_merge($card, ['sort_order' => $index + 1, 'is_published' => true]),
-            );
-        }
-    }
-
-    private function seedSupportPathways(): void
-    {
-        $pathways = [
-            [
-                'slug' => 'recovery-hydration',
-                'title' => 'Recovery & Hydration Support',
-                'intro' => 'Support when your body needs restoration and replenishment.',
-                'image_path' => self::IMG_WELLNESS,
-                'avatar_type' => AvatarType::Depleted,
-                'cta_label' => 'Book a Visit',
-                'cta_url' => '/contact#book',
-                'accordion_content' => [
-                    ['heading' => 'When you need recovery support', 'body' => 'Empathetic guidance for depletion, fatigue, and recovery — not a treatment menu.'],
-                ],
-            ],
-            [
-                'slug' => 'energy-wellness',
-                'title' => 'Energy & Wellness Support',
-                'intro' => 'For when you are functioning but exhausted.',
-                'image_path' => self::IMG_DEPLETED,
-                'avatar_type' => AvatarType::Depleted,
-                'cta_label' => 'Request Consultation',
-                'cta_url' => '/contact#consultation',
-                'accordion_content' => [
-                    ['heading' => 'Energy and vitality', 'body' => 'Nurse-led support for burnout, brain fog, and low energy.'],
-                ],
-            ],
-            [
-                'slug' => 'metabolic-weight',
-                'title' => 'Metabolic / Weight Support',
-                'intro' => 'When you are trying but feel stuck.',
-                'avatar_type' => AvatarType::Frustrated,
-                'cta_label' => 'Request Consultation',
-                'cta_url' => '/contact#consultation',
-                'accordion_content' => [
-                    ['heading' => 'Metabolic shifts', 'body' => 'Support for weight and metabolism changes with compassion, not judgment.'],
-                ],
-            ],
-            [
-                'slug' => 'advanced-cellular',
-                'title' => 'Advanced Cellular Support',
-                'intro' => 'Deeper wellness support guided by clinical expertise.',
-                'avatar_type' => AvatarType::Frustrated,
-                'cta_label' => 'Book a Visit',
-                'cta_url' => '/contact#book',
-                'accordion_content' => [
-                    ['heading' => 'Cellular wellness', 'body' => 'Educational, supportive guidance — never a clinical catalog.'],
-                ],
-            ],
-            [
-                'slug' => 'confidence-aesthetic',
-                'title' => 'Confidence & Aesthetic Support',
-                'intro' => 'When how you see yourself is changing.',
-                'avatar_type' => AvatarType::Confidence,
-                'cta_label' => 'Book a Visit',
-                'cta_url' => '/contact#book',
-                'accordion_content' => [
-                    ['heading' => 'Confidence through transitions', 'body' => 'Support for self-image and appearance changes with warmth and trust.'],
-                ],
-            ],
-        ];
-
-        foreach ($pathways as $index => $pathway) {
-            SupportPathway::query()->updateOrCreate(
-                ['slug' => $pathway['slug']],
-                array_merge($pathway, [
+                array_merge($card, [
+                    'image_path' => $imageMap[$card['slug']] ?? null,
                     'sort_order' => $index + 1,
                     'is_published' => true,
                 ]),
@@ -782,20 +740,43 @@ class HeartWellSeeder extends Seeder
         }
     }
 
-    private function seedFaqs(): void
+    private function seedSupportPathways(): void
     {
-        $faqs = [
-            ['question' => 'How do I get started with HeartWell?', 'answer' => 'Join the waitlist, request a consultation, or book a visit when scheduling is available. A nurse-led team member will guide you through next steps including clinical intake before your first service.', 'page_slug' => 'wellness-journey'],
-            ['question' => 'Is clinical clearance required?', 'answer' => 'Yes. All clients complete secure clinical intake, health history, consent, and provider screening before receiving services. Clearance must be renewed every 6 months, or sooner if required.', 'page_slug' => 'wellness-journey'],
-            ['question' => 'What if I am not sure which pathway fits me?', 'answer' => 'That is completely normal. Request a consultation — we will listen to your story and help you explore support pathways without pressure.', 'page_slug' => 'wellness-journey'],
-            ['question' => 'Do you come to my location?', 'answer' => 'Yes. HeartWell is a mobile wellness practice. Visits are nurse-led and designed to meet you with convenience and personalization.', 'page_slug' => 'wellness-journey'],
-            ['question' => 'Can I host a group wellness gathering?', 'answer' => 'Yes. Hosts can inquire through our group form. Each guest who receives services must complete their own clinical intake before treatment.', 'page_slug' => 'wellness-journey'],
+        $imageMap = [
+            'recovery-hydration' => self::IMG_WELLNESS,
+            'energy-wellness' => self::IMG_DEPLETED,
+            'precision-glow-therapy' => self::IMG_CONFIDENCE,
         ];
 
-        foreach ($faqs as $index => $faq) {
+        foreach (ClientCopyCatalog::supportPathways() as $index => $pathway) {
+            unset($pathway['migrate_from_slug']);
+
+            SupportPathway::query()->updateOrCreate(
+                ['slug' => $pathway['slug']],
+                array_merge($pathway, [
+                    'image_path' => $imageMap[$pathway['slug']] ?? null,
+                    'sort_order' => $index + 1,
+                    'is_published' => true,
+                ]),
+            );
+        }
+
+        SupportPathway::query()
+            ->whereIn('slug', ['advanced-cellular', 'confidence-aesthetic'])
+            ->delete();
+    }
+
+    private function seedFaqs(): void
+    {
+        foreach (ClientCopyCatalog::faqs() as $index => $faq) {
             Faq::query()->updateOrCreate(
                 ['question' => $faq['question']],
-                array_merge($faq, ['sort_order' => $index + 1, 'is_published' => true]),
+                [
+                    'answer' => $faq['answer'],
+                    'page_slug' => $faq['page_slug'],
+                    'sort_order' => $index + 1,
+                    'is_published' => true,
+                ],
             );
         }
     }

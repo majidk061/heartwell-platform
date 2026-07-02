@@ -9,9 +9,10 @@
     $creds = ! empty($credentials) ? $credentials : ($content['credentials'] ?? []);
     $credString = is_array($creds) ? implode(', ', array_filter($creds)) : (string) $creds;
     $displayName = $credString ? "{$name}, {$credString}" : $name;
-    $role = $content['role'] ?? 'Founder & Registered Nurse, HeartWell Aesthetics & Wellness';
+    $role = $content['role'] ?? 'Founder & Director of Care';
     $pronunciation = $content['pronunciation'] ?? null;
     $bio = $section?->body ?? ($content['body'] ?? 'Jacquie Wilson brings nurse-led, clinically credentialed care to every HeartWell visit.');
+    $subsections = $content['subsections'] ?? [];
     $src = CmsImage::url($imageUrl ?? $section?->image_url ?? ($content['image_url'] ?? null));
     $photoCol = $imageFirst ? 'lg:order-1' : 'lg:order-2';
     $textCol = $imageFirst ? 'lg:order-2' : 'lg:order-1';
@@ -35,7 +36,19 @@
                 @endif
                 <p class="text-hw-muted mt-1 text-sm md:text-base">{{ $role }}</p>
                 <p class="text-hw-text mt-4 leading-relaxed text-base">{{ $bio }}</p>
-                <a href="{{ route('meet-the-founder') }}" class="btn-primary sm:w-auto inline-flex mt-6">Learn More About My Story</a>
+                @if(! empty($subsections))
+                    <div class="mt-8 space-y-6 text-left">
+                        @foreach($subsections as $block)
+                            <div>
+                                <h3 class="font-heading text-lg text-hw-heading">{{ $block['title'] ?? '' }}</h3>
+                                @if(! empty($block['body']))
+                                    <p class="text-hw-text mt-2 leading-relaxed text-base">{{ $block['body'] }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+                <a href="{{ route('contact') }}" class="btn-primary sm:w-auto inline-flex mt-6">Connect with HeartWell</a>
             </div>
         </div>
     </x-layout.page-container>

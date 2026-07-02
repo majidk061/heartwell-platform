@@ -121,6 +121,26 @@ trait MutatesSectionContent
                 ->label('Credentials (e.g. BSN, RN, MBA)')
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'founder_teaser')
                 ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_founder_name')
+                ->label('Founder name')
+                ->default('Jacquie Wilson')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'founder_teaser'),
+            Forms\Components\TextInput::make('content_founder_role')
+                ->label('Role / title')
+                ->default('Founder & Director of Care')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'founder_teaser'),
+            Forms\Components\TextInput::make('content_founder_pronunciation')
+                ->label('Name pronunciation')
+                ->placeholder('Pronounced Jack-Kwa')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'founder_teaser'),
+            Forms\Components\Repeater::make('content_founder_subsections')
+                ->label('Bio subsections')
+                ->schema([
+                    Forms\Components\TextInput::make('title')->required(),
+                    Forms\Components\Textarea::make('body')->rows(3)->required(),
+                ])
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'founder_teaser')
+                ->columnSpanFull(),
             Forms\Components\TextInput::make('content_unifying_message')
                 ->label('Unifying emotional line')
                 ->helperText('e.g. "I don\'t feel like myself anymore."')
@@ -344,6 +364,29 @@ trait MutatesSectionContent
             $content['credentials'] = $data['content_credentials'];
         }
 
+        if (! empty($data['content_founder_name'])) {
+            $content['name'] = $data['content_founder_name'];
+        }
+
+        if (! empty($data['content_founder_role'])) {
+            $content['role'] = $data['content_founder_role'];
+        }
+
+        if (! empty($data['content_founder_pronunciation'])) {
+            $content['pronunciation'] = $data['content_founder_pronunciation'];
+        }
+
+        if (! empty($data['content_founder_subsections'])) {
+            $content['subsections'] = collect($data['content_founder_subsections'])
+                ->map(fn (array $block) => [
+                    'title' => $block['title'] ?? '',
+                    'body' => $block['body'] ?? '',
+                ])
+                ->filter(fn (array $block) => $block['title'] !== '')
+                ->values()
+                ->all();
+        }
+
         if (! empty($data['content_forms'])) {
             $content['forms'] = $data['content_forms'];
         }
@@ -512,6 +555,10 @@ trait MutatesSectionContent
         }
 
         $data['content_credentials'] = is_array($content['credentials'] ?? null) ? $content['credentials'] : [];
+        $data['content_founder_name'] = $content['name'] ?? 'Jacquie Wilson';
+        $data['content_founder_role'] = $content['role'] ?? 'Founder & Director of Care';
+        $data['content_founder_pronunciation'] = $content['pronunciation'] ?? null;
+        $data['content_founder_subsections'] = $content['subsections'] ?? [];
         $data['content_forms'] = is_array($content['forms'] ?? null) ? $content['forms'] : [];
         $data['content_unifying_message'] = $content['unifying_message'] ?? null;
         $data['content_enabled'] = $content['enabled'] ?? true;

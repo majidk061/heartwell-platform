@@ -44,7 +44,7 @@
             @if($heroView)
                 @include($heroView, [
                     'headline' => $section->heading,
-                    'tagline' => $section->subheading,
+                    'tagline' => $section->subheading ?? ($sectionContent['subheading'] ?? null),
                     'body' => $section->body ?? ($sectionContent['body'] ?? null),
                     'introQuestion' => $sectionContent['intro_question'] ?? null,
                     'imageUrl' => CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)),
@@ -70,18 +70,26 @@
             @break
 
         @case('intro')
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="dusty_blue">
-                @if($section->heading)
-                    <x-layout.section-heading :title="$section->heading" />
-                @endif
-                @if($section->body ?? ($sectionContent['body'] ?? null))
-                    <p class="text-base md:text-lg text-hw-text mt-4 leading-relaxed">{{ $section->body ?? $sectionContent['body'] }}</p>
-                @endif
-                @php $introImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)); @endphp
-                @if($introImage)
-                    <img src="{{ $introImage }}" alt="" class="mt-8 mx-auto rounded-lg max-w-xl w-full aspect-video object-cover">
-                @endif
-            </x-section-shell>
+            @php $introView = section_view('intro', $sectionContent); @endphp
+            @if($introView)
+                @include($introView, [
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @else
+                <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="dusty_blue">
+                    @if($section->heading)
+                        <x-layout.section-heading :title="$section->heading" />
+                    @endif
+                    @if($section->body ?? ($sectionContent['body'] ?? null))
+                        <p class="text-base md:text-lg text-hw-text mt-4 leading-relaxed">{{ $section->body ?? $sectionContent['body'] }}</p>
+                    @endif
+                    @php $introImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)); @endphp
+                    @if($introImage)
+                        <img src="{{ $introImage }}" alt="" class="mt-8 mx-auto rounded-lg max-w-xl w-full aspect-video object-cover">
+                    @endif
+                </x-section-shell>
+            @endif
             @break
 
         @case('avatar_intro')
@@ -101,9 +109,18 @@
                 @if($section->heading)
                     <x-layout.section-heading :title="$section->heading" centered />
                 @endif
-                @php $steps = $sectionContent['steps'] ?? []; @endphp
+                @php
+                    $steps = $sectionContent['steps'] ?? [];
+                    $stepCount = count($steps);
+                    $gridClass = match (true) {
+                        $stepCount <= 2 => 'sm:grid-cols-2',
+                        $stepCount === 3 => 'sm:grid-cols-2 lg:grid-cols-3',
+                        $stepCount === 4 => 'sm:grid-cols-2 lg:grid-cols-4',
+                        default => 'sm:grid-cols-2 lg:grid-cols-5',
+                    };
+                @endphp
                 @if(! empty($steps))
-                    <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-8">
+                    <ol class="grid grid-cols-1 {{ $gridClass }} gap-6 mt-8">
                         @foreach($steps as $index => $step)
                             <li class="flex flex-col items-center text-center p-6 rounded-xl bg-hw-taupe-light/50 border border-hw-border">
                                 <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-hw-heading text-hw-white text-sm font-semibold mb-4">{{ $index + 1 }}</span>
@@ -217,7 +234,17 @@
 
         @case('pathways_teaser')
             @if($pathways->isNotEmpty())
-                <x-pathway-accordion :pathways="$pathways" :title="$section->heading" :section="$section" :theme-defaults="$themeDefaults" />
+                @php $pathwaysView = section_view('pathways_teaser', $sectionContent); @endphp
+                @if($pathwaysView)
+                    @include($pathwaysView, [
+                        'pathways' => $pathways,
+                        'title' => $section->heading,
+                        'section' => $section,
+                        'themeDefaults' => $themeDefaults,
+                    ])
+                @else
+                    <x-pathway-accordion :pathways="$pathways" :title="$section->heading" :section="$section" :theme-defaults="$themeDefaults" />
+                @endif
             @endif
             @break
 

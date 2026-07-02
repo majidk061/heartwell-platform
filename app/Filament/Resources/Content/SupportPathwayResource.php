@@ -58,7 +58,12 @@ class SupportPathwayResource extends Resource
                         ->prefixIcon('heroicon-o-book-open'),
                     Forms\Components\Textarea::make('intro')
                         ->rows(4)
+                        ->helperText('Overview paragraph shown on pathway cards.')
                         ->columnSpanFull(),
+                    Forms\Components\TextInput::make('tagline')
+                        ->maxLength(255)
+                        ->helperText('One-line “who it’s for” label, e.g. “For feeling depleted, foggy, sluggish…”')
+                        ->prefixIcon('heroicon-o-user'),
                     static::cmsImagePreviewPlaceholder('image_path', 'Current pathway image'),
                     static::cmsImageUploadField(
                         'image_path',
@@ -67,7 +72,31 @@ class SupportPathwayResource extends Resource
                         \App\Filament\Concerns\ConfiguresHeartWellAdminUx::pathwayUploadHelper(),
                     )->imageEditorAspectRatios(['16:9'])->columnSpanFull(),
                 ]),
-                static::formSection('Accordion content', 'heroicon-o-list-bullet', [
+                static::formSection('Pathway card content', 'heroicon-o-document-text', [
+                    Forms\Components\TagsInput::make('options_may_include')
+                        ->label('Options may include')
+                        ->helperText('Use “supports” language — avoid claims that treat, cure, or diagnose.')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('common_support')
+                        ->label('Common support options')
+                        ->rows(4)
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('portal_cue')
+                        ->label('Portal cue')
+                        ->rows(3)
+                        ->helperText('What clients may see in the secure Hydreight intake portal.')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('selection_note')
+                        ->label('Selection note (optional)')
+                        ->rows(2)
+                        ->helperText('e.g. B12 vs B-Complex guidance for Energy pathway.')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('coming_soon')
+                        ->label('Coming soon note (optional)')
+                        ->rows(2)
+                        ->columnSpanFull(),
+                ], 1),
+                static::formSection('Legacy accordion (optional)', 'heroicon-o-list-bullet', [
                     Forms\Components\Repeater::make('accordion_content')
                         ->schema([
                             Forms\Components\TextInput::make('heading')
@@ -76,6 +105,7 @@ class SupportPathwayResource extends Resource
                             Forms\Components\Textarea::make('body')
                                 ->rows(3),
                         ])
+                        ->helperText('Used only when pathway card fields are empty (classic accordion layout).')
                         ->columnSpanFull(),
                 ], 1),
                 static::formSection('CTA & publishing', 'heroicon-o-cursor-arrow-rays', [

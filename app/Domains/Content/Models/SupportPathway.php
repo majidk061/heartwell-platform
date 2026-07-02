@@ -19,6 +19,12 @@ class SupportPathway extends Model
         'slug',
         'title',
         'intro',
+        'tagline',
+        'options_may_include',
+        'common_support',
+        'portal_cue',
+        'selection_note',
+        'coming_soon',
         'image_path',
         'accordion_content',
         'avatar_type',
@@ -32,6 +38,7 @@ class SupportPathway extends Model
     ];
 
     protected $casts = [
+        'options_may_include' => 'array',
         'accordion_content' => 'array',
         'sort_order' => 'integer',
         'is_published' => 'boolean',

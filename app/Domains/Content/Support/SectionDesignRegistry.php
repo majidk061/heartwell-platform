@@ -46,11 +46,13 @@ class SectionDesignRegistry
             ],
             'intro' => [
                 'default' => 'Centered text + optional image',
+                'compliance_callout' => 'Clinical intake & clearance callout',
                 'image_side' => 'Text and image side by side',
                 'image_below' => 'Image below text',
             ],
             'pathways_teaser' => [
                 'accordion' => 'Accordion list (classic)',
+                'pathway_cards' => 'Guided pathway cards (Support Pathways page)',
                 'compact_list' => 'Compact linked list',
             ],
             'journey' => [
