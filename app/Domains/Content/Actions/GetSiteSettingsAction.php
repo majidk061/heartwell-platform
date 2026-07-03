@@ -44,9 +44,9 @@ class GetSiteSettingsAction
                 'colors' => SectionLayout::defaultThemeColors(),
                 'navigation_style' => [
                     'hover_effect' => 'color',
-                    'hover_color' => '#e8967a',
+                    'hover_color' => '#a69488',
                     'active_style' => 'underline',
-                    'active_color' => '#e8967a',
+                    'active_color' => '#a69488',
                     'header_cta_count' => 2,
                 ],
             ],
@@ -60,6 +60,7 @@ class GetSiteSettingsAction
                 'sitemap_enabled' => true,
                 'sitemap_extra_urls' => [
                     ['path' => '/clinical-intake', 'priority' => 0.5, 'changefreq' => 'monthly'],
+                    ['path' => '/privacy', 'priority' => 0.4, 'changefreq' => 'yearly'],
                 ],
             ],
         ];

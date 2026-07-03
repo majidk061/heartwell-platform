@@ -212,7 +212,7 @@
 
   .hw-hero-intro-question__lead {
     color: var(--color-heading);
-    box-shadow: inset 0 -2px 0 0 var(--nav-active-color, var(--color-accent-coral, #c9483a));
+    box-shadow: inset 0 -2px 0 0 var(--nav-active-color, var(--color-accent-warm, var(--color-dusty-blue)));
   }
 
   .hw-hero-body {
@@ -365,7 +365,7 @@
   }
 
   .hw-cta-section--blush {
-    background: linear-gradient(180deg, #f8ecee 0%, #fbf5f6 52%, #fdfafa 100%);
+    background: linear-gradient(180deg, #f7f4ef 0%, #faf8f5 52%, #fcfbf8 100%);
   }
 
   .hw-cta-section--taupe {
@@ -377,7 +377,7 @@
   }
 
   .hw-cta-section--cream {
-    background-color: #f9f5f2;
+    background-color: var(--color-cream, #f7f4ef);
   }
 
   .hw-cta-panel--flat {
@@ -419,9 +419,8 @@
     height: 4px;
     background: linear-gradient(
       90deg,
-      var(--color-blush) 0%,
-      var(--color-dusty-blue) 50%,
-      var(--color-accent-coral, #c9483a) 100%
+      var(--color-taupe) 0%,
+      var(--color-dusty-blue) 100%
     );
   }
 
@@ -510,7 +509,7 @@
   }
 
   .hw-cta-panel__link:hover {
-    color: var(--color-accent-coral, #c9483a);
+    color: var(--color-heading);
   }
 
   .hw-cta-split {
@@ -625,7 +624,7 @@
   }
 
   .hw-cta-split__consult-link:hover {
-    color: var(--color-accent-coral, #c9483a);
+    color: var(--color-dusty-blue);
   }
 
   .hw-cta-split__aside {
@@ -706,7 +705,7 @@
   }
 
   .hw-cta-inline-bar {
-    background-color: #f9f5f2;
+    background-color: var(--color-cream, #f7f4ef);
   }
 
   .hw-cta-inline-bar.hw-section {
@@ -1056,7 +1055,7 @@
     flex-shrink: 0;
     width: 1px;
     height: 1.125rem;
-    background-color: var(--color-accent-coral, #c9483a);
+    background-color: var(--color-taupe);
     margin-inline: clamp(0.625rem, 1.5vw, 1.25rem);
     opacity: 0.85;
   }
@@ -1081,7 +1080,7 @@
   }
 
   .hw-pathway-bar__link:hover {
-    color: var(--color-accent-coral, #c9483a);
+    color: var(--color-dusty-blue);
   }
 
   @media (min-width: 1280px) {
@@ -1167,17 +1166,36 @@
     background-color: color-mix(in srgb, var(--color-dusty-blue-light) 12%, var(--color-white));
   }
 
+  .hw-features-grid--balanced-four {
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+
+  .hw-pathways-teaser-section + .hw-section {
+    margin-top: -0.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    .hw-pathways-teaser-section + .hw-section {
+      margin-top: -1.25rem;
+    }
+  }
+
   .hw-hero-tagline {
-    color: var(--nav-active-color, var(--color-blush));
+    color: var(--color-tagline, var(--color-taupe));
+  }
+
+  .hw-founder-eyebrow {
+    color: var(--color-tagline, var(--color-taupe));
   }
 
   .hw-hero--overlay__scrim {
     background: linear-gradient(
       to right,
       rgb(255 255 255 / 0.98) 0%,
-      rgb(249 245 242 / 0.96) 28%,
-      rgb(249 245 242 / 0.72) 42%,
-      rgb(249 245 242 / 0.35) 55%,
+      rgb(252 251 248 / 0.96) 28%,
+      rgb(252 251 248 / 0.72) 42%,
+      rgb(252 251 248 / 0.35) 55%,
       transparent 72%
     );
   }
@@ -1293,7 +1311,7 @@
     height: 2px;
     margin: 0.45rem 0 0.55rem;
     border-radius: 9999px;
-    background: var(--color-accent-coral, #c9483a);
+    background: var(--color-accent-warm, var(--color-dusty-blue));
     flex-shrink: 0;
   }
 
@@ -1324,7 +1342,7 @@
     font-size: 0.9375rem;
     font-weight: 700;
     line-height: 1.3;
-    color: var(--color-accent-coral, #c9483a);
+    color: var(--color-dusty-blue);
     transition: color 0.2s ease;
     flex-shrink: 0;
   }
@@ -1336,7 +1354,7 @@
   }
 
   .hw-avatar-card-horizontal__link:hover {
-    color: #a8382e;
+    color: var(--color-heading);
   }
 
   @media (max-width: 767px) {
@@ -1344,8 +1362,8 @@
       background: linear-gradient(
         to bottom,
         rgb(255 255 255 / 0.97) 0%,
-        rgb(249 245 242 / 0.92) 45%,
-        rgb(249 245 242 / 0.55) 65%,
+        rgb(252 251 248 / 0.92) 45%,
+        rgb(252 251 248 / 0.55) 65%,
         transparent 100%
       );
     }
@@ -1461,7 +1479,7 @@
     margin-top: 0.35rem;
     font-size: 0.9375rem;
     font-style: italic;
-    color: var(--color-blush, #e8967a);
+    color: var(--color-tagline, var(--color-taupe));
   }
 
   .hw-pathway-card__intro {

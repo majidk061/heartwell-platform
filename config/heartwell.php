@@ -100,7 +100,7 @@ return [
                 ['label' => 'Meet the Founder', 'route' => 'meet-the-founder'],
                 ['label' => 'About HeartWell', 'route' => 'why-heartwell'],
                 ['label' => 'Contact / Waitlist', 'route' => 'contact'],
-                ['label' => 'Privacy Policy', 'route' => 'contact'],
+                ['label' => 'Privacy Policy', 'route' => 'privacy'],
             ],
         ],
     ],

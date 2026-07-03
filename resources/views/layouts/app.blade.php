@@ -34,8 +34,8 @@
         $schemaType = $page?->schema_type ?? 'none';
         $siteWidth = $theme['site_width'] ?? 'standard';
         $navStyle = $theme['navigation_style'] ?? [];
-        $navHoverColor = $navStyle['hover_color'] ?? '#e8967a';
-        $navActiveColor = $navStyle['active_color'] ?? '#e8967a';
+        $navHoverColor = $navStyle['hover_color'] ?? '#a69488';
+        $navActiveColor = $navStyle['active_color'] ?? '#a69488';
     @endphp
 
     <title>{{ $documentTitle }}</title>

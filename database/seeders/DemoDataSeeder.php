@@ -21,8 +21,6 @@ class DemoDataSeeder extends Seeder
         $this->seedWaitlist();
         $this->seedConsultations();
         $this->seedGroupInquiries();
-        $this->seedFaqs();
-        $this->seedTestimonials();
     }
 
     private function seedLeads(): void

@@ -97,13 +97,13 @@
         <div class="grid lg:grid-cols-12 gap-6 lg:gap-10 text-left">
             <div class="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
                 @if(in_array('waitlist', $activeForms, true))
-                    <x-contact-option-card id="waitlist" :title="$forms['waitlist_title']" description="Be first to know when appointments open." icon="bell" :featured="! $acuityEnabled" />
+                    <x-contact-option-card id="waitlist" :title="$forms['waitlist_title']" description="Be first to know when appointments open." icon="bell" :featured="false" />
                 @endif
                 @if(in_array('consultation', $activeForms, true))
                     <x-contact-option-card id="consultation" :title="$forms['consultation_title']" description="Tell us about yourself — we will be in touch." icon="chat" />
                 @endif
                 @if($acuityEnabled)
-                    <x-contact-option-card id="book" :title="$ctas['primary']['label'] ?? 'Book a Visit'" description="Schedule your individual wellness visit." icon="calendar" :featured="true" />
+                    <x-contact-option-card id="book" :title="$ctas['primary']['label'] ?? 'Book a Visit'" description="Schedule your individual wellness visit." icon="calendar" :featured="false" />
                 @endif
                 @if(in_array('group_inquiry', $activeForms, true))
                     <x-contact-option-card id="group-inquiry" :title="$forms['group_title']" description="Host a private wellness experience." icon="users" />

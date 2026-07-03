@@ -62,9 +62,9 @@ class HeartWellSeeder extends Seeder
                     'Avatar intro block',
                     'Intro — home nurse-led care',
                     'Pathways teaser',
-                    'Testimonials — grid',
+                    'Features — what you can expect',
                     'Founder teaser',
-                    'Standard CTA band',
+                    'CTA — client pre-footer band',
                 ],
             ],
             'support-pathways' => [
@@ -177,7 +177,7 @@ class HeartWellSeeder extends Seeder
                     'image_url' => self::IMG_HERO,
                     'show_consultation_link' => false,
                     'pathway_bar_variant' => 'labeled_inline_dividers',
-                    'pathway_bar_heading' => 'Support Options Include:',
+                    'pathway_bar_heading' => 'Support Pathways Include:',
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
             ],
@@ -302,7 +302,7 @@ class HeartWellSeeder extends Seeder
                 'description' => 'Photo, bio, credentials, and pronunciation.',
                 'content' => [
                     'design_variant' => 'photo_left',
-                    'body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to bring thoughtful, compassionate care you can trust.',
+                    'body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to offer thoughtful, nurse-led wellness support for women who feel depleted, stuck, or unlike themselves — with care that feels calm, personal, and trustworthy.',
                     'image_url' => self::IMG_FOUNDER,
                     'credentials' => ['BSN', 'RN', 'MBA'],
                     'pronunciation' => 'Pronounced Jack-Kwa',
@@ -341,7 +341,7 @@ class HeartWellSeeder extends Seeder
             [
                 'name' => 'FAQ block',
                 'section_type' => 'faq',
-                'heading' => 'Common questions',
+                'heading' => 'Questions Before You Begin',
                 'description' => 'FAQ accordion — assign FAQs to this page slug in Website Content → FAQs.',
                 'content' => [
                     'include_unassigned' => false,
@@ -367,8 +367,22 @@ class HeartWellSeeder extends Seeder
                     'subtitle' => 'Real stories from women who found support with HeartWell.',
                     'display_mode' => 'grid',
                     'count' => 6,
-                    'enabled' => true,
+                    'enabled' => false,
                     'layout' => ['container_width' => 'default', 'background' => 'taupe'],
+                ],
+            ],
+            [
+                'name' => 'Features — what you can expect',
+                'section_type' => 'features',
+                'heading' => 'What You Can Expect',
+                'description' => 'Trust-building pillars for the home page.',
+                'content' => [
+                    'features' => [
+                        ['title' => 'Nurse-Led Care', 'body' => 'Every visit is guided by clinical experience, screening, and thoughtful support.'],
+                        ['title' => 'Private Mobile Visits', 'body' => 'Care is brought to you in a calm, comfortable setting.'],
+                        ['title' => 'Support That Feels Personal', 'body' => 'Your wellness plan is shaped around your goals, your season of life, and how you are feeling.'],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
             ],
             [
@@ -377,11 +391,7 @@ class HeartWellSeeder extends Seeder
                 'heading' => 'Support Pathways',
                 'description' => 'Pathway accordion preview — pathways managed under Website Content → Support Pathways.',
                 'content' => [
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
-                ],
-            ],
-            [
-                'name' => 'CTA — client pre-footer band',
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'compact'],
                 'section_type' => 'cta',
                 'heading' => 'You Deserve to Feel Like Yourself Again',
                 'description' => 'Client mock — cream band with dual CTAs.',
@@ -390,11 +400,7 @@ class HeartWellSeeder extends Seeder
                     'body' => "Whether you're feeling depleted, stuck, or simply unlike yourself, support is available.",
                     'variant' => 'dual',
                     'show_consultation_link' => false,
-                    'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'white'],
-                ],
-            ],
-            [
-                'name' => 'Standard CTA band',
+                    'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'cream'],
                 'section_type' => 'cta',
                 'heading' => 'Ready to take the next step?',
                 'description' => 'Dual-button CTA with consultation link.',
@@ -699,6 +705,7 @@ class HeartWellSeeder extends Seeder
             'sitemap_extra_urls' => [
                 ['path' => '/clinical-intake', 'priority' => 0.5, 'changefreq' => 'monthly'],
                 ['path' => '/my-visit', 'priority' => 0.6, 'changefreq' => 'monthly'],
+                ['path' => '/privacy', 'priority' => 0.4, 'changefreq' => 'yearly'],
             ],
         ]]);
         SiteSetting::query()->updateOrCreate(['key' => 'theme'], ['value' => [
@@ -712,9 +719,9 @@ class HeartWellSeeder extends Seeder
             'colors' => SectionLayout::defaultThemeColors(),
             'navigation_style' => [
                 'hover_effect' => 'color',
-                'hover_color' => '#e8967a',
+                'hover_color' => '#a69488',
                 'active_style' => 'underline',
-                'active_color' => '#e8967a',
+                'active_color' => '#a69488',
                 'header_cta_count' => 2,
             ],
         ]]);

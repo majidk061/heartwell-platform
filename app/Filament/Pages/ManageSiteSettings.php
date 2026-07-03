@@ -122,9 +122,9 @@ class ManageSiteSettings extends Page implements HasForms
             'header_style' => $settings['theme']['header_style'] ?? 'solid_cream',
             'header_show_border' => $settings['theme']['header_show_border'] ?? true,
             'nav_hover_effect' => $settings['theme']['navigation_style']['hover_effect'] ?? 'color',
-            'nav_hover_color' => $settings['theme']['navigation_style']['hover_color'] ?? '#e8967a',
+            'nav_hover_color' => $settings['theme']['navigation_style']['hover_color'] ?? '#a69488',
             'nav_active_style' => $settings['theme']['navigation_style']['active_style'] ?? 'underline',
-            'nav_active_color' => $settings['theme']['navigation_style']['active_color'] ?? '#e8967a',
+            'nav_active_color' => $settings['theme']['navigation_style']['active_color'] ?? '#a69488',
             ...collect(static::defaultThemeColors())->mapWithKeys(fn ($color, $key) => ['theme_color_'.$key => $settings['theme']['colors'][$key] ?? $color])->all(),
         ]);
     }
@@ -288,7 +288,7 @@ class ManageSiteSettings extends Page implements HasForms
                                             ->default('color'),
                                         Forms\Components\ColorPicker::make('nav_hover_color')
                                             ->label('Hover color')
-                                            ->default('#e8967a'),
+                                            ->default('#a69488'),
                                         Forms\Components\Select::make('nav_active_style')
                                             ->label('Active page style')
                                             ->options([
@@ -300,7 +300,7 @@ class ManageSiteSettings extends Page implements HasForms
                                             ->default('underline'),
                                         Forms\Components\ColorPicker::make('nav_active_color')
                                             ->label('Active color')
-                                            ->default('#e8967a'),
+                                            ->default('#a69488'),
                                     ])
                                     ->columns(2)
                                     ->columnSpanFull(),
@@ -489,9 +489,9 @@ class ManageSiteSettings extends Page implements HasForms
             'colors' => $colors,
             'navigation_style' => [
                 'hover_effect' => $data['nav_hover_effect'] ?? 'color',
-                'hover_color' => $data['nav_hover_color'] ?? '#e8967a',
+                'hover_color' => $data['nav_hover_color'] ?? '#a69488',
                 'active_style' => $data['nav_active_style'] ?? 'underline',
-                'active_color' => $data['nav_active_color'] ?? '#e8967a',
+                'active_color' => $data['nav_active_color'] ?? '#a69488',
                 'header_cta_count' => 2,
             ],
         ]]);

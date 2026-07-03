@@ -25,7 +25,7 @@
         <h3 class="font-heading text-xl text-hw-heading">{{ $headline }}</h3>
         <p class="text-hw-text mt-3 flex-1">{{ $subtext }}</p>
         <a href="{{ route('support-pathways') }}#{{ $pathwaySlug }}"
-           class="mt-4 inline-flex items-center text-hw-blush font-semibold hover:text-hw-heading transition-colors min-h-[44px]">
+           class="mt-4 inline-flex items-center text-hw-dusty-blue font-semibold hover:text-hw-heading transition-colors min-h-[44px]">
             {{ $ctaLabel }} &rarr;
         </a>
     </div>

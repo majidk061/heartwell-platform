@@ -204,7 +204,7 @@ class ClientCopyCatalog
                 'description' => 'Support Pathways page hero.',
                 'content' => [
                     'subheading' => 'Thoughtful Wellness Support, Guided by Your Goals',
-                    'body' => 'HeartWell pathways are designed to help you choose the type of support that best matches how you are feeling and what you are hoping to address. Some options may be offered as IV wellness support, targeted injections, or add-ons to hydration therapy when available and clinically appropriate. After choosing a HeartWell pathway, you may be directed to a secure medical intake and booking portal powered by Hydreight. The portal may use more clinical treatment names than the HeartWell pathway names shown here. Each pathway below includes guidance on what you may see in the secure portal. Your selection helps us understand your goals, but it does not replace clinical screening. Before treatment is provided, your health history, intake, and provider review help confirm what is appropriate for you.',
+                    'body' => "HeartWell pathways are designed to help you choose the type of support that best matches how you are feeling and what you are hoping to address. Some options may be offered as IV wellness support, targeted injections, or add-ons to hydration therapy when available and clinically appropriate.\n\nAfter choosing a HeartWell pathway, you may be directed to a secure medical intake and booking portal powered by Hydreight. The portal may use more clinical treatment names than the HeartWell pathway names shown here. Each pathway below includes guidance on what you may see in the secure portal. Your selection helps us understand your goals, but it does not replace clinical screening. Before treatment is provided, your health history, intake, and provider review help confirm what is appropriate for you.",
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
             ],
@@ -357,7 +357,7 @@ class ClientCopyCatalog
             ],
             'FAQ block' => [
                 'section_type' => 'faq',
-                'heading' => 'Frequently Asked Questions',
+                'heading' => 'Questions Before You Begin',
                 'description' => 'FAQ accordion — assign FAQs to page slug in Website Content → FAQs.',
                 'content' => [
                     'include_unassigned' => false,
@@ -442,6 +442,19 @@ class ClientCopyCatalog
                 'content' => [
                     'body' => self::COMPLIANCE_INTAKE,
                     'layout' => ['container_width' => 'narrow', 'background' => 'white'],
+                ],
+            ],
+            'Features — what you can expect' => [
+                'section_type' => 'features',
+                'heading' => 'What You Can Expect',
+                'description' => 'Trust-building pillars for the home page (replaces placeholder testimonials).',
+                'content' => [
+                    'features' => [
+                        ['title' => 'Nurse-Led Care', 'body' => 'Every visit is guided by clinical experience, screening, and thoughtful support.'],
+                        ['title' => 'Private Mobile Visits', 'body' => 'Care is brought to you in a calm, comfortable setting.'],
+                        ['title' => 'Support That Feels Personal', 'body' => 'Your wellness plan is shaped around your goals, your season of life, and how you are feeling.'],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
             ],
         ];

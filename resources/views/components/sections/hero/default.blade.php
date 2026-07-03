@@ -15,6 +15,10 @@
     $sectionClass = SectionLayout::sectionClasses($layout);
     $textOrder = $imageFirst ? 'order-2 lg:order-2' : 'order-2 lg:order-1';
     $imageOrder = $imageFirst ? 'order-1 lg:order-1' : 'order-1 lg:order-2';
+    $bodyParagraphs = array_values(array_filter(array_map(
+        static fn (string $paragraph): string => trim($paragraph),
+        preg_split('/\n\s*\n/', trim((string) ($body ?? ''))) ?: []
+    )));
 @endphp
 
 <section class="{{ $sectionClass }} hw-hero">
@@ -23,13 +27,17 @@
             <div class="{{ $textOrder }}">
                 <h1 class="hw-page-title">{{ $headline }}</h1>
                 @if($tagline)
-                    <p class="hw-hero-tagline font-heading text-xl md:text-2xl lg:text-3xl text-hw-blush italic mt-3">{{ $tagline }}</p>
+                    <p class="hw-hero-tagline font-heading text-xl md:text-2xl lg:text-3xl italic mt-3">{{ $tagline }}</p>
                 @endif
                 @if($introQuestion)
                     <p class="font-heading text-lg md:text-xl text-hw-heading mt-4">{{ $introQuestion }}</p>
                 @endif
-                @if($body)
-                    <p class="text-base md:text-lg text-hw-text mt-4 md:mt-6 leading-relaxed">{{ $body }}</p>
+                @if($bodyParagraphs !== [])
+                    <div class="hw-hero-body space-y-4">
+                        @foreach($bodyParagraphs as $paragraph)
+                            <p>{{ $paragraph }}</p>
+                        @endforeach
+                    </div>
                 @endif
                 <div class="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ ($siteSettings['ctas']['primary']['label'] ?? null) ?: config('heartwell.ctas.primary.label') }}</a>

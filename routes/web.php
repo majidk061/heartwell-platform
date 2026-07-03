@@ -48,6 +48,9 @@ Route::post('/contact/group-inquiry', [ContactController::class, 'storeGroupInqu
 Route::get('/clinical-intake', ClinicalIntakeController::class)
     ->name('clinical-intake');
 
+Route::get('/privacy', \App\Http\Controllers\Web\PrivacyController::class)
+    ->name('privacy');
+
 Route::get('/my-visit', MyVisitController::class)
     ->name('my-visit');
 

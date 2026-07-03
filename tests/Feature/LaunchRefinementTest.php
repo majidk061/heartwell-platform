@@ -1,0 +1,192 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Domains\Content\Enums\ContentStatus;
+use App\Domains\Content\Models\Page;
+use App\Domains\Content\Models\PageSection;
+use App\Domains\Content\Models\SectionTemplate;
+use App\Domains\Content\Models\Testimonial;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class LaunchRefinementTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_privacy_page_renders(): void
+    {
+        $this->get(route('privacy'))
+            ->assertOk()
+            ->assertSee('Privacy Policy')
+            ->assertSee('We respect your privacy');
+    }
+
+    public function test_footer_uses_support_pathways_label(): void
+    {
+        Page::query()->create([
+            'slug' => 'home',
+            'title' => 'Home',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 1,
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Support Pathways')
+            ->assertDontSee('Support Options');
+    }
+
+    public function test_contact_page_does_not_show_most_popular_badge(): void
+    {
+        Page::query()->create([
+            'slug' => 'contact',
+            'title' => 'Contact',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 7,
+        ]);
+
+        SectionTemplate::query()->create([
+            'name' => 'Contact forms',
+            'section_type' => 'forms',
+            'heading' => 'Connect',
+            'content' => ['forms' => ['waitlist', 'consultation']],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        $template = SectionTemplate::query()->where('name', 'Contact forms')->first();
+
+        PageSection::query()->create([
+            'page_id' => Page::query()->where('slug', 'contact')->value('id'),
+            'section_template_id' => $template->id,
+            'section_type' => 'forms',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('contact'))
+            ->assertOk()
+            ->assertDontSee('Most popular', false);
+    }
+
+    public function test_home_renders_what_you_can_expect_instead_of_testimonials(): void
+    {
+        $page = Page::query()->create([
+            'slug' => 'home',
+            'title' => 'Home',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 1,
+        ]);
+
+        $featuresTemplate = SectionTemplate::query()->create([
+            'name' => 'Features — what you can expect',
+            'section_type' => 'features',
+            'heading' => 'What You Can Expect',
+            'content' => [
+                'features' => [
+                    ['title' => 'Nurse-Led Care', 'body' => 'Every visit is guided by clinical experience.'],
+                ],
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $featuresTemplate->id,
+            'section_type' => 'features',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        Testimonial::query()->create([
+            'author_name' => 'Jane Placeholder',
+            'quote' => 'Lorem ipsum testimonial that should not appear.',
+            'attribution' => 'Guest',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('What You Can Expect')
+            ->assertSee('Nurse-Led Care')
+            ->assertDontSee('Jane Placeholder');
+    }
+
+    public function test_hero_tagline_does_not_use_blush_utility_class(): void
+    {
+        $page = Page::query()->create([
+            'slug' => 'why-heartwell',
+            'title' => 'Why HeartWell',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 4,
+        ]);
+
+        $template = SectionTemplate::query()->create([
+            'name' => 'Hero test',
+            'section_type' => 'hero',
+            'heading' => 'Why HeartWell',
+            'content' => [
+                'design_variant' => 'default',
+                'subheading' => 'For Every Stage of Life',
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $template->id,
+            'section_type' => 'hero',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('why-heartwell'))
+            ->assertOk()
+            ->assertSee('hw-hero-tagline', false)
+            ->assertDontSee('text-hw-blush', false);
+    }
+
+    public function test_founder_eyebrow_does_not_use_blush_utility_class(): void
+    {
+        $page = Page::query()->create([
+            'slug' => 'home',
+            'title' => 'Home',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 1,
+        ]);
+
+        $template = SectionTemplate::query()->create([
+            'name' => 'Founder teaser test',
+            'section_type' => 'founder_teaser',
+            'heading' => 'Meet the Founder',
+            'content' => [
+                'design_variant' => 'photo_left',
+                'body' => 'Founder bio copy for test.',
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $template->id,
+            'section_type' => 'founder_teaser',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('hw-founder-eyebrow', false)
+            ->assertDontSee('text-hw-blush', false);
+    }
+}

@@ -13,7 +13,7 @@
     $sectionClass = SectionLayout::sectionClasses($layout);
 @endphp
 
-<section class="{{ $sectionClass }} hw-pathway-cards-section">
+<section class="{{ $sectionClass }} hw-pathway-cards-section hw-pathways-teaser-section">
     <x-layout.page-container :width="$layout['container_width']">
         @if($title)
             <h2 class="hw-section-title text-center mb-8 md:mb-10">{{ $title }}</h2>

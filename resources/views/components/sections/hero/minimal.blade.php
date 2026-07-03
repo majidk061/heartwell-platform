@@ -15,7 +15,7 @@
         <div class="max-w-2xl mx-auto text-center">
             <h1 class="hw-page-title">{{ $headline }}</h1>
             @if($tagline)
-                <p class="hw-hero-tagline font-heading text-xl md:text-2xl text-hw-blush italic mt-3">{{ $tagline }}</p>
+                <p class="hw-hero-tagline font-heading text-xl md:text-2xl italic mt-3">{{ $tagline }}</p>
             @endif
             @if($body)
                 <p class="text-base md:text-lg text-hw-text mt-6 leading-relaxed">{{ $body }}</p>

@@ -30,7 +30,7 @@
         >
         <div class="absolute inset-0 hw-hero--overlay__scrim" aria-hidden="true"></div>
     @else
-        <div class="absolute inset-0 bg-hw-blush-light" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-hw-taupe-light" aria-hidden="true"></div>
     @endif
 
     <x-layout.page-container :width="'default'" class="relative z-10 w-full py-12 md:py-16 lg:py-20">

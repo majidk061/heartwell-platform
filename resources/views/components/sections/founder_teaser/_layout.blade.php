@@ -21,7 +21,7 @@
 <section class="bg-hw-white hw-section">
     <x-layout.page-container>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
-            <div class="aspect-square w-full max-w-md mx-auto lg:mx-0 rounded-lg overflow-hidden bg-hw-blush-light flex items-center justify-center {{ $photoCol }}">
+            <div class="aspect-square w-full max-w-md mx-auto lg:mx-0 rounded-lg overflow-hidden bg-hw-taupe-light flex items-center justify-center {{ $photoCol }}">
                 @if($src)
                     <img src="{{ $src }}" alt="{{ $name }}" class="w-full h-full object-cover">
                 @else
@@ -29,7 +29,7 @@
                 @endif
             </div>
             <div class="text-center lg:text-left {{ $textCol }}">
-                <p class="hw-founder-eyebrow text-hw-blush uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
+                <p class="hw-founder-eyebrow uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
                 <h2 class="hw-section-title mt-2">{{ $displayName }}</h2>
                 @if($pronunciation)
                     <p class="text-hw-muted mt-1 text-sm italic">{{ $pronunciation }}</p>

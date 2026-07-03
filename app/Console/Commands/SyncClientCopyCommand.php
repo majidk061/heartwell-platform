@@ -128,11 +128,19 @@ class SyncClientCopyCommand extends Command
 
         foreach (ClientCopyCatalog::avatarCards() as $index => $card) {
             $slug = $card['slug'];
+            $existing = AvatarCard::query()->where('slug', $slug)->first();
+            $existingPath = $existing?->image_path;
+
             $attributes = array_merge($card, [
-                'image_path' => $imageMap[$slug] ?? null,
                 'sort_order' => $index + 1,
                 'is_published' => true,
             ]);
+
+            if (filled($existingPath) && ! str_starts_with($existingPath, 'http')) {
+                unset($attributes['image_path']);
+            } else {
+                $attributes['image_path'] = $imageMap[$slug] ?? null;
+            }
 
             if ($dryRun) {
                 $this->line("Avatar card: {$slug}");
@@ -157,6 +165,10 @@ class SyncClientCopyCommand extends Command
 
         if (! $dryRun) {
             Faq::query()->whereIn('question', $legacyQuestions)->delete();
+            Faq::query()
+                ->where('question', 'like', '%Mollitia%')
+                ->orWhere('question', 'like', '%lorem%')
+                ->delete();
         }
 
         foreach (ClientCopyCatalog::faqs() as $index => $faq) {

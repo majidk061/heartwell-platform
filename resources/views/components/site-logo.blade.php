@@ -42,17 +42,17 @@
             alt="{{ $logoText }}"
             @class([
                 'w-auto object-contain object-left',
-                'h-11 sm:h-12 max-w-[10rem] sm:max-w-[11.5rem]' => $isHeader,
-                'h-[4.5rem] sm:h-20 max-w-[13rem]' => $isFooter,
+                'h-12 sm:h-14 max-w-[11.5rem] sm:max-w-[13rem]' => $isHeader,
+                'h-20 sm:h-[5.5rem] max-w-[15rem]' => $isFooter,
                 'h-14 sm:h-16 md:h-[4.5rem] max-w-[240px]' => ! $isHeader && ! $isFooter && $imageOnly,
                 'h-8 sm:h-10' => ! $isHeader && ! $isFooter && ! $imageOnly,
             ])
             @if($isHeader)
-                width="184"
-                height="48"
-            @elseif($isFooter)
                 width="208"
-                height="80"
+                height="56"
+            @elseif($isFooter)
+                width="240"
+                height="88"
             @endif
             decoding="async"
         >

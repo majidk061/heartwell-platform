@@ -37,7 +37,7 @@ trait MutatesSectionContent
                 ->helperText('Shown below this hero on the home page when pathways exist.'),
             Forms\Components\TextInput::make('content_pathway_bar_heading')
                 ->label('Pathway bar heading')
-                ->default('Support Options Include:')
+                ->default('Support Pathways Include:')
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'),
             Forms\Components\Toggle::make('content_show_consultation_link')
                 ->label('Show consultation link under hero buttons')
@@ -609,7 +609,7 @@ trait MutatesSectionContent
         $data['content_design_variant'] = $content['design_variant'] ?? SectionDesignRegistry::defaultVariant((string) ($data['section_type'] ?? 'hero'));
         $data['content_intro_question'] = $content['intro_question'] ?? null;
         $data['content_pathway_bar_variant'] = $content['pathway_bar_variant'] ?? 'labeled_inline_dividers';
-        $data['content_pathway_bar_heading'] = $content['pathway_bar_heading'] ?? 'Support Options Include:';
+        $data['content_pathway_bar_heading'] = $content['pathway_bar_heading'] ?? 'Support Pathways Include:';
 
         return static::hydrateLayoutFromContent($data);
     }

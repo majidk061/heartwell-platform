@@ -78,7 +78,7 @@
 
             @if($pathways->isNotEmpty())
                 <div class="hw-site-footer__column">
-                    <p class="hw-site-footer__heading">Support Options</p>
+                    <p class="hw-site-footer__heading">Support Pathways</p>
                     <ul class="hw-site-footer__links">
                         @foreach($pathways as $pathway)
                             <li>

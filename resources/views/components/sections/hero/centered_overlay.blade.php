@@ -23,7 +23,7 @@
     <div class="relative z-10 hw-container py-16 md:py-20 max-w-3xl px-4">
         <h1 class="hw-page-title text-hw-white">{{ $headline }}</h1>
         @if($tagline)
-            <p class="hw-hero-tagline font-heading text-xl md:text-2xl text-hw-blush italic mt-3">{{ $tagline }}</p>
+            <p class="hw-hero-tagline font-heading text-xl md:text-2xl italic mt-3">{{ $tagline }}</p>
         @endif
         @if($body)
             <p class="text-base md:text-lg mt-6 leading-relaxed text-hw-white/90">{{ $body }}</p>

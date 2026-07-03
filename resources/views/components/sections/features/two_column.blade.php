@@ -15,7 +15,7 @@
                 <div class="p-8 rounded-xl border border-hw-border bg-hw-taupe-light/30">
                     <h3 class="font-heading text-xl text-hw-heading">{{ $feature['title'] ?? '' }}</h3>
                     @if(! empty($feature['body']))
-                        <p class="text-hw-text mt-4 text-base leading-relaxed">{{ $feature['body'] }}</p>
+                        <p class="text-hw-text mt-4 text-base leading-loose">{{ $feature['body'] }}</p>
                     @endif
                 </div>
             @endforeach
