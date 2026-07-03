@@ -77,5 +77,6 @@ class SupportPathwaysPageTest extends TestCase
         $response->assertSee('HeartWell pathways are designed to help you choose', false);
         $response->assertSee('After choosing a HeartWell pathway', false);
         $response->assertDontSee('Hero image placeholder', false);
+        $response->assertSee('hw-page-sections', false);
     }
 }

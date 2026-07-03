@@ -25,6 +25,10 @@
     $themeDefaults = $themeDefaults ?? ($siteSettings['theme'] ?? []);
 @endphp
 
+<div @class([
+    'hw-page-sections',
+    'hw-page-sections--contact' => ($page?->slug ?? null) === 'contact',
+])>
 @foreach($sections as $section)
     @php
         $sectionContent = $section->content ?? [];
@@ -53,7 +57,12 @@
                     'showConsultation' => $showHeroConsultation,
                 ])
             @endif
-            @if($isHome && $pathways->isNotEmpty())
+            @php
+                $showPathwayBar = $isHome
+                    && $pathways->isNotEmpty()
+                    && ($sectionContent['show_pathway_bar'] ?? true);
+            @endphp
+            @if($showPathwayBar)
                 @php
                     $barContent = [
                         'design_variant' => $sectionContent['pathway_bar_variant'] ?? 'labeled_inline_dividers',
@@ -63,7 +72,7 @@
                 @if($barView)
                     @include($barView, [
                         'pathways' => $pathways,
-                        'barHeading' => $sectionContent['pathway_bar_heading'] ?? 'Support Options Include:',
+                        'barHeading' => $sectionContent['pathway_bar_heading'] ?? 'Support Pathways Include:',
                     ])
                 @endif
             @endif
@@ -265,3 +274,4 @@
             </x-section-shell>
     @endswitch
 @endforeach
+</div>

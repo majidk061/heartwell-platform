@@ -30,15 +30,20 @@ trait MutatesSectionContent
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero')
                 ->columnSpanFull(),
             Forms\Components\Select::make('content_pathway_bar_variant')
-                ->label('Home pathway bar style')
+                ->label('Pathway bar style')
                 ->options(\App\Domains\Content\Support\SectionDesignRegistry::variantsFor('pathway_bar'))
                 ->default('labeled_inline_dividers')
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero')
-                ->helperText('Shown below this hero on the home page when pathways exist.'),
+                ->helperText('Divided pathway links shown below this hero on the home page when pathways exist.'),
             Forms\Components\TextInput::make('content_pathway_bar_heading')
                 ->label('Pathway bar heading')
                 ->default('Support Pathways Include:')
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'),
+            Forms\Components\Toggle::make('content_show_pathway_bar')
+                ->label('Show pathway bar below hero')
+                ->default(true)
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero')
+                ->helperText('When enabled, support pathway links appear under this hero on the home page only.'),
             Forms\Components\Toggle::make('content_show_consultation_link')
                 ->label('Show consultation link under hero buttons')
                 ->default(true)
@@ -398,6 +403,7 @@ trait MutatesSectionContent
             'intro_question' => 'content_intro_question',
             'pathway_bar_variant' => 'content_pathway_bar_variant',
             'pathway_bar_heading' => 'content_pathway_bar_heading',
+            'show_pathway_bar' => 'content_show_pathway_bar',
             'enabled' => 'content_enabled',
             'card_columns' => 'content_avatar_columns',
             'max_cards' => 'content_max_cards',
@@ -612,6 +618,7 @@ trait MutatesSectionContent
         $data['content_intro_question'] = $content['intro_question'] ?? null;
         $data['content_pathway_bar_variant'] = $content['pathway_bar_variant'] ?? 'labeled_inline_dividers';
         $data['content_pathway_bar_heading'] = $content['pathway_bar_heading'] ?? 'Support Pathways Include:';
+        $data['content_show_pathway_bar'] = $content['show_pathway_bar'] ?? true;
 
         return static::hydrateLayoutFromContent($data);
     }

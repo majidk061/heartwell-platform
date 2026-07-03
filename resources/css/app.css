@@ -201,6 +201,19 @@
     @apply py-section;
   }
 
+  /* Full-width horizontal rules between page sections (home + inner pages) */
+  .hw-page-sections > section:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hw-page-sections > section.hw-hero:has(+ section.hw-pathway-bar) {
+    border-bottom: none;
+  }
+
+  .hw-page-sections--contact > section {
+    border-bottom: none;
+  }
+
   .hw-page-title {
     font-size: var(--text-hero);
     @apply font-heading text-hw-heading leading-tight;
@@ -992,7 +1005,7 @@
 
   .hw-pathway-bar--client {
     background-color: #faf8f6;
-    border-block: 0;
+    border-block: 1px solid var(--color-border, #e8e4e0);
   }
 
   .hw-pathway-bar__inner {
