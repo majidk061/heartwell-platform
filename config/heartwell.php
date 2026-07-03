@@ -36,6 +36,18 @@ return [
         'clinical_portal_note' => 'Before your first visit, you will complete a secure clinical intake through HeartWell\'s HIPAA-compliant portal. Each guest at a group gathering must complete their own intake, health history, consent, and provider screening before receiving services.',
         'group_intake_note' => 'Booking a group wellness gathering does not satisfy medical clearance for participants. Each guest receiving services must individually complete intake, health history, consent, and provider screening before treatment.',
         'privacy_summary' => 'We respect your privacy. Your information is used only to respond to your request and coordinate care. We do not sell your personal information.',
+        'privacy_policy_title' => 'Privacy Policy',
+        'privacy_policy_last_updated' => null,
+        'privacy_policy_body' => <<<'HTML'
+<h2>Information we collect</h2>
+<p>When you contact HeartWell, join the waitlist, request a consultation, or book a visit, we collect the information you provide — such as your name, email, phone number, and wellness goals — so we can respond and coordinate care appropriately.</p>
+<h2>How we use your information</h2>
+<p>Your information is used to respond to your request, coordinate nurse-led wellness support, and — when clinically appropriate — guide you through secure intake and provider screening. We do not sell your personal information.</p>
+<h2>Clinical intake &amp; HIPAA</h2>
+<p>Before your first visit, you will complete a secure clinical intake through HeartWell's HIPAA-compliant portal. Each guest at a group gathering must complete their own intake, health history, consent, and provider screening before receiving services.</p>
+<h2>Contact</h2>
+<p>Questions about this policy? Please reach out through our Contact page.</p>
+HTML,
     ],
 
     'ga4_measurement_id' => env('HEARTWELL_GA4_MEASUREMENT_ID'),

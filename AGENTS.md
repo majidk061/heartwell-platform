@@ -33,6 +33,7 @@ docker compose up -d
 | `config/heartwell.php` | Brand, CTAs, navigation, compliance |
 | `config/integrations.php` | Acuity, Mailchimp, SendGrid, Hydreight |
 | `.cursor/rules/` | Project coding standards |
+| `docs/CPANEL_DEPLOY.md` | Local DB + storage export for cPanel |
 
 ## Public Routes
 

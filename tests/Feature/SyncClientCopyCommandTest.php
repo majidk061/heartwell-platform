@@ -104,4 +104,28 @@ class SyncClientCopyCommandTest extends TestCase
 
         $this->assertSame($existing->id, $first?->section_template_id);
     }
+
+    public function test_sync_preserves_local_section_image_when_catalog_omits_image_url(): void
+    {
+        SectionTemplate::query()->create([
+            'name' => 'Founder teaser — full page',
+            'section_type' => 'founder_teaser',
+            'heading' => 'Meet the Founder',
+            'content' => [
+                'body' => 'Bio copy',
+                'image_url' => 'cms/sections/founder-jacquie.png',
+            ],
+            'is_published' => true,
+        ]);
+
+        $this->artisan('heartwell:sync-client-copy')
+            ->assertSuccessful();
+
+        $template = SectionTemplate::query()->where('name', 'Founder teaser — full page')->first();
+
+        $this->assertSame(
+            'cms/sections/founder-jacquie.png',
+            $template?->content['image_url'] ?? null
+        );
+    }
 }

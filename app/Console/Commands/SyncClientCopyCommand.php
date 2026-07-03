@@ -49,6 +49,17 @@ class SyncClientCopyCommand extends Command
             $layout = $content['layout'] ?? [];
             unset($content['layout']);
 
+            $existing = SectionTemplate::query()->where('name', $name)->first();
+            $existingImage = is_array($existing?->content ?? null)
+                ? ($existing->content['image_url'] ?? null)
+                : null;
+
+            if (blank($content['image_url'] ?? null)
+                && filled($existingImage)
+                && ! str_starts_with((string) $existingImage, 'http')) {
+                $content['image_url'] = $existingImage;
+            }
+
             $payload = [
                 'section_type' => $template['section_type'],
                 'heading' => $template['heading'],

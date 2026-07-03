@@ -201,11 +201,12 @@ class ClientCopyCatalog
             'Hero — support pathways' => [
                 'section_type' => 'hero',
                 'heading' => 'Support Pathways',
-                'description' => 'Support Pathways page hero.',
+                'description' => 'Support Pathways page hero — text-only band (no image).',
                 'content' => [
+                    'design_variant' => 'minimal',
                     'subheading' => 'Thoughtful Wellness Support, Guided by Your Goals',
                     'body' => "HeartWell pathways are designed to help you choose the type of support that best matches how you are feeling and what you are hoping to address. Some options may be offered as IV wellness support, targeted injections, or add-ons to hydration therapy when available and clinically appropriate.\n\nAfter choosing a HeartWell pathway, you may be directed to a secure medical intake and booking portal powered by Hydreight. The portal may use more clinical treatment names than the HeartWell pathway names shown here. Each pathway below includes guidance on what you may see in the secure portal. Your selection helps us understand your goals, but it does not replace clinical screening. Before treatment is provided, your health history, intake, and provider review help confirm what is appropriate for you.",
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Intro — clinical intake clearance' => [

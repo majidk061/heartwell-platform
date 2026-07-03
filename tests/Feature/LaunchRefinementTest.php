@@ -6,8 +6,10 @@ use App\Domains\Content\Enums\ContentStatus;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
 use App\Domains\Content\Models\SectionTemplate;
+use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\Testimonial;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class LaunchRefinementTest extends TestCase
@@ -19,7 +21,68 @@ class LaunchRefinementTest extends TestCase
         $this->get(route('privacy'))
             ->assertOk()
             ->assertSee('Privacy Policy')
-            ->assertSee('We respect your privacy');
+            ->assertSee('We respect your privacy')
+            ->assertSee('Information we collect', false);
+    }
+
+    public function test_privacy_page_renders_admin_edited_body(): void
+    {
+        SiteSetting::query()->create([
+            'key' => 'compliance',
+            'value' => [
+                'privacy_summary' => 'Custom privacy summary line.',
+                'privacy_policy_title' => 'Our Privacy Commitment',
+                'privacy_policy_body' => '<p>Admin-edited policy paragraph unique to settings.</p>',
+            ],
+        ]);
+
+        $this->get(route('privacy'))
+            ->assertOk()
+            ->assertSee('Our Privacy Commitment')
+            ->assertSee('Admin-edited policy paragraph unique to settings.')
+            ->assertSee('Custom privacy summary line.');
+    }
+
+    public function test_meet_the_founder_renders_founder_photo_when_image_in_storage(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('cms/sections/founder-jacquie.png', 'fake-image-content');
+
+        $page = Page::query()->create([
+            'slug' => 'meet-the-founder',
+            'title' => 'Meet the Founder',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 6,
+        ]);
+
+        $template = SectionTemplate::query()->create([
+            'name' => 'Founder teaser — full page',
+            'section_type' => 'founder_teaser',
+            'heading' => 'Meet the Founder',
+            'content' => [
+                'design_variant' => 'photo_left',
+                'name' => 'Jacquie Wilson',
+                'body' => 'Founder bio for photo test.',
+                'image_url' => 'cms/sections/founder-jacquie.png',
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $template->id,
+            'section_type' => 'founder_teaser',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('meet-the-founder'))
+            ->assertOk()
+            ->assertSee('Jacquie Wilson', false)
+            ->assertSee('cms/sections/founder-jacquie.png', false)
+            ->assertDontSee('Founder photo placeholder', false);
     }
 
     public function test_footer_uses_support_pathways_label(): void

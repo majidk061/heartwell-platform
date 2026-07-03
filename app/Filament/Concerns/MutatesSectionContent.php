@@ -67,7 +67,8 @@ trait MutatesSectionContent
                 ->imageEditorAspectRatios(['4:3', '1:1'])
                 ->maxSize(2048)
                 ->helperText(static::imageUploadHelper())
-                ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text']))
+                ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text'])
+                    && ! ($get('section_type') === 'hero' && $get('content_design_variant') === 'minimal'))
                 ->columnSpanFull(),
             Forms\Components\Placeholder::make('content_image_preview')
                 ->label('Current image')
@@ -90,6 +91,7 @@ trait MutatesSectionContent
                     );
                 })
                 ->visible(fn (Forms\Get $get, ?object $record): bool => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text'])
+                    && ! ($get('section_type') === 'hero' && $get('content_design_variant') === 'minimal')
                     && filled(is_array($record?->content ?? null) ? ($record->content['image_url'] ?? null) : null))
                 ->columnSpanFull(),
             Forms\Components\Repeater::make('content_steps')

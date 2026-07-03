@@ -73,5 +73,9 @@ class SupportPathwaysPageTest extends TestCase
         $response->assertSee('Secure Hydreight Portal');
         $response->assertDontSee('Confidence & Aesthetic Support');
         $response->assertDontSee('Advanced Cellular Support');
+        $response->assertSee('hw-hero--minimal', false);
+        $response->assertSee('HeartWell pathways are designed to help you choose', false);
+        $response->assertSee('After choosing a HeartWell pathway', false);
+        $response->assertDontSee('Hero image placeholder', false);
     }
 }
