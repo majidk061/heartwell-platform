@@ -201,16 +201,17 @@
     @apply py-section;
   }
 
-  /* Full-width horizontal rules between page sections (home + inner pages) */
-  .hw-page-sections > section:not(:last-child) {
+  /* Horizontal rule below hero only (not between every section) */
+  .hw-page-sections > section.hw-hero:not(:has(+ section.hw-pathway-bar)) {
     border-bottom: 1px solid var(--color-border);
   }
 
-  .hw-page-sections > section.hw-hero:has(+ section.hw-pathway-bar) {
-    border-bottom: none;
+  .hw-page-sections > section.hw-pathway-bar {
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .hw-page-sections--contact > section {
+  .hw-page-sections--contact > section.hw-hero,
+  .hw-page-sections--contact > section.hw-pathway-bar {
     border-bottom: none;
   }
 
