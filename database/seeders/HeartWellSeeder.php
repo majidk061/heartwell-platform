@@ -128,6 +128,14 @@ class HeartWellSeeder extends Seeder
                     'Contact forms block',
                 ],
             ],
+            'privacy' => [
+                'title' => 'Privacy Policy',
+                'sort_order' => 8,
+                'templates' => [
+                    'Hero — privacy',
+                    'Rich text — privacy policy',
+                ],
+            ],
         ];
 
         foreach ($placements as $slug => $pageData) {
@@ -392,6 +400,10 @@ class HeartWellSeeder extends Seeder
                 'description' => 'Pathway accordion preview — pathways managed under Website Content → Support Pathways.',
                 'content' => [
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'compact'],
+                ],
+            ],
+            [
+                'name' => 'CTA — client pre-footer band',
                 'section_type' => 'cta',
                 'heading' => 'You Deserve to Feel Like Yourself Again',
                 'description' => 'Client mock — cream band with dual CTAs.',
@@ -401,6 +413,10 @@ class HeartWellSeeder extends Seeder
                     'variant' => 'dual',
                     'show_consultation_link' => false,
                     'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'cream'],
+                ],
+            ],
+            [
+                'name' => 'Standard CTA band',
                 'section_type' => 'cta',
                 'heading' => 'Ready to take the next step?',
                 'description' => 'Dual-button CTA with consultation link.',

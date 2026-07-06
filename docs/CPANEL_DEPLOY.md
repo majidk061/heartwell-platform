@@ -22,9 +22,17 @@ Verify in the browser:
 - `/` — home hero + avatar cards with client photos
 - `/support-pathways` — text-only minimal hero (no image)
 - `/meet-the-founder` — Jacquie photo visible
-- `/privacy` — policy content editable preview matches Site Settings
+- `/privacy` — edit under **Website Content → Pages → Privacy Policy** (hero + rich text sections)
 
 Optional: set final logo, privacy body, and branding in **Admin → Site Settings** before export.
+
+**Do not** run `heartwell:apply-launch-layout --force` on a database you have already customized in Filament — it replaces which sections are linked to a page. To restore the client mock home stack after a mistake:
+
+```bash
+php artisan heartwell:restore-home-layout
+```
+
+Use `heartwell:sync-client-copy` for copy updates only; it does not change your page section order or design variants.
 
 ## 2. Export MySQL
 

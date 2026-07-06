@@ -21,7 +21,7 @@
             <div class="order-2 lg:order-1">
                 <h1 class="hw-page-title">{{ $headline }}</h1>
                 @if($tagline)
-                    <p class="font-heading text-xl md:text-2xl lg:text-3xl text-hw-blush italic mt-3">{{ $tagline }}</p>
+                    <p class="font-heading text-xl md:text-2xl lg:text-3xl italic mt-3 hw-hero-tagline">{{ $tagline }}</p>
                 @endif
                 @if($body)
                     <p class="text-base md:text-lg text-hw-text mt-4 md:mt-6 leading-relaxed">{{ $body }}</p>

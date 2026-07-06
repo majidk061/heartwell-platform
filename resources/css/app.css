@@ -956,7 +956,7 @@
 
   .hw-site-footer__social-link:hover {
     opacity: 1;
-    color: var(--color-blush);
+    color: var(--color-dusty-blue);
   }
 
   .hw-site-footer__contact {
@@ -1198,6 +1198,10 @@
     color: var(--color-tagline, var(--color-taupe));
   }
 
+  .hw-hero__photo {
+    filter: saturate(0.9) brightness(1.03);
+  }
+
   .hw-founder-eyebrow {
     color: var(--color-tagline, var(--color-taupe));
   }
@@ -1406,7 +1410,7 @@
 
   .hw-nav-link--active-underline {
     color: var(--color-heading);
-    box-shadow: inset 0 -2px 0 0 var(--nav-active-color, var(--color-blush));
+    box-shadow: inset 0 -2px 0 0 var(--nav-active-color, var(--color-accent-warm, var(--color-taupe)));
   }
 
   .hw-nav-link--active-bold {
@@ -1422,7 +1426,7 @@
   }
 
   .hw-nav-link--active-border_bottom {
-    border-bottom: 2px solid var(--nav-active-color, var(--color-blush));
+    border-bottom: 2px solid var(--nav-active-color, var(--color-accent-warm, var(--color-taupe)));
     color: var(--color-heading);
   }
 

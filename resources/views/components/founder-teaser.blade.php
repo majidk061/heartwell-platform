@@ -33,7 +33,7 @@
                 @endif
             </div>
             <div class="text-center lg:text-left">
-                <p class="text-hw-blush uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
+                <p class="hw-founder-eyebrow uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
                 <h2 class="hw-section-title mt-2">{{ $displayName }}</h2>
                 @if($pronunciation)
                     <p class="text-hw-muted mt-1 text-sm italic">{{ $pronunciation }}</p>

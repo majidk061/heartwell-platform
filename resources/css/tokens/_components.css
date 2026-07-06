@@ -55,8 +55,8 @@
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-blush-light);
-  border-color: var(--color-blush);
+  background-color: var(--color-ivory, #fcfbf8);
+  border-color: var(--color-taupe);
   color: var(--color-heading);
 }
 

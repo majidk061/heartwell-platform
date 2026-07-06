@@ -1,4 +1,4 @@
-@props(['pathways', 'barHeading' => 'Support Options Include:'])
+@props(['pathways', 'barHeading' => 'Support Pathways Include:'])
 
 <section class="hw-pathway-bar hw-pathway-bar--client" aria-label="{{ strip_tags($barHeading) }}">
     <div class="hw-container-wide hw-pathway-bar__inner">

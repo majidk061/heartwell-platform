@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Domains\Content\Enums\ContentStatus;
+use App\Domains\Content\Models\Page;
+use App\Domains\Content\Models\PageSection;
+use App\Domains\Content\Models\SectionTemplate;
 use App\Domains\CRM\Models\GroupInquiry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -71,5 +75,42 @@ class ContactFormsTest extends TestCase
         $this->assertDatabaseHas('crm_group_inquiries', [
             'host_email' => 'sam@heartwell.test',
         ]);
+    }
+
+    public function test_book_tab_shows_scheduling_fallback_when_acuity_is_not_configured(): void
+    {
+        config(['integrations.acuity.embed_url' => null]);
+
+        $page = Page::query()->create([
+            'slug' => 'contact',
+            'title' => 'Contact',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 7,
+        ]);
+
+        $template = SectionTemplate::query()->create([
+            'name' => 'Contact forms — book fallback',
+            'section_type' => 'forms',
+            'heading' => 'Connect',
+            'content' => ['forms' => ['waitlist', 'consultation', 'group_inquiry']],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $template->id,
+            'section_type' => 'forms',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('contact').'#book')
+            ->assertOk()
+            ->assertSee('Online scheduling is coming soon', false)
+            ->assertSee('Join the Waitlist', false)
+            ->assertSee('Request a Consultation', false)
+            ->assertDontSee('<iframe', false);
     }
 }

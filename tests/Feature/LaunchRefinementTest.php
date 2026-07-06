@@ -6,7 +6,6 @@ use App\Domains\Content\Enums\ContentStatus;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
 use App\Domains\Content\Models\SectionTemplate;
-use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\Testimonial;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -16,31 +15,55 @@ class LaunchRefinementTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_privacy_page_renders(): void
+    public function test_privacy_page_renders_as_cms_page(): void
     {
+        $page = Page::query()->create([
+            'slug' => 'privacy',
+            'title' => 'Privacy Policy',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 8,
+        ]);
+
+        $hero = SectionTemplate::query()->create([
+            'name' => 'Hero — privacy test',
+            'section_type' => 'hero',
+            'heading' => 'Privacy Policy',
+            'content' => [
+                'design_variant' => 'minimal',
+                'show_pathway_bar' => false,
+                'show_consultation_link' => false,
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        $body = SectionTemplate::query()->create([
+            'name' => 'Rich text — privacy policy test',
+            'section_type' => 'rich_text',
+            'heading' => null,
+            'content' => [
+                'body' => '<p>Custom CMS privacy paragraph for launch test.</p><h2>Information we collect</h2><p>Contact details you provide.</p>',
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        foreach ([$hero, $body] as $index => $template) {
+            PageSection::query()->create([
+                'page_id' => $page->id,
+                'section_template_id' => $template->id,
+                'section_type' => $template->section_type,
+                'sort_order' => $index + 1,
+                'is_published' => true,
+            ]);
+        }
+
         $this->get(route('privacy'))
             ->assertOk()
             ->assertSee('Privacy Policy')
-            ->assertSee('We respect your privacy')
-            ->assertSee('Information we collect', false);
-    }
-
-    public function test_privacy_page_renders_admin_edited_body(): void
-    {
-        SiteSetting::query()->create([
-            'key' => 'compliance',
-            'value' => [
-                'privacy_summary' => 'Custom privacy summary line.',
-                'privacy_policy_title' => 'Our Privacy Commitment',
-                'privacy_policy_body' => '<p>Admin-edited policy paragraph unique to settings.</p>',
-            ],
-        ]);
-
-        $this->get(route('privacy'))
-            ->assertOk()
-            ->assertSee('Our Privacy Commitment')
-            ->assertSee('Admin-edited policy paragraph unique to settings.')
-            ->assertSee('Custom privacy summary line.');
+            ->assertSee('Custom CMS privacy paragraph for launch test.')
+            ->assertSee('Information we collect');
     }
 
     public function test_meet_the_founder_renders_founder_photo_when_image_in_storage(): void

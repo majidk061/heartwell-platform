@@ -19,8 +19,11 @@
     $privacySummary = $formsContent['privacy_summary'] ?? ($compliance['privacy_summary'] ?? null);
     $clinicalPortalNote = $formsContent['clinical_portal_note'] ?? ($compliance['clinical_portal_note'] ?? config('heartwell.compliance.clinical_portal_note'));
     $groupIntakeNote = $formsContent['group_intake_note'] ?? ($compliance['group_intake_note'] ?? config('heartwell.compliance.group_intake_note'));
-    $acuityEnabled = filled(config('integrations.acuity.embed_url')) && in_array('book', $activeForms, true);
-    $defaultTab = $acuityEnabled && in_array('book', $activeForms, true)
+    // Site-wide CTAs deep-link to /contact#book — always render the book panel (even when
+    // "Book appointment" is unchecked in Section Library → Forms to show).
+    $bookPanelEnabled = true;
+    $acuityEnabled = filled(config('integrations.acuity.embed_url'));
+    $defaultTab = $acuityEnabled
         ? 'book'
         : (in_array('waitlist', $activeForms, true) ? 'waitlist' : ($activeForms[0] ?? 'waitlist'));
 
@@ -34,8 +37,11 @@
 <section
     class="{{ $sectionClass }}"
     x-data="{
-        activeTab: '{{ $defaultTab }}',
-        acuityEnabled: @js($acuityEnabled),
+        activeTab: (() => {
+            const hash = window.location.hash.replace('#', '');
+            const tabs = ['waitlist', 'consultation', 'book', 'group-inquiry'];
+            return tabs.includes(hash) ? hash : '{{ $defaultTab }}';
+        })(),
         init() {
             this.syncFromHash();
             window.addEventListener('hashchange', () => this.syncFromHash());
@@ -45,7 +51,7 @@
             const tabs = ['waitlist', 'consultation', 'book', 'group-inquiry'];
             if (tabs.includes(hash)) {
                 this.activeTab = hash;
-            } else if (! this.acuityEnabled && ! tabs.includes(this.activeTab)) {
+            } else if (! tabs.includes(this.activeTab)) {
                 this.activeTab = 'waitlist';
             }
             this.$nextTick(() => {
@@ -70,8 +76,8 @@
                 <p class="text-hw-muted text-base md:text-lg max-w-2xl mx-auto mt-3">{{ $sectionSubtitle }}</p>
             @endif
             <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                @if($acuityEnabled)
-                    <a href="#book" @click.prevent="setTab('book')" class="btn-primary sm:w-auto">Book a visit</a>
+                @if($bookPanelEnabled)
+                    <a href="#book" @click.prevent="setTab('book')" class="btn-primary sm:w-auto">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
                 @endif
                 <a href="#waitlist" @click.prevent="setTab('waitlist')" class="btn-secondary sm:w-auto">{{ $forms['waitlist_title'] }}</a>
                 <a href="#consultation" @click.prevent="setTab('consultation')" class="btn-secondary sm:w-auto">{{ $forms['consultation_title'] }}</a>
@@ -86,7 +92,7 @@
             @if(in_array('consultation', $activeForms, true))
                 <a href="#consultation" @click.prevent="setTab('consultation')" :class="activeTab === 'consultation' ? 'hw-contact-tab--active' : ''">{{ $forms['consultation_title'] }}</a>
             @endif
-            @if($acuityEnabled)
+            @if($bookPanelEnabled)
                 <a href="#book" @click.prevent="setTab('book')" :class="activeTab === 'book' ? 'hw-contact-tab--active' : ''">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
             @endif
             @if(in_array('group_inquiry', $activeForms, true))
@@ -102,7 +108,7 @@
                 @if(in_array('consultation', $activeForms, true))
                     <x-contact-option-card id="consultation" :title="$forms['consultation_title']" description="Tell us about yourself — we will be in touch." icon="chat" />
                 @endif
-                @if($acuityEnabled)
+                @if($bookPanelEnabled)
                     <x-contact-option-card id="book" :title="$ctas['primary']['label'] ?? 'Book a Visit'" description="Schedule your individual wellness visit." icon="calendar" :featured="false" />
                 @endif
                 @if(in_array('group_inquiry', $activeForms, true))
@@ -173,10 +179,10 @@
                 </div>
                 @endif
 
-                @if($acuityEnabled)
+                @if($bookPanelEnabled)
                 <div x-show="activeTab === 'book'" class="hw-contact-panel hw-contact-panel--featured" :class="activeTab === 'book' ? 'hw-contact-panel--active' : ''">
                     <x-layout.section-heading :title="$ctas['primary']['label'] ?? 'Book a Visit'" subtitle="Schedule your individual wellness visit." />
-                    @if(config('integrations.acuity.embed_url'))
+                    @if($acuityEnabled)
                         <div class="mt-6 w-full overflow-hidden rounded-xl shadow-md border border-hw-border">
                             <iframe src="{{ config('integrations.acuity.embed_url') }}" class="w-full min-h-[400px] md:min-h-[600px] border-0" title="Book a Visit"></iframe>
                         </div>
@@ -189,8 +195,12 @@
                             <p class="font-heading text-lg text-hw-heading">Online scheduling is coming soon</p>
                             <p class="text-hw-muted text-base">Join the waitlist or request a consultation — we will reach out to help you book your visit.</p>
                             <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                                <button type="button" @click="setTab('waitlist')" class="btn-primary sm:w-auto">Join the Waitlist</button>
-                                <button type="button" @click="setTab('consultation')" class="btn-secondary sm:w-auto">Request Consultation</button>
+                                @if(in_array('waitlist', $activeForms, true))
+                                    <button type="button" @click="setTab('waitlist')" class="btn-primary sm:w-auto">{{ $forms['waitlist_title'] }}</button>
+                                @endif
+                                @if(in_array('consultation', $activeForms, true))
+                                    <button type="button" @click="setTab('consultation')" class="btn-secondary sm:w-auto">{{ $forms['consultation_title'] }}</button>
+                                @endif
                             </div>
                         </div>
                     @endif

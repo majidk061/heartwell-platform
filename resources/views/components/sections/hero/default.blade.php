@@ -52,7 +52,7 @@
             </div>
             <div class="{{ $imageOrder }} w-full">
                 @if($src)
-                    <img src="{{ $src }}" alt="" class="w-full h-auto rounded-lg object-cover aspect-[4/3]" loading="eager">
+                    <img src="{{ $src }}" alt="" class="hw-hero__photo w-full h-auto rounded-lg object-cover aspect-[4/3]" loading="eager">
                 @else
                     <div class="w-full aspect-[4/3] rounded-lg bg-hw-dusty-blue-light flex items-center justify-center">
                         <span class="text-hw-muted text-sm px-4 text-center">Hero image placeholder</span>

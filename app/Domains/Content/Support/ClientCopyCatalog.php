@@ -461,6 +461,98 @@ class ClientCopyCatalog
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
             ],
+            'Founder teaser' => [
+                'section_type' => 'founder_teaser',
+                'heading' => 'Meet the Founder',
+                'description' => 'Home page founder teaser with photo and bio.',
+                'content' => [
+                    'design_variant' => 'photo_left',
+                    'body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to offer thoughtful, nurse-led wellness support for women who feel depleted, stuck, or unlike themselves — with care that feels calm, personal, and trustworthy.',
+                    'credentials' => ['BSN', 'RN', 'MBA'],
+                    'pronunciation' => 'Pronounced Jack-Kwa',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            'CTA — client pre-footer band' => [
+                'section_type' => 'cta',
+                'heading' => 'You Deserve to Feel Like Yourself Again',
+                'description' => 'Home pre-footer CTA — warm ivory/cream band.',
+                'content' => [
+                    'design_variant' => 'centered_band',
+                    'body' => "Whether you're feeling depleted, stuck, or simply unlike yourself, support is available.",
+                    'variant' => 'dual',
+                    'show_consultation_link' => false,
+                    'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'cream'],
+                ],
+            ],
+            'Pathways teaser' => [
+                'section_type' => 'pathways_teaser',
+                'heading' => 'Support Pathways',
+                'description' => 'Home page pathway accordion preview.',
+                'content' => [
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'compact'],
+                ],
+            ],
+            'Hero — privacy' => [
+                'section_type' => 'hero',
+                'heading' => 'Privacy Policy',
+                'description' => 'Privacy policy page hero — text only.',
+                'content' => [
+                    'design_variant' => 'minimal',
+                    'show_pathway_bar' => false,
+                    'show_consultation_link' => false,
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            'Rich text — privacy policy' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Privacy policy body — editable in Section Library.',
+                'content' => [
+                    'body' => self::defaultPrivacyPolicyHtml(),
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+        ];
+    }
+
+    public static function defaultPrivacyPolicyHtml(): string
+    {
+        $summary = config('heartwell.compliance.privacy_summary');
+        $body = config('heartwell.compliance.privacy_policy_body');
+
+        return '<p>'.e($summary).'</p>'.$body;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function homeDesignStack(): array
+    {
+        return [
+            'Hero — full bleed overlay',
+            'Avatar intro — client horizontal',
+            'Intro — home nurse-led care',
+            'Pathways teaser',
+            'Testimonials — grid',
+            'Founder teaser',
+            'Standard CTA band',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function homeLaunchStack(): array
+    {
+        return [
+            'Hero — home banner',
+            'Avatar intro block',
+            'Intro — home nurse-led care',
+            'Pathways teaser',
+            'Features — what you can expect',
+            'Founder teaser',
+            'CTA — client pre-footer band',
         ];
     }
 
@@ -470,6 +562,11 @@ class ClientCopyCatalog
     public static function pageSectionStacks(): array
     {
         return [
+            'home' => self::homeLaunchStack(),
+            'privacy' => [
+                'Hero — privacy',
+                'Rich text — privacy policy',
+            ],
             'support-pathways' => [
                 'Hero — support pathways',
                 'Intro — clinical intake clearance',

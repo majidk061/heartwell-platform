@@ -102,9 +102,6 @@ class ManageSiteSettings extends Page implements HasForms
             'footer_note' => $settings['compliance']['footer_note'] ?? '',
             'contact_disclaimer' => $settings['compliance']['contact_disclaimer'] ?? '',
             'privacy_summary' => $settings['compliance']['privacy_summary'] ?? '',
-            'privacy_policy_title' => $settings['compliance']['privacy_policy_title'] ?? config('heartwell.compliance.privacy_policy_title', 'Privacy Policy'),
-            'privacy_policy_last_updated' => $settings['compliance']['privacy_policy_last_updated'] ?? null,
-            'privacy_policy_body' => $settings['compliance']['privacy_policy_body'] ?? config('heartwell.compliance.privacy_policy_body'),
             'clinical_portal_note' => $settings['compliance']['clinical_portal_note'] ?? ($settings['compliance']['hydreight_note'] ?? ''),
             'group_intake_note' => $settings['compliance']['group_intake_note'] ?? '',
             'ga4_measurement_id' => $settings['seo']['ga4_measurement_id'] ?? $resolver->get('ga4_measurement_id', 'HEARTWELL_GA4_MEASUREMENT_ID'),
@@ -338,14 +335,7 @@ class ManageSiteSettings extends Page implements HasForms
                                     ->columnSpanFull(),
                                 Forms\Components\Textarea::make('footer_note')->label('Footer compliance note')->rows(3)->columnSpanFull(),
                                 Forms\Components\Textarea::make('contact_disclaimer')->label('Contact form disclaimer')->rows(3)->columnSpanFull(),
-                                Forms\Components\Textarea::make('privacy_summary')->label('Privacy summary')->rows(3)->helperText('Short line used in snippets; also shown as the lead paragraph on the Privacy Policy page.')->columnSpanFull(),
-                                Forms\Components\TextInput::make('privacy_policy_title')->label('Privacy policy page title')->default('Privacy Policy')->columnSpanFull(),
-                                Forms\Components\DatePicker::make('privacy_policy_last_updated')->label('Privacy policy last updated')->native(false),
-                                Forms\Components\RichEditor::make('privacy_policy_body')
-                                    ->label('Privacy policy body')
-                                    ->toolbarButtons(['bold', 'italic', 'link', 'h2', 'h3', 'bulletList', 'orderedList'])
-                                    ->helperText('Full policy content shown on /privacy. Edit here instead of changing code.')
-                                    ->columnSpanFull(),
+                                Forms\Components\Textarea::make('privacy_summary')->label('Privacy summary')->rows(3)->helperText('Short line for contact forms and snippets. Edit the full Privacy Policy page under Website Content → Pages → Privacy Policy.')->columnSpanFull(),
                                 Forms\Components\Textarea::make('clinical_portal_note')->label('Clinical portal note')->rows(3)->columnSpanFull(),
                                 Forms\Components\Textarea::make('group_intake_note')->label('Group gathering intake note')->rows(3)->columnSpanFull(),
                             ]),
@@ -468,9 +458,6 @@ class ManageSiteSettings extends Page implements HasForms
             'footer_note' => $data['footer_note'],
             'contact_disclaimer' => $data['contact_disclaimer'],
             'privacy_summary' => $data['privacy_summary'],
-            'privacy_policy_title' => $data['privacy_policy_title'] ?? config('heartwell.compliance.privacy_policy_title', 'Privacy Policy'),
-            'privacy_policy_last_updated' => $data['privacy_policy_last_updated'] ?? null,
-            'privacy_policy_body' => $data['privacy_policy_body'] ?? config('heartwell.compliance.privacy_policy_body'),
             'clinical_portal_note' => $data['clinical_portal_note'] ?? '',
             'group_intake_note' => $data['group_intake_note'] ?? '',
         ]]);

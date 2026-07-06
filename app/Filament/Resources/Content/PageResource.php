@@ -72,7 +72,7 @@ class PageResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true)
-                        ->helperText('The web address path, e.g. "contact" for /contact')
+                        ->helperText('The web address path, e.g. "contact" for /contact. Privacy Policy uses slug "privacy".')
                         ->prefixIcon('heroicon-o-link'),
                     HasContentPublishingActions::publishingStatusField(),
                     HasContentPublishingActions::contentAuditPlaceholder(),

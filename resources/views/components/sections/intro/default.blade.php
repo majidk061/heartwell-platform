@@ -11,7 +11,7 @@
         <x-layout.section-heading :title="$section->heading" />
     @endif
     @if($section->body ?? ($sectionContent['body'] ?? null))
-        <p class="text-base md:text-lg text-hw-text mt-4 leading-relaxed md:leading-loose">{{ $section->body ?? $sectionContent['body'] }}</p>
+        <p class="text-base md:text-lg text-hw-text mt-4 leading-relaxed md:leading-loose md:text-[1.0625rem]">{{ $section->body ?? $sectionContent['body'] }}</p>
     @endif
     @php $introImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)); @endphp
     @if($introImage)
