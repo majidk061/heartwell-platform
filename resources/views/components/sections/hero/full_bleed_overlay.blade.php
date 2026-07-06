@@ -25,7 +25,7 @@
         <img
             src="{{ $src }}"
             alt=""
-            class="absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-[78%_center]"
+            class="hw-hero--overlay__photo absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-[78%_center]"
             loading="eager"
         >
         <div class="absolute inset-0 hw-hero--overlay__scrim" aria-hidden="true"></div>

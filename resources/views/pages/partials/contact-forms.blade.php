@@ -211,7 +211,7 @@
                 <div x-show="activeTab === 'group-inquiry'" x-cloak class="hw-contact-panel" :class="activeTab === 'group-inquiry' ? 'hw-contact-panel--active' : ''">
                     <x-layout.section-heading :title="$forms['group_title']" :subtitle="$forms['group_subtitle']" />
                     @if(! empty($groupIntakeNote))
-                        <div class="rounded-lg border border-hw-border bg-hw-blush/30 px-4 py-3 text-sm text-hw-muted mb-6 mt-4">
+                        <div class="rounded-lg border border-hw-border bg-hw-taupe-light/40 px-4 py-3 text-sm text-hw-muted mb-6 mt-4">
                             {{ $groupIntakeNote }}
                         </div>
                     @endif

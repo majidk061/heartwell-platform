@@ -128,4 +128,35 @@ class SyncClientCopyCommandTest extends TestCase
             $template?->content['image_url'] ?? null
         );
     }
+
+    public function test_sync_preserves_design_variant_when_catalog_omits_it(): void
+    {
+        SectionTemplate::query()->create([
+            'name' => 'Hero — inner page',
+            'section_type' => 'hero',
+            'heading' => 'Custom Page',
+            'content' => [
+                'design_variant' => 'centered_overlay',
+                'body' => 'Custom hero copy',
+            ],
+            'is_published' => true,
+        ]);
+
+        $this->artisan('heartwell:sync-client-copy')
+            ->assertSuccessful();
+
+        $template = SectionTemplate::query()->where('name', 'Hero — inner page')->first();
+
+        $this->assertSame('centered_overlay', $template?->content['design_variant'] ?? null);
+    }
+
+    public function test_sync_sets_minimal_variant_for_inner_page_heroes_in_catalog(): void
+    {
+        $this->artisan('heartwell:sync-client-copy')
+            ->assertSuccessful();
+
+        $template = SectionTemplate::query()->where('name', 'Hero — why heartwell')->first();
+
+        $this->assertSame('minimal', $template?->content['design_variant'] ?? null);
+    }
 }

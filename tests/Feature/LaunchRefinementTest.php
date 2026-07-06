@@ -168,12 +168,13 @@ class LaunchRefinementTest extends TestCase
             'sort_order' => 1,
         ]);
 
-        $featuresTemplate = SectionTemplate::query()->create([
-            'name' => 'Features — what you can expect',
-            'section_type' => 'features',
+        $trustTemplate = SectionTemplate::query()->create([
+            'name' => 'Testimonials — grid',
+            'section_type' => 'testimonials',
             'heading' => 'What You Can Expect',
             'content' => [
-                'features' => [
+                'enabled' => false,
+                'trust_features' => [
                     ['title' => 'Nurse-Led Care', 'body' => 'Every visit is guided by clinical experience.'],
                 ],
             ],
@@ -183,8 +184,8 @@ class LaunchRefinementTest extends TestCase
 
         PageSection::query()->create([
             'page_id' => $page->id,
-            'section_template_id' => $featuresTemplate->id,
-            'section_type' => 'features',
+            'section_template_id' => $trustTemplate->id,
+            'section_type' => 'testimonials',
             'sort_order' => 1,
             'is_published' => true,
         ]);

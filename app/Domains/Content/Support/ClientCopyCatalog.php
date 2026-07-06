@@ -283,10 +283,13 @@ class ClientCopyCatalog
             'Hero — your experience' => [
                 'section_type' => 'hero',
                 'heading' => 'Your HeartWell Experience',
-                'description' => 'Your Experience page hero.',
+                'description' => 'Your Experience page hero — text-only minimal band.',
                 'content' => [
+                    'design_variant' => 'minimal',
+                    'show_pathway_bar' => false,
+                    'show_consultation_link' => true,
                     'body' => 'From your very first message to your wellness visit, HeartWell is designed to feel thoughtful, supportive, and easy to understand.',
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Journey steps — 5 steps' => [
@@ -307,10 +310,13 @@ class ClientCopyCatalog
             'Hero — why heartwell' => [
                 'section_type' => 'hero',
                 'heading' => 'Why HeartWell',
-                'description' => 'Why HeartWell page hero.',
+                'description' => 'Why HeartWell page hero — text-only minimal band.',
                 'content' => [
+                    'design_variant' => 'minimal',
+                    'show_pathway_bar' => false,
+                    'show_consultation_link' => true,
                     'body' => 'HeartWell was created for women who want care that feels personal, thoughtful, and clinically grounded. Our approach blends nurse-led wellness support with comfort, privacy, and a deep respect for each woman\'s story.',
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Features — differentiators' => [
@@ -330,10 +336,13 @@ class ClientCopyCatalog
             'Hero — wellness journey' => [
                 'section_type' => 'hero',
                 'heading' => 'Your Wellness Journey',
-                'description' => 'Wellness Journey page hero.',
+                'description' => 'Wellness Journey page hero — text-only minimal band.',
                 'content' => [
+                    'design_variant' => 'minimal',
+                    'show_pathway_bar' => false,
+                    'show_consultation_link' => true,
                     'body' => 'Your wellness needs can change over time, and your care should reflect where you are today. At HeartWell, there is no one-size-fits-all approach. Your support begins with listening to your goals, understanding your concerns, and reviewing your health history.',
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Rich text — wellness journey intro' => [
@@ -371,10 +380,13 @@ class ClientCopyCatalog
             'Hero — meet the founder' => [
                 'section_type' => 'hero',
                 'heading' => 'Meet the Founder',
-                'description' => 'Meet the Founder page hero.',
+                'description' => 'Meet the Founder page hero — text-only minimal band.',
                 'content' => [
+                    'design_variant' => 'minimal',
+                    'show_pathway_bar' => false,
+                    'show_consultation_link' => true,
                     'body' => 'Jacquie Wilson brings nurse-led, clinically grounded care to every HeartWell experience.',
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Founder teaser — full page' => [
@@ -412,11 +424,14 @@ class ClientCopyCatalog
             'Hero — contact' => [
                 'section_type' => 'hero',
                 'heading' => 'Connect with HeartWell',
-                'description' => 'Contact page hero.',
+                'description' => 'Contact page hero — text-only minimal band.',
                 'content' => [
+                    'design_variant' => 'minimal',
+                    'show_pathway_bar' => false,
+                    'show_consultation_link' => true,
                     'subheading' => 'Begin with a Private Wellness Conversation',
                     'body' => 'You do not need to have a specific service picked out before you reach out. HeartWell begins with a private conversation so we can discuss your goals, answer your questions, and help you understand what type of support may be appropriate.',
-                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Contact forms block' => [
@@ -459,6 +474,39 @@ class ClientCopyCatalog
                         ['title' => 'Support That Feels Personal', 'body' => 'Your wellness plan is shaped around your goals, your season of life, and how you are feeling.'],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            'Testimonials — grid' => [
+                'section_type' => 'testimonials',
+                'heading' => 'What You Can Expect',
+                'description' => 'Home trust section — renders feature cards instead of placeholder testimonials.',
+                'content' => [
+                    'enabled' => false,
+                    'trust_features' => [
+                        ['title' => 'Nurse-Led Care', 'body' => 'Every visit is guided by clinical experience, screening, and thoughtful support.'],
+                        ['title' => 'Private Mobile Visits', 'body' => 'Care is brought to you in a calm, comfortable setting.'],
+                        ['title' => 'Support That Feels Personal', 'body' => 'Your wellness plan is shaped around your goals, your season of life, and how you are feeling.'],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            'Standard CTA band' => [
+                'section_type' => 'cta',
+                'heading' => 'You Deserve to Feel Like Yourself Again',
+                'description' => 'Home closing CTA — warm ivory/cream band with dual CTAs.',
+                'content' => [
+                    'design_variant' => 'default',
+                    'body' => "Whether you're feeling depleted, stuck, or simply unlike yourself, support is available.",
+                    'variant' => 'dual',
+                    'primary_label' => 'Book a Visit',
+                    'primary_url' => '/contact#book',
+                    'waitlist_label' => 'Join the Waitlist',
+                    'waitlist_url' => '/contact#waitlist',
+                    'show_consultation_link' => true,
+                    'consultation_prefix' => 'Prefer to talk first?',
+                    'consultation_label' => 'Request Consultation',
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'cream'],
                 ],
             ],
             'Founder teaser' => [

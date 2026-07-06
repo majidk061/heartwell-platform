@@ -899,7 +899,7 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: var(--leading-snug);
-    color: color-mix(in srgb, var(--color-white) 88%, var(--color-blush));
+    color: color-mix(in srgb, var(--color-white) 90%, transparent);
   }
 
   .hw-site-footer__connect {
@@ -1210,12 +1210,16 @@
   .hw-hero--overlay__scrim {
     background: linear-gradient(
       to right,
-      rgb(255 255 255 / 0.98) 0%,
-      rgb(252 251 248 / 0.96) 28%,
-      rgb(252 251 248 / 0.72) 42%,
-      rgb(252 251 248 / 0.35) 55%,
+      rgb(255 255 255 / 0.99) 0%,
+      rgb(252 251 248 / 0.97) 28%,
+      rgb(252 251 248 / 0.78) 42%,
+      rgb(252 251 248 / 0.42) 55%,
       transparent 72%
     );
+  }
+
+  .hw-hero--overlay__photo {
+    filter: saturate(0.82) brightness(1.05) contrast(1.02);
   }
 
   .hw-avatar-intro--horizontal {
@@ -1234,18 +1238,22 @@
 
   .hw-avatar-intro--horizontal__grid {
     @apply gap-6 lg:gap-7 mt-10 md:mt-12 items-stretch;
-    max-height: 265px;
   }
 
-  .hw-avatar-intro--horizontal__grid > * {
-    max-height: 265px;
+  @media (min-width: 1024px) {
+    .hw-avatar-intro--horizontal__grid {
+      max-height: 265px;
+    }
+
+    .hw-avatar-intro--horizontal__grid > * {
+      max-height: 265px;
+    }
   }
 
   .hw-avatar-card-horizontal {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    max-height: 265px;
     height: auto;
     overflow: hidden;
     border-radius: 1rem;
@@ -1256,29 +1264,44 @@
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
 
+  @media (min-width: 1024px) {
+    .hw-avatar-card-horizontal {
+      max-height: 265px;
+    }
+  }
+
   .hw-avatar-card-horizontal:hover {
     box-shadow: 0 6px 18px rgb(27 43 75 / 0.1);
   }
 
-  /* Image column wider than text (55 / 45), flush to card edge */
   .hw-avatar-card-horizontal__media {
     flex: 0 0 55%;
     width: 55%;
     max-width: 55%;
     align-self: stretch;
-    max-height: 265px;
     padding: 0;
     overflow: hidden;
     background: var(--color-taupe-light);
+  }
+
+  @media (min-width: 1024px) {
+    .hw-avatar-card-horizontal__media {
+      max-height: 265px;
+    }
   }
 
   .hw-avatar-card-horizontal__media img {
     display: block;
     width: 100%;
     height: 100%;
-    max-height: 265px;
     object-fit: cover;
     object-position: center;
+  }
+
+  @media (min-width: 1024px) {
+    .hw-avatar-card-horizontal__media img {
+      max-height: 265px;
+    }
   }
 
   .hw-avatar-card-horizontal__placeholder {
@@ -1300,10 +1323,15 @@
     justify-content: center;
     flex: 1 1 45%;
     min-width: 0;
-    max-height: 265px;
     padding: 1rem 1.125rem;
     background: #f9f7f2;
-    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .hw-avatar-card-horizontal__content {
+      max-height: 265px;
+      overflow: hidden;
+    }
   }
 
   @media (min-width: 1024px) {

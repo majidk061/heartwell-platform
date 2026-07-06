@@ -32,7 +32,8 @@
 @foreach($sections as $section)
     @php
         $sectionContent = $section->content ?? [];
-        $sectionEnabled = $sectionContent['enabled'] ?? true;
+        $sectionEnabled = ($sectionContent['enabled'] ?? true)
+            || ! empty($sectionContent['trust_features']);
     @endphp
 
     @if(! $sectionEnabled)
@@ -173,8 +174,24 @@
         @case('testimonials')
             @php
                 $tSettings = array_merge($testimonialSettings, $sectionContent);
+                $trustFeatures = $sectionContent['trust_features'] ?? [];
             @endphp
-            @if(($tSettings['enabled'] ?? true) && $testimonials->isNotEmpty())
+            @if(! empty($trustFeatures))
+                @php
+                    $trustSection = (object) [
+                        'heading' => $section->heading ?: 'What You Can Expect',
+                        'content' => array_merge($sectionContent, [
+                            'features' => $trustFeatures,
+                            'layout' => $sectionContent['layout'] ?? ['container_width' => 'default', 'background' => 'white'],
+                        ]),
+                        'section_type' => 'features',
+                    ];
+                @endphp
+                @include('components.sections.features.default', [
+                    'section' => $trustSection,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @elseif(($tSettings['enabled'] ?? true) && $testimonials->isNotEmpty())
                 <x-testimonials
                     :testimonials="$testimonials"
                     :heading="$section->heading"

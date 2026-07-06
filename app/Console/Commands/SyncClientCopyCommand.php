@@ -31,6 +31,7 @@ class SyncClientCopyCommand extends Command
         $this->syncSupportPathways($dryRun);
         $this->syncAvatarCards($dryRun);
         $this->syncFaqs($dryRun);
+        $this->publishHomeTrustSection($dryRun);
 
         $attachPage = $this->option('attach-missing-sections');
         if (is_string($attachPage) && $attachPage !== '') {
@@ -58,6 +59,14 @@ class SyncClientCopyCommand extends Command
                 && filled($existingImage)
                 && ! str_starts_with((string) $existingImage, 'http')) {
                 $content['image_url'] = $existingImage;
+            }
+
+            $existingVariant = is_array($existing?->content ?? null)
+                ? ($existing->content['design_variant'] ?? null)
+                : null;
+
+            if (blank($content['design_variant'] ?? null) && filled($existingVariant)) {
+                $content['design_variant'] = $existingVariant;
             }
 
             $payload = [
@@ -257,6 +266,41 @@ class SyncClientCopyCommand extends Command
             ]);
 
             $this->line("Attached section: {$templateName} → {$pageSlug}");
+        }
+    }
+
+    private function publishHomeTrustSection(bool $dryRun): void
+    {
+        $template = SectionTemplate::query()->where('name', 'Testimonials — grid')->first();
+
+        if (! $template || empty($template->content['trust_features'])) {
+            return;
+        }
+
+        $page = Page::query()->where('slug', 'home')->first();
+
+        if (! $page) {
+            return;
+        }
+
+        $section = PageSection::query()
+            ->where('page_id', $page->id)
+            ->where('section_template_id', $template->id)
+            ->first();
+
+        if (! $section) {
+            return;
+        }
+
+        if ($dryRun) {
+            $this->line('Would publish home trust section (Testimonials — grid slot).');
+
+            return;
+        }
+
+        if (! $section->is_published) {
+            $section->update(['is_published' => true]);
+            $this->line('Published home trust section: What You Can Expect.');
         }
     }
 }
