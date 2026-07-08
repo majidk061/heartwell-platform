@@ -28,6 +28,9 @@
 <div @class([
     'hw-page-sections',
     'hw-page-sections--contact' => ($page?->slug ?? null) === 'contact',
+    'hw-page-sections--home' => $isHome,
+    'hw-page-sections--privacy' => ($page?->slug ?? null) === 'privacy',
+    'hw-meet-founder-page' => ($page?->slug ?? null) === 'meet-the-founder',
 ])>
 @foreach($sections as $section)
     @php
@@ -45,6 +48,7 @@
             @php
                 $heroView = section_view('hero', $sectionContent);
                 $showHeroConsultation = $sectionContent['show_consultation_link'] ?? true;
+                $showHeroCtaButtons = $sectionContent['show_cta_buttons'] ?? true;
             @endphp
             @if($heroView)
                 @include($heroView, [
@@ -56,6 +60,7 @@
                     'section' => $section,
                     'themeDefaults' => $themeDefaults,
                     'showConsultation' => $showHeroConsultation,
+                    'showCtaButtons' => $showHeroCtaButtons,
                 ])
             @endif
             @php
@@ -140,7 +145,7 @@
                     </div>
                 @endif
                 @if(! empty($sectionContent['body']))
-                    <div class="prose prose-hw max-w-none mt-8 text-hw-text leading-relaxed text-left">
+                    <div class="prose prose-hw max-w-none mt-8 text-hw-text leading-relaxed text-left hw-prose-narrow">
                         {!! $sectionContent['body'] !!}
                     </div>
                 @endif

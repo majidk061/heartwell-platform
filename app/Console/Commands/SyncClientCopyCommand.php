@@ -7,6 +7,7 @@ use App\Domains\Content\Models\Faq;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
 use App\Domains\Content\Models\SectionTemplate;
+use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\SupportPathway;
 use App\Domains\Content\Support\ClientCopyCatalog;
 use Illuminate\Console\Command;
@@ -31,6 +32,7 @@ class SyncClientCopyCommand extends Command
         $this->syncSupportPathways($dryRun);
         $this->syncAvatarCards($dryRun);
         $this->syncFaqs($dryRun);
+        $this->syncSiteSettings($dryRun);
         $this->publishHomeTrustSection($dryRun);
 
         $attachPage = $this->option('attach-missing-sections');
@@ -117,6 +119,10 @@ class SyncClientCopyCommand extends Command
                 'is_published' => true,
             ]);
 
+            if (array_key_exists('common_support', $pathway) && $pathway['common_support'] === null) {
+                $attributes['common_support'] = null;
+            }
+
             if (($imageMap[$slug] ?? null) && blank($attributes['image_path'] ?? null)) {
                 $attributes['image_path'] = $imageMap[$slug];
             }
@@ -175,19 +181,30 @@ class SyncClientCopyCommand extends Command
 
     private function syncFaqs(bool $dryRun): void
     {
+        $catalogKeys = collect(ClientCopyCatalog::faqs())->pluck('key')->all();
+        $catalogQuestions = collect(ClientCopyCatalog::faqs())->pluck('question')->all();
+
         $legacyQuestions = [
             'How do I get started with HeartWell?',
             'Is clinical clearance required?',
             'What if I am not sure which pathway fits me?',
             'Do you come to my location?',
             'Can I host a group wellness gathering?',
+            'Are specific health or aesthetic results guaranteed?',
         ];
 
         if (! $dryRun) {
             Faq::query()->whereIn('question', $legacyQuestions)->delete();
             Faq::query()
-                ->where('question', 'like', '%Mollitia%')
-                ->orWhere('question', 'like', '%lorem%')
+                ->where(function ($query) {
+                    $query->where('question', 'like', '%Mollitia%')
+                        ->orWhere('question', 'like', '%lorem%');
+                })
+                ->delete();
+
+            Faq::query()
+                ->where('page_slug', 'wellness-journey')
+                ->whereNotIn('question', $catalogQuestions)
                 ->delete();
         }
 
@@ -208,6 +225,32 @@ class SyncClientCopyCommand extends Command
                 ],
             );
             $this->line("Updated FAQ: {$faq['key']}");
+        }
+
+        if ($dryRun) {
+            $this->line('FAQ keys: '.implode(', ', $catalogKeys));
+        }
+    }
+
+    private function syncSiteSettings(bool $dryRun): void
+    {
+        $payloads = [
+            'navigation' => ClientCopyCatalog::navigation(),
+            'footer_columns' => ClientCopyCatalog::footerColumns(),
+            'ctas' => ClientCopyCatalog::siteCtas(),
+            'compliance' => ClientCopyCatalog::complianceDefaults(),
+            'contact_forms' => ClientCopyCatalog::contactFormsDefaults(),
+        ];
+
+        foreach ($payloads as $key => $value) {
+            if ($dryRun) {
+                $this->line("Site setting: {$key}");
+
+                continue;
+            }
+
+            SiteSetting::query()->updateOrCreate(['key' => $key], ['value' => $value]);
+            $this->line("Updated site setting: {$key}");
         }
     }
 

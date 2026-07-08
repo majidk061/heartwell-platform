@@ -17,7 +17,7 @@
         @endif
         @if(! empty($sectionContent['body']))
             <div @class([
-                'prose prose-hw max-w-none text-hw-text leading-relaxed',
+                'prose prose-hw max-w-none text-hw-text leading-relaxed hw-prose-narrow',
                 'md:col-span-8' => $richImage,
                 'md:col-span-12' => ! $richImage,
             ])>

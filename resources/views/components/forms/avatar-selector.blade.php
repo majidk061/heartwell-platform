@@ -6,7 +6,7 @@
 
 <fieldset class="md:col-span-2 hw-avatar-selector">
     <legend class="hw-form-label">Which feels most like you? <span class="text-hw-muted font-normal">(optional)</span></legend>
-    <p class="hw-avatar-selector__hint">Choose one primary option, or select all that resonate.</p>
+    <p class="hw-avatar-selector__hint">Select all that resonate.</p>
 
     <div class="hw-avatar-selector__grid">
         @foreach($avatarCards as $card)

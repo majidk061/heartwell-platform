@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Domains\Content\Support\ClientCopyCatalog;
 use App\Domains\Content\Enums\ContentStatus;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
@@ -110,7 +111,51 @@ class ContactFormsTest extends TestCase
             ->assertOk()
             ->assertSee('Online scheduling is coming soon', false)
             ->assertSee('Join the Waitlist', false)
-            ->assertSee('Request a Consultation', false)
+            ->assertSee('Begin with a Private Wellness Conversation', false)
             ->assertDontSee('<iframe', false);
+    }
+
+    public function test_contact_forms_show_pre_form_guidance_and_avatar_hint(): void
+    {
+        config(['integrations.acuity.embed_url' => null]);
+
+        $page = Page::query()->create([
+            'slug' => 'contact',
+            'title' => 'Contact',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 7,
+        ]);
+
+        $template = SectionTemplate::query()->create([
+            'name' => 'Contact forms — guidance',
+            'section_type' => 'forms',
+            'heading' => 'Connect',
+            'content' => ['forms' => ['waitlist', 'consultation', 'group_inquiry']],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $template->id,
+            'section_type' => 'forms',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $this->get(route('contact').'#waitlist')
+            ->assertOk()
+            ->assertSee('hw-contact-nav--stacked', false)
+            ->assertSee('Select all that resonate.', false)
+            ->assertSee('general inquiry purposes only', false);
+    }
+
+    public function test_contact_form_success_message_uses_approved_copy(): void
+    {
+        $this->post(route('contact.waitlist'), [
+            'name' => 'Jane Doe',
+            'email' => 'jane@heartwell.test',
+        ])->assertRedirect()->assertSessionHas('success', ClientCopyCatalog::FORM_THANK_YOU);
     }
 }

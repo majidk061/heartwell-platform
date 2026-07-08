@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Domains\Content\Enums\ContentStatus;
+use App\Domains\Content\Models\Faq;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
 use App\Domains\Content\Models\SectionTemplate;
 use App\Domains\Content\Models\Testimonial;
+use App\Domains\Content\Support\ClientCopyCatalog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -275,5 +277,73 @@ class LaunchRefinementTest extends TestCase
             ->assertOk()
             ->assertSee('hw-founder-eyebrow', false)
             ->assertDontSee('text-hw-blush', false);
+    }
+
+    public function test_privacy_hero_hides_conversion_ctas_when_configured(): void
+    {
+        $page = Page::query()->create([
+            'slug' => 'privacy',
+            'title' => 'Privacy Policy',
+            'status' => ContentStatus::Published,
+            'is_published' => true,
+            'sort_order' => 8,
+        ]);
+
+        $hero = SectionTemplate::query()->create([
+            'name' => 'Hero — privacy launch',
+            'section_type' => 'hero',
+            'heading' => 'Privacy Policy',
+            'content' => [
+                'design_variant' => 'minimal',
+                'show_consultation_link' => false,
+                'show_cta_buttons' => false,
+            ],
+            'is_published' => true,
+            'status' => ContentStatus::Published,
+        ]);
+
+        PageSection::query()->create([
+            'page_id' => $page->id,
+            'section_template_id' => $hero->id,
+            'section_type' => 'hero',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $response = $this->get(route('privacy'))
+            ->assertOk();
+
+        $html = (string) $response->getContent();
+        $heroStart = strpos($html, 'hw-hero--minimal');
+        $this->assertNotFalse($heroStart);
+        $heroEnd = strpos($html, '</section>', $heroStart);
+        $heroBlock = substr($html, $heroStart, $heroEnd - $heroStart);
+
+        $this->assertStringNotContainsString('btn-primary', $heroBlock);
+        $this->assertStringNotContainsString('Join the Waitlist', $heroBlock);
+    }
+
+    public function test_compliance_defaults_do_not_include_unauthorized_hipaa_language(): void
+    {
+        $compliance = ClientCopyCatalog::complianceDefaults();
+
+        $this->assertStringNotContainsString('HIPAA', $compliance['footer_note']);
+        $this->assertStringNotContainsString('medical portal', strtolower($compliance['clinical_portal_note']));
+    }
+
+    public function test_navigation_defaults_use_meet_jacquie_and_connect_labels(): void
+    {
+        $labels = collect(ClientCopyCatalog::navigation())->pluck('label')->all();
+
+        $this->assertContains('Meet Jacquie', $labels);
+        $this->assertContains('Connect', $labels);
+        $this->assertNotContains('Wellness Journey', $labels);
+    }
+
+    public function test_synced_faqs_include_eight_wellness_journey_questions(): void
+    {
+        $this->artisan('heartwell:sync-client-copy')->assertSuccessful();
+
+        $this->assertSame(8, Faq::query()->where('page_slug', 'wellness-journey')->count());
     }
 }

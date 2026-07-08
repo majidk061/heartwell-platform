@@ -16,7 +16,7 @@ class ClinicalIntakeTest extends TestCase
             ->assertSee('You\'re still with HeartWell', false)
             ->assertSee('HeartWell coordinates everything', false)
             ->assertSee('HeartWell remains your primary point of contact', false)
-            ->assertDontSee('Hydreight', false);
+            ->assertSee('Hydreight clinical workflow', false);
     }
 
     public function test_clinical_intake_shows_portal_button_when_url_configured(): void

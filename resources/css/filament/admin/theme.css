@@ -358,3 +358,20 @@
 .hw-profile-shell .fi-fo-file-upload-avatar {
     @apply mx-auto;
 }
+
+/* Rich text editor — match public site prose-hw typography */
+.fi-fo-rich-editor-editor.prose.prose-hw,
+.fi-fo-rich-editor.fi-disabled.prose.prose-hw {
+    @apply text-base leading-relaxed text-gray-800;
+    min-height: theme(spacing.56);
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+}
+
+.fi-fo-rich-editor-editor.prose.prose-hw:focus-visible {
+    @apply outline-none;
+}
+
+.fi-fo-rich-editor-toolbar {
+    @apply bg-gray-50/80;
+}

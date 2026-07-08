@@ -6,7 +6,156 @@ use App\Domains\CRM\Enums\AvatarType;
 
 class ClientCopyCatalog
 {
-    public const COMPLIANCE_INTAKE = 'To comply with New Jersey medical regulations and ensure client safety, all clients receiving services must complete a secure clinical intake, health history, consent forms, and provider screening through HeartWell\'s HIPAA-compliant clinical portal powered by Hydreight. Clinical clearance is required before receiving treatment. To continue receiving services, clinical screening and provider clearance must be renewed every 6 months, or sooner if required by the provider.';
+    public const CLINICAL_WORKFLOW_INTAKE = 'Before receiving services, clients complete required clinical intake, health history, consent forms, and provider screening through the Hydreight clinical workflow. Clinical clearance is required before treatment is provided.';
+
+    public const CLINICAL_WORKFLOW_SEPARATE = 'Required clinical information is collected separately through the Hydreight clinical workflow.';
+
+    public const CLINICAL_SAFETY_ONE_LINER = 'Required clinical screening and provider clearance are completed through the Hydreight clinical workflow before services are provided.';
+
+    public const GROUP_INTAKE_GUESTS = 'Each guest participating in a HeartWell wellness gathering completes their own required clinical intake and provider screening through the Hydreight clinical workflow before receiving services.';
+
+    public const COMPLIANCE_INTAKE = self::CLINICAL_WORKFLOW_INTAKE;
+
+    public const PRE_FORM_GUIDANCE = 'Please complete the form below to share your general interest in HeartWell. This form is for general inquiry purposes only. Please do not include diagnoses, medical history, medication information, urgent concerns, or other sensitive health information.';
+
+    public const FORM_THANK_YOU = 'Thank you for reaching out to HeartWell. Your message has been received. HeartWell will follow up with you soon to learn more about your interest and help guide the next step. Please do not use this form for urgent medical concerns. If you are experiencing a medical emergency, call 911.';
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public static function navigation(): array
+    {
+        return [
+            ['label' => 'Home', 'route' => 'home'],
+            ['label' => 'Support Pathways', 'route' => 'support-pathways'],
+            ['label' => 'Your Experience', 'route' => 'your-experience'],
+            ['label' => 'Why HeartWell', 'route' => 'why-heartwell'],
+            ['label' => 'Meet Jacquie', 'route' => 'meet-the-founder'],
+            ['label' => 'Connect', 'route' => 'contact'],
+        ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public static function footerColumns(): array
+    {
+        return [
+            [
+                'title' => 'YOUR EXPERIENCE',
+                'links' => [
+                    ['label' => 'Wellness Journey', 'route' => 'wellness-journey'],
+                    ['label' => 'How It Works', 'route' => 'your-experience', 'anchor' => 'what-to-expect'],
+                    ['label' => 'What to Expect', 'route' => 'your-experience', 'anchor' => 'what-to-expect'],
+                    ['label' => 'Safety & Standards', 'route' => 'why-heartwell', 'anchor' => 'clinically-supported'],
+                ],
+            ],
+            [
+                'title' => 'WHY HEARTWELL',
+                'links' => [
+                    ['label' => 'Whole-Person Care', 'route' => 'why-heartwell', 'anchor' => 'nurse-led-care'],
+                    ['label' => 'Our Approach', 'route' => 'why-heartwell', 'anchor' => 'compassion-at-the-center'],
+                    ['label' => 'Expert-Guided Care', 'route' => 'why-heartwell', 'anchor' => 'clinically-supported'],
+                    ['label' => 'Flexible & Convenient', 'route' => 'your-experience', 'anchor' => 'designed-around-real-life'],
+                ],
+            ],
+            [
+                'title' => 'COMPANY',
+                'links' => [
+                    ['label' => 'Meet Jacquie', 'route' => 'meet-the-founder'],
+                    ['label' => 'About HeartWell', 'route' => 'why-heartwell'],
+                    ['label' => 'Connect', 'route' => 'contact'],
+                    ['label' => 'Privacy Policy', 'route' => 'privacy'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function siteCtas(): array
+    {
+        return [
+            'primary' => [
+                'label' => 'Request a Private Mobile Visit',
+                'route' => 'contact',
+                'anchor' => '#book',
+            ],
+            'secondary' => [
+                'waitlist' => [
+                    'label' => 'Join the Waitlist',
+                    'route' => 'contact',
+                    'anchor' => '#waitlist',
+                ],
+                'consultation' => [
+                    'label' => 'Begin with a Private Wellness Conversation',
+                    'route' => 'contact',
+                    'anchor' => '#consultation',
+                ],
+                'gathering' => [
+                    'label' => 'Plan a Wellness Gathering',
+                    'route' => 'contact',
+                    'anchor' => '#group-inquiry',
+                ],
+            ],
+            'tertiary_prefix' => 'Prefer to talk first?',
+            'tertiary_label' => 'Begin with a Private Wellness Conversation',
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function complianceDefaults(): array
+    {
+        return [
+            'footer_note' => 'HeartWell Aesthetics & Wellness provides nurse-led wellness support in New Jersey. '.self::CLINICAL_WORKFLOW_SEPARATE.' '.self::CLINICAL_WORKFLOW_INTAKE,
+            'contact_disclaimer' => 'Information submitted through this form is used for general inquiry purposes only. It is not a substitute for emergency medical care. If you are experiencing a medical emergency, call 911.',
+            'clinical_portal_note' => self::CLINICAL_WORKFLOW_SEPARATE.' '.self::CLINICAL_WORKFLOW_INTAKE,
+            'group_intake_note' => self::GROUP_INTAKE_GUESTS,
+            'privacy_summary' => 'HeartWell respects your privacy. Information submitted through the HeartWell website is used to respond to general inquiries, manage waitlist and visit interest, coordinate wellness gathering requests, and communicate about next steps. HeartWell does not sell your personal information.',
+            'privacy_policy_title' => 'Privacy Policy',
+            'privacy_policy_last_updated' => null,
+            'privacy_policy_body' => self::privacyPolicyBodyHtml(),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function contactFormsDefaults(): array
+    {
+        return [
+            'waitlist_title' => 'Join the Waitlist',
+            'waitlist_subtitle' => 'Receive updates about Private Wellness Conversation openings and mobile visit availability.',
+            'consultation_title' => 'Begin with a Private Wellness Conversation',
+            'consultation_subtitle' => 'Start with a low-pressure conversation about your general goals, questions, and where you may want to begin.',
+            'book_subtitle' => 'Share your general interest and location so HeartWell can follow up regarding availability and next steps.',
+            'group_title' => 'Plan a Wellness Gathering',
+            'group_subtitle' => 'Explore a private wellness experience for a small group or community.',
+        ];
+    }
+
+    public static function privacyPolicyBodyHtml(): string
+    {
+        return <<<'HTML'
+<h2>Privacy Overview</h2>
+<p>HeartWell respects your privacy. Information submitted through the HeartWell website is used to respond to general inquiries, manage waitlist and visit interest, coordinate wellness gathering requests, and communicate about next steps. HeartWell does not sell your personal information.</p>
+<h2>Information Submitted Through This Website</h2>
+<p>When you contact HeartWell, join the waitlist, request a visit, or express interest in a wellness gathering, we may collect general contact and inquiry information such as your name, email address, phone number, service interest, and communication preferences.</p>
+<p>Please do not submit diagnoses, medical history, medication information, urgent concerns, or other sensitive health information through general website forms.</p>
+<h2>How Website Information Is Used</h2>
+<p>Information submitted through the HeartWell website may be used to respond to inquiries, manage waitlist and visit interest, coordinate wellness gathering requests, and communicate about next steps. General website forms are not used for clinical intake, diagnosis, or treatment documentation.</p>
+<h2>Clinical Information</h2>
+<p>Required clinical information is collected separately through the Hydreight clinical workflow.</p>
+<p>Before services are provided, clients complete required clinical intake, health history, consent forms, and provider screening through that separate clinical workflow.</p>
+<h2>Wellness Gatherings</h2>
+<p>Each guest participating in a HeartWell wellness gathering completes their own required clinical intake and provider screening through the Hydreight clinical workflow before receiving services.</p>
+<h2>Contact</h2>
+<p>Questions about this website Privacy Policy may be submitted through the HeartWell Connect page.</p>
+HTML;
+    }
 
     /**
      * @return list<array<string, mixed>>
@@ -18,68 +167,64 @@ class ClientCopyCatalog
                 'slug' => 'recovery-hydration',
                 'title' => 'Recovery & Hydration',
                 'tagline' => 'For replenishment, travel, busy seasons, or feeling run down',
-                'intro' => 'This pathway may be a good fit if you are looking for foundational hydration and replenishment support during busy seasons, after travel, after increased activity, or during times when your body may need extra support.',
+                'intro' => 'This pathway may be a good fit when you are looking for hydration and replenishment support after travel, increased activity, busy seasons, or times when your body may need extra support.',
                 'options_may_include' => [
                     'IV hydration support',
                     'Targeted nutrient add-ons when available and clinically appropriate',
-                    'Injection support if a focused nutrient option better fits your goals',
+                    'Focused injection support based on your goals and provider review',
                 ],
-                'common_support' => "IV hydration fluids support fluid replenishment and foundational hydration. When available and appropriate, electrolyte, vitamin, or mineral support may be added based on your goals and provider review.",
+                'common_support' => null,
                 'portal_cue' => "This pathway may appear as Hydration.\n\nHydration may include Lactated Ringer's or Sodium Chloride 0.9%, depending on availability, provider guidance, and clinical appropriateness.",
                 'avatar_type' => AvatarType::Depleted,
-                'cta_label' => 'Book a Visit',
+                'cta_label' => 'Request a Private Mobile Visit',
                 'cta_url' => '/contact#book',
             ],
             [
                 'slug' => 'energy-wellness',
                 'title' => 'Energy & Wellness',
-                'tagline' => 'For feeling depleted, foggy, sluggish, or not like yourself',
-                'intro' => 'This pathway may be a good fit if you feel worn down, low-energy, foggy, overextended, or like you are not bouncing back the way you normally do.',
+                'tagline' => 'For low energy, busy seasons, and times when you do not feel like yourself',
+                'intro' => 'This pathway may be a good fit when you are feeling depleted, less energized than usual, or stretched by the demands of work, family, caregiving, or everyday life.',
                 'options_may_include' => [
-                    'Energy-focused IV wellness support',
-                    'B12 injection support',
-                    'B-Complex / BPlex injection support',
-                    'Targeted add-ons to hydration therapy when available and clinically appropriate',
+                    'Nutrient-focused IV wellness support',
+                    'Targeted vitamin injection support',
+                    'A combination approach based on your goals and provider review',
                 ],
-                'common_support' => "B12 supports energy, metabolism, and nervous system wellness.\n\nB-Complex / BPlex supports energy production, stress response, and overall wellness.",
-                'selection_note' => 'You usually do not need both B12 and B-Complex / BPlex. Choose the one that best fits your main goal, and provider review will help confirm what is appropriate.',
-                'portal_cue' => 'This pathway may appear as Energy, B12, B-Complex, or BPlex, depending on the option selected and what is available through the secure portal.',
+                'common_support' => null,
+                'portal_cue' => 'This pathway may appear as Energy, B12, B-Complex, or BPlex, depending on the option selected and what is available through the Hydreight clinical workflow.',
                 'avatar_type' => AvatarType::Depleted,
-                'cta_label' => 'Request Consultation',
+                'cta_label' => 'Begin with a Private Wellness Conversation',
                 'cta_url' => '/contact#consultation',
             ],
             [
                 'slug' => 'metabolic-weight',
                 'title' => 'Metabolic & Weight Support',
-                'tagline' => 'For body changes, weight frustration, and metabolic wellness support',
-                'intro' => 'This pathway may be a good fit if you are doing many of the "right" things, but your body is not responding the way you hoped it would.',
+                'tagline' => 'For women feeling stuck despite their efforts',
+                'intro' => 'This pathway may be a good fit when changes in weight, metabolism, appetite, or progress have left you feeling frustrated or unsure where to begin. Support starts with understanding your goals and completing the required clinical screening.',
                 'options_may_include' => [
-                    'Nutrient-based metabolic injection support',
-                    'MIC+B12 or Lipo-style support when available',
-                    'Consultation-based weight support',
-                    'GLP-1 / Semaglutide or Tirzepatide workflow when clinically appropriate',
+                    'Consultation-based metabolic and weight support',
+                    'Clinically appropriate medication pathways when prescribed through the clinical workflow',
+                    'Ongoing nurse-led education and support',
                 ],
-                'common_support' => "B12 supports energy, metabolism, and nervous system wellness.\n\nMIC / Lipo blends support metabolic wellness and nutrient-based weight-support goals.\n\nCarnitine, when available, supports fat metabolism and energy production when clinically appropriate.",
-                'selection_note' => 'If you are choosing a metabolic injection option, you usually do not need to add another similar B-vitamin option unless provider guidance indicates otherwise. Choose the option that best matches your primary goal.',
-                'portal_cue' => 'This pathway may appear as MIC+B12, Lipo, Lipo Mino, Lipo Stat Plus, GLP-1, Semaglutide, or Tirzepatide, depending on the option selected and what is available through the secure portal.',
+                'common_support' => null,
+                'portal_cue' => 'This pathway may appear as MIC+B12, Lipo, Lipo Mino, Lipo Stat Plus, GLP-1, Semaglutide, or Tirzepatide, depending on the option selected and what is available through the Hydreight clinical workflow.',
                 'avatar_type' => AvatarType::Frustrated,
-                'cta_label' => 'Request Consultation',
+                'cta_label' => 'Begin with a Private Wellness Conversation',
                 'cta_url' => '/contact#consultation',
             ],
             [
                 'slug' => 'specialized-support',
                 'title' => 'Specialized Support',
-                'tagline' => 'For advanced cellular wellness and consultation-based support',
-                'intro' => 'This pathway may be a good fit if you are interested in more specialized wellness support, including NAD+ or other consultation-based therapies when available and clinically appropriate.',
+                'tagline' => 'For more focused wellness goals that may require additional evaluation',
+                'intro' => 'This pathway is designed for women exploring more specialized wellness support beyond foundational hydration or nutrient-based care. Options are considered individually and depend on your goals, required clinical screening, provider review, and clinical appropriateness.',
                 'options_may_include' => [
-                    'NAD+ support',
-                    'Advanced wellness support',
-                    'Consultation-based therapies when available and clinically appropriate',
+                    'Consultation-based specialized wellness support',
+                    'NAD+ support when available and clinically appropriate',
+                    'A personalized approach guided by provider review',
                 ],
-                'common_support' => 'NAD+ supports cellular energy and advanced wellness goals.',
-                'portal_cue' => "This pathway may appear as NAD, NAD+, NAD IV, or NAD IM, depending on what is available through the secure portal.\n\nSpecialized options may require additional screening or provider guidance before treatment is approved.",
+                'common_support' => null,
+                'portal_cue' => "This pathway may appear as NAD, NAD+, NAD IV, or NAD IM, depending on what is available through the Hydreight clinical workflow.\n\nSpecialized options may require additional screening or provider guidance before treatment is approved.",
                 'avatar_type' => AvatarType::Frustrated,
-                'cta_label' => 'Book a Visit',
+                'cta_label' => 'Request a Private Mobile Visit',
                 'cta_url' => '/contact#book',
                 'migrate_from_slug' => 'advanced-cellular',
             ],
@@ -87,19 +232,17 @@ class ClientCopyCatalog
                 'slug' => 'precision-glow-therapy',
                 'title' => 'Precision Glow Therapy',
                 'tagline' => 'For visible changes in the mirror',
-                'intro' => 'This pathway may be a good fit for the woman noticing visible changes in the mirror — including changes to her skin, eyes, or hair. HeartWell offers thoughtful care designed to address her concerns.',
+                'intro' => 'This pathway may be a good fit when changes in skin, hair, eyes, or overall glow are affecting how you feel when you look in the mirror. Support is guided by your goals, required screening, and the options currently available through HeartWell.',
                 'options_may_include' => [
-                    'Beauty or glow-focused IV wellness support',
-                    'Glutathione support',
-                    'Biotin support',
-                    'Targeted nutrient injections or add-ons when available and clinically appropriate',
-                    'Select aesthetic services when available',
+                    'Wellness support selected with visible changes in mind',
+                    'Targeted options based on your goals and provider review',
+                    'Select aesthetic services as they become available',
                 ],
-                'common_support' => "Glutathione supports antioxidant wellness and cellular health.\n\nBiotin supports hair, skin, and nail wellness.\n\nVitamin C, when available, supports antioxidant wellness and collagen-related wellness.",
-                'portal_cue' => 'This pathway may appear as Beauty/Youth, Glutathione, Biotin, or related wellness options depending on what is available through the secure portal.',
+                'common_support' => null,
+                'portal_cue' => 'This pathway may appear as Beauty/Youth, Glutathione, Biotin, or related wellness options depending on what is available through the Hydreight clinical workflow.',
                 'coming_soon' => 'Select aesthetic services, including neurotoxins, will be available soon.',
                 'avatar_type' => AvatarType::Confidence,
-                'cta_label' => 'Book a Visit',
+                'cta_label' => 'Request a Private Mobile Visit',
                 'cta_url' => '/contact#book',
                 'migrate_from_slug' => 'confidence-aesthetic',
             ],
@@ -123,7 +266,7 @@ class ClientCopyCatalog
                 'slug' => 'frustrated',
                 'headline' => "I'm trying, but I feel stuck.",
                 'subtext' => 'Weight changes, metabolism shifts, and resistance despite effort — clarity is possible.',
-                'cta_label' => 'Explore Metabolic Support',
+                'cta_label' => 'Explore Metabolic & Weight Support',
                 'pathway_slug' => 'metabolic-weight',
             ],
             [
@@ -145,37 +288,49 @@ class ClientCopyCatalog
             [
                 'key' => 'service-selection',
                 'question' => 'Do I need to know exactly what service I want before reaching out?',
-                'answer' => 'No. Many women reach out knowing they want to feel better or address a specific goal, but they are not sure where to begin. HeartWell starts with a private wellness conversation so we can discuss your goals, answer your questions, and help you understand what type of support may be appropriate.',
+                'answer' => 'No. You do not need to choose a treatment or know exactly what you need before contacting HeartWell. A Private Wellness Conversation gives you an opportunity to share your general goals, ask questions, and better understand which next step may be appropriate.',
                 'page_slug' => 'wellness-journey',
             ],
             [
                 'key' => 'clinical-screening',
                 'question' => 'Is clinical screening required before I receive care?',
-                'answer' => 'Yes. To support your safety and privacy, all clients must complete a secure intake, health history review, consent forms, and provider screening through HeartWell\'s HIPAA-compliant medical intake portal before receiving services. Clinical clearance is required before care is provided.',
+                'answer' => 'Yes. Before receiving services, clients complete required clinical intake, health history, consent forms, and provider screening through the Hydreight clinical workflow. Clinical clearance is required before treatment is provided.',
                 'page_slug' => 'wellness-journey',
             ],
             [
                 'key' => 'visit-location',
                 'question' => 'Where do HeartWell visits take place?',
-                'answer' => 'HeartWell offers private mobile wellness visits in the privacy of home, a quiet office setting, or another appropriate, pre-arranged private location.',
+                'answer' => 'HeartWell provides mobile wellness visits in appropriate private settings based on service area, scheduling, and visit requirements. This may include your home or another suitable private location.',
                 'page_slug' => 'wellness-journey',
             ],
             [
                 'key' => 'support-types',
                 'question' => 'What types of wellness support does HeartWell offer?',
-                'answer' => 'HeartWell offers wellness support that may include hydration, nutrient support, targeted vitamin injections, metabolic and weight-focused support, and specialized wellness pathways. Select aesthetic services, including neurotoxins, will be available soon.',
+                'answer' => 'HeartWell offers nurse-led wellness support through pathways focused on Recovery & Hydration, Energy & Wellness, Metabolic & Weight Support, Specialized Support, and Precision Glow Therapy. Available options depend on required screening, provider review, and clinical appropriateness.',
                 'page_slug' => 'wellness-journey',
             ],
             [
                 'key' => 'wellness-gathering',
                 'question' => 'Can I host a private wellness gathering?',
-                'answer' => 'Yes. HeartWell offers private wellness gatherings for small groups of friends, boutique fitness studios, salons, women\'s groups, workplaces, and community partners.',
+                'answer' => 'Yes. HeartWell offers private wellness gatherings for small groups and communities. Each guest completes their own required clinical intake and provider screening through the Hydreight clinical workflow before receiving services.',
                 'page_slug' => 'wellness-journey',
             ],
             [
                 'key' => 'guaranteed-results',
-                'question' => 'Are specific health or aesthetic results guaranteed?',
-                'answer' => 'No. HeartWell does not guarantee specific health, wellness, weight, or aesthetic outcomes. Recommendations are guided by your goals, health history, and required clinical screening to help determine what may be safe and appropriate for you.',
+                'question' => 'Are specific health, wellness, weight-loss, or aesthetic results guaranteed?',
+                'answer' => 'No. Individual experiences and outcomes vary, and specific results are not guaranteed. Available services depend on required clinical screening, provider review, clinical appropriateness, and individual response.',
+                'page_slug' => 'wellness-journey',
+            ],
+            [
+                'key' => 'private-conversation',
+                'question' => 'What happens during a Private Wellness Conversation?',
+                'answer' => 'A Private Wellness Conversation is a low-pressure opportunity to share your general goals, ask questions, and explore what type of HeartWell support may be worth considering. It is not a diagnosis, medical evaluation, or substitute for required clinical screening.',
+                'page_slug' => 'wellness-journey',
+            ],
+            [
+                'key' => 'after-visit',
+                'question' => 'What should I expect after my visit?',
+                'answer' => 'HeartWell provides thoughtful follow-up to help you understand appropriate next steps and stay connected to your wellness journey.',
                 'page_slug' => 'wellness-journey',
             ],
         ];
@@ -191,13 +346,34 @@ class ClientCopyCatalog
         $ivGuidanceBody = '<p>A full IV wellness visit may be a good fit when you are looking for hydration, replenishment, and broader wellness support.</p>'
             .'<p>A targeted injection may be a good fit when you want focused nutrient support without a full IV visit.</p>'
             .'<p>An add-on may be considered when you are already choosing IV hydration and want additional support for energy, metabolism, antioxidant wellness, or skin, hair, and nail wellness.</p>'
-            .'<p><strong>Helpful selection note:</strong> Please choose the option that best matches your primary goal. You usually do not need to select multiple similar vitamin options, such as both B12 and B-Complex / BPlex. Your secure intake and provider screening will help determine what is clinically appropriate before treatment is provided.</p>';
+            .'<p><strong>Helpful selection note:</strong> Please choose the option that best matches your primary goal. You usually do not need to select multiple similar vitamin options, such as both B12 and B-Complex / BPlex. Required clinical screening and provider review will help determine what is clinically appropriate before treatment is provided.</p>';
 
-        $finalNoteBody = '<p>The pathway you choose helps HeartWell understand your goals and helps you recognize what you may see inside the secure Hydreight portal.</p>'
-            .'<p>Your final treatment plan depends on your health history, required intake, provider screening, clinical clearance, and what is available through the secure portal.</p>'
-            .'<p>All services are provided only after required intake, provider screening, and clinical clearance through HeartWell\'s secure medical intake portal powered by Hydreight.</p>';
+        $finalNoteBody = '<p>Your care is guided by your goals, health history, required clinical screening, and provider recommendations. Available options may vary based on individual needs and clinical appropriateness.</p>';
+
+        $ctas = self::siteCtas();
 
         return [
+            'Hero — full bleed overlay' => [
+                'section_type' => 'hero',
+                'heading' => 'Thoughtful, Compassionate Care You Can Trust',
+                'description' => 'Home page hero — full bleed overlay (preserves existing design_variant in DB).',
+                'content' => [
+                    'subheading' => 'For Every Stage of Life',
+                    'intro_question' => 'Feeling exhausted? Stuck? Not feeling like yourself?',
+                    'body' => 'HeartWell provides personalized, nurse-led wellness support for women navigating changes in energy, recovery, metabolism, and overall well-being.',
+                    'pathway_bar_heading' => 'Support Pathways Include:',
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            'Intro — home nurse-led care' => [
+                'section_type' => 'intro',
+                'heading' => 'Nurse-Led Wellness Support',
+                'description' => 'Home page nurse-led intro paragraph.',
+                'content' => [
+                    'body' => 'HeartWell is mobile wellness led by Jacquie Wilson, BSN, RN, MBA — warm, nurse-led, and built around your whole story. We are not a spa, med spa, or IV menu. We offer thoughtful guidance for women navigating midlife transitions, burnout, metabolic changes, and times when they simply do not feel like themselves.',
+                    'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
             'Hero — support pathways' => [
                 'section_type' => 'hero',
                 'heading' => 'Support Pathways',
@@ -208,7 +384,7 @@ class ClientCopyCatalog
                     'show_pathway_bar' => false,
                     'pathway_bar_variant' => 'labeled_inline_dividers',
                     'pathway_bar_heading' => 'Support Pathways Include:',
-                    'body' => "HeartWell pathways are designed to help you choose the type of support that best matches how you are feeling and what you are hoping to address. Some options may be offered as IV wellness support, targeted injections, or add-ons to hydration therapy when available and clinically appropriate.\n\nAfter choosing a HeartWell pathway, you may be directed to a secure medical intake and booking portal powered by Hydreight. The portal may use more clinical treatment names than the HeartWell pathway names shown here. Each pathway below includes guidance on what you may see in the secure portal. Your selection helps us understand your goals, but it does not replace clinical screening. Before treatment is provided, your health history, intake, and provider review help confirm what is appropriate for you.",
+                    'body' => "HeartWell Support Pathways are designed to help you begin with how you feel and what you hope to address — not with a confusing treatment menu. Each pathway offers a starting point for exploring the type of support that may fit your goals. Final care options depend on required clinical intake, provider screening, and clinical appropriateness.",
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
@@ -218,7 +394,7 @@ class ClientCopyCatalog
                 'description' => 'Prominent NJ compliance callout for Support Pathways.',
                 'content' => [
                     'design_variant' => 'compliance_callout',
-                    'body' => self::COMPLIANCE_INTAKE,
+                    'body' => self::CLINICAL_WORKFLOW_INTAKE,
                     'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
                 ],
             ],
@@ -252,11 +428,11 @@ class ClientCopyCatalog
             'Journey — Hydreight portal flow' => [
                 'section_type' => 'journey',
                 'heading' => 'What Happens After You Choose a Pathway',
-                'description' => 'Four-step Hydreight portal flow.',
+                'description' => 'Four-step Hydreight clinical workflow.',
                 'content' => [
                     'steps' => [
-                        ['title' => 'Secure Hydreight Portal', 'description' => 'You may see clinical treatment names that differ from HeartWell pathway names.'],
-                        ['title' => 'Intake + Consent Forms', 'description' => 'Complete your health history and consent forms through the secure portal.'],
+                        ['title' => 'Hydreight Clinical Workflow', 'description' => 'You may see clinical treatment names that differ from HeartWell pathway names.'],
+                        ['title' => 'Intake + Consent Forms', 'description' => 'Complete your health history and consent forms through the Hydreight clinical workflow.'],
                         ['title' => 'Provider Screening', 'description' => 'A provider reviews your information to confirm clinical appropriateness.'],
                         ['title' => 'Clinical Clearance', 'description' => 'Treatment is provided only after required clearance is confirmed.'],
                     ],
@@ -268,14 +444,15 @@ class ClientCopyCatalog
                 'heading' => 'Find the pathway that fits you',
                 'description' => 'Support Pathways page CTA.',
                 'content' => [
-                    'body' => 'Not sure where to start? Request a consultation — we will guide you without pressure.',
+                    'body' => 'Not sure where to start? Begin with a private wellness conversation — we will guide you without pressure.',
                     'variant' => 'dual',
-                    'primary_label' => 'Book a Visit',
+                    'primary_label' => $ctas['primary']['label'],
                     'primary_url' => '/contact#book',
-                    'waitlist_label' => 'Join the Waitlist',
+                    'waitlist_label' => $ctas['secondary']['waitlist']['label'],
                     'waitlist_url' => '/contact#waitlist',
                     'show_consultation_link' => true,
-                    'consultation_label' => 'Request Consultation',
+                    'consultation_prefix' => $ctas['tertiary_prefix'],
+                    'consultation_label' => $ctas['tertiary_label'],
                     'consultation_url' => '/contact#consultation',
                     'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
                 ],
@@ -297,12 +474,13 @@ class ClientCopyCatalog
                 'heading' => 'What to expect',
                 'description' => 'Five-step journey for Your Experience.',
                 'content' => [
+                    'section_anchor' => 'what-to-expect',
                     'steps' => [
-                        ['title' => 'Connecting & Understanding', 'description' => 'Your care begins with a private wellness conversation. This is our time to connect, listen to your goals, and understand the kind of support you are looking for.'],
-                        ['title' => 'Secure Clinical Intake', 'description' => 'Before your first service, you will complete a secure clinical intake and provider screening through HeartWell\'s HIPAA-compliant portal. This important step helps protect your privacy, support your safety, and ensure clinical clearance before care is provided.'],
-                        ['title' => 'Dedicated, Nurse-Led Care', 'description' => 'Every visit is nurse-led, clinically supported, and centered around you. Our goal is to help you feel cared for, informed, and comfortable every step of the way.'],
-                        ['title' => 'Your Private HeartWell Visit', 'description' => 'Your visit is designed to feel calm, professional, and personal. HeartWell brings nurse-led wellness support to you, with thoughtful setup, attentive care, and a visit experience centered on your comfort.'],
-                        ['title' => 'Thoughtful Follow-Up', 'description' => 'Your care does not end when the visit is complete. HeartWell provides thoughtful follow-up and guidance so your wellness support can continue to reflect your needs, goals, and next steps.'],
+                        ['title' => 'Connecting & Understanding', 'description' => 'Your experience begins with a private conversation focused on your goals, questions, and what you are hoping to better understand.'],
+                        ['title' => 'Secure Clinical Intake', 'description' => 'Before receiving services, you complete required clinical intake, health history, consent forms, and provider screening through the Hydreight clinical workflow.'],
+                        ['title' => 'Individualized, Nurse-Led Care', 'description' => 'Every visit is nurse-led and guided by your goals, required screening, and the care plan approved for you.'],
+                        ['title' => 'Your Private HeartWell Visit', 'description' => 'Your visit is designed to feel calm, personal, and convenient, with care provided in an appropriate private setting based on service availability and visit requirements.', 'anchor' => 'designed-around-real-life'],
+                        ['title' => 'Thoughtful Follow-Up', 'description' => 'Your HeartWell experience does not end when the visit ends. Thoughtful follow-up helps you understand appropriate next steps and stay connected to your wellness journey.'],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
@@ -325,10 +503,10 @@ class ClientCopyCatalog
                 'description' => 'Four trust pillars for Why HeartWell.',
                 'content' => [
                     'features' => [
-                        ['title' => 'Nurse-Led Care', 'body' => 'Your care is personally provided by Jacquie Wilson, BSN, RN, MBA. With years of nursing experience across hospital care, home health, health advocacy, and patient-centered support, Jacquie brings clinical knowledge, compassion, and a calm, reassuring presence to every interaction.'],
-                        ['title' => 'Clinically Supported', 'body' => 'Your safety and peace of mind matter. Before receiving services, clients complete a secure intake, health history review, consent forms, and provider screening through HeartWell\'s HIPAA-compliant medical intake portal. Clinical clearance is required before care is provided.'],
-                        ['title' => 'Designed Around Real Life', 'body' => 'Wellness support should fit into your life, not add more stress to it. HeartWell offers mobile visits designed to meet women where they are — whether in the privacy of home, a quiet office setting, or a small wellness gathering with friends.'],
-                        ['title' => 'Compassion at the Center', 'body' => 'At HeartWell, true care begins with listening first. We are here to support the whole person with thoughtful, respectful care that helps women feel heard, supported, and cared for through every stage of life.'],
+                        ['title' => 'Nurse-Led Care', 'anchor' => 'nurse-led-care', 'body' => 'Your HeartWell experience is personally led by Jacquie Wilson, BSN, RN, MBA. Her nursing background and calm, attentive approach shape an experience that feels professional, personal, and grounded in listening first.'],
+                        ['title' => 'Clinically Supported', 'anchor' => 'clinically-supported', 'body' => self::CLINICAL_WORKFLOW_INTAKE],
+                        ['title' => 'Designed Around Real Life', 'anchor' => 'designed-around-real-life', 'body' => 'Wellness support should fit into your life, not add more stress to it. HeartWell offers mobile visits and private wellness experiences designed around real schedules, real responsibilities, and real life.'],
+                        ['title' => 'Compassion at the Center', 'anchor' => 'compassion-at-the-center', 'body' => 'At HeartWell, support begins with listening. Every interaction is designed to help women feel respected, understood, and thoughtfully guided through each stage of life.'],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
@@ -341,7 +519,7 @@ class ClientCopyCatalog
                     'design_variant' => 'minimal',
                     'show_pathway_bar' => false,
                     'show_consultation_link' => true,
-                    'body' => 'Your wellness needs can change over time, and your care should reflect where you are today. At HeartWell, there is no one-size-fits-all approach. Your support begins with listening to your goals, understanding your concerns, and reviewing your health history.',
+                    'body' => 'Your wellness needs can change over time, and your support should reflect where you are today. At HeartWell, there is no one-size-fits-all approach. The journey begins with listening to your goals, understanding your concerns, and helping you explore an appropriate next step.',
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
@@ -350,20 +528,17 @@ class ClientCopyCatalog
                 'heading' => null,
                 'description' => 'Wellness Journey intro paragraph.',
                 'content' => [
-                    'body' => '<p>Together, we focus on the type of care that feels thoughtful, appropriate, and aligned with this stage of life.</p>',
+                    'body' => '<p>Your wellness needs can change over time, and your support should reflect where you are today. At HeartWell, there is no one-size-fits-all approach. The journey begins with listening to your goals, understanding your concerns, and helping you explore an appropriate next step.</p>',
                     'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
             'Features — tailored to your life' => [
                 'section_type' => 'features',
-                'heading' => 'Tailored to Your Life',
-                'description' => 'Four journey subsections for Wellness Journey.',
+                'heading' => 'You Are Not Alone in This',
+                'description' => 'Emotional support subsection for Wellness Journey.',
                 'content' => [
                     'features' => [
-                        ['title' => 'Start Where You Are', 'body' => 'You do not need to have everything figured out before you reach out. Many women begin with a simple concern, a specific goal, or the feeling that something in their body has changed. HeartWell begins by listening first, helping you understand your options and what type of support may be appropriate.'],
-                        ['title' => 'Choose the Right Level of Support', 'body' => 'Your care is guided by your needs, goals, and required clinical screening. Depending on what is appropriate for you, your wellness support may include hydration, nutrient support, targeted vitamin injections, metabolic and weight-focused support, or a more specialized wellness pathway.'],
-                        ['title' => 'Adjust as Your Needs Change', 'body' => 'Wellness needs can change over time, and your care should be able to adapt with you. As your goals, concerns, or needs shift, HeartWell can help you consider thoughtful next steps that continue to feel appropriate and aligned with your life.'],
-                        ['title' => 'Personal, Not Generic', 'body' => 'HeartWell is not built around a one-size-fits-all menu. Your care is guided by real conversation, clinical screening, and a thoughtful understanding of what kind of support makes sense for you.'],
+                        ['title' => '', 'body' => 'Hormonal shifts, burnout, metabolic changes, and life transitions can affect how you feel from one season of life to the next. Whether you are navigating perimenopause, caregiver fatigue, changes in energy, or simply not feeling like yourself, education and nurse-led guidance can help you feel seen, supported, and less alone in figuring out where to begin.'],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
                 ],
@@ -375,6 +550,24 @@ class ClientCopyCatalog
                 'content' => [
                     'include_unassigned' => false,
                     'layout' => ['container_width' => 'narrow', 'background' => 'taupe'],
+                ],
+            ],
+            'CTA — wellness journey' => [
+                'section_type' => 'cta',
+                'heading' => 'Ready to take the next step?',
+                'description' => 'Wellness Journey page CTA.',
+                'content' => [
+                    'body' => 'Begin with a private wellness conversation — we are here when you are ready.',
+                    'variant' => 'dual',
+                    'primary_label' => $ctas['primary']['label'],
+                    'primary_url' => '/contact#book',
+                    'waitlist_label' => $ctas['secondary']['waitlist']['label'],
+                    'waitlist_url' => '/contact#waitlist',
+                    'show_consultation_link' => true,
+                    'consultation_prefix' => $ctas['tertiary_prefix'],
+                    'consultation_label' => $ctas['tertiary_label'],
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
                 ],
             ],
             'Hero — meet the founder' => [
@@ -395,15 +588,16 @@ class ClientCopyCatalog
                 'description' => 'Extended founder bio for Meet the Founder page.',
                 'content' => [
                     'design_variant' => 'photo_left',
+                    'show_eyebrow' => false,
                     'name' => 'Jacquie Wilson',
                     'role' => 'Founder & Director of Care',
-                    'body' => 'HeartWell Aesthetics & Wellness was founded by Jacquie Wilson, a registered nurse with a deep commitment to compassionate, thoughtful care. With years of diverse nursing experience across emergency care, critical care, home health, and patient advocacy, Jacquie understands how important it is for women to feel heard, respected, and cared for — especially when navigating changes in their energy, weight, appearance, or overall well-being.',
+                    'body' => 'HeartWell Aesthetics & Wellness was founded by Jacquie Wilson, a registered nurse with experience across emergency care, critical care, home health, advocacy, and complex patient support. Across those settings, she repeatedly saw how important it is for women to feel heard, respected, and supported — especially when they know something has changed but are not sure where to begin.',
                     'credentials' => ['BSN', 'RN', 'MBA'],
                     'pronunciation' => 'Pronounced Jack-Kwa',
                     'subsections' => [
-                        ['title' => 'A Nurse-Led Approach', 'body' => 'Jacquie brings a calm, supportive presence to every HeartWell visit. Her approach begins with listening first. By taking time to understand each client\'s goals and concerns, she helps women feel informed, comfortable, and supported throughout the care process.'],
-                        ['title' => 'Why HeartWell Was Created', 'body' => 'HeartWell was created to support women who may not feel like themselves and are looking for care that feels personal, clinically grounded, and easy to understand. Jacquie envisioned a wellness experience that combines nurse-led care with the comfort, privacy, and compassion of mobile support.'],
-                        ['title' => 'The HeartWell Promise', 'body' => 'At HeartWell, care is never meant to feel rushed, confusing, or transactional. Every interaction is guided by respect, professional integrity, and the belief that women deserve thoughtful support through every stage of life.'],
+                        ['title' => 'A Nurse-Led Approach', 'body' => 'Jacquie brings a calm, supportive presence to every HeartWell experience. Her approach begins with listening first, followed by thoughtful education and guidance designed to help each woman feel informed, respected, and supported.'],
+                        ['title' => 'Why HeartWell Was Created', 'body' => 'HeartWell was created for women who are still showing up for everyone else while quietly feeling depleted, stuck, or unlike themselves. Jacquie wanted to create a more personal experience — one that begins with listening, respects the whole story, and does not push women toward a service before understanding what they are trying to navigate.'],
+                        ['title' => 'The HeartWell Promise', 'body' => 'At HeartWell, the experience is never meant to feel rushed, confusing, or transactional. Every interaction is guided by respect, professional integrity, thoughtful communication, and the belief that women deserve support that feels personal and trustworthy.'],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
                 ],
@@ -416,7 +610,40 @@ class ClientCopyCatalog
                     'body' => 'Begin with a private wellness conversation — we are here when you are ready.',
                     'variant' => 'dual',
                     'show_consultation_link' => true,
-                    'consultation_label' => 'Request Consultation',
+                    'consultation_prefix' => $ctas['tertiary_prefix'],
+                    'consultation_label' => $ctas['tertiary_label'],
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            'CTA — your experience' => [
+                'section_type' => 'cta',
+                'heading' => 'Ready when you are',
+                'description' => 'Your Experience page CTA.',
+                'content' => [
+                    'body' => 'Take the first step — we will walk with you from hello to follow-up.',
+                    'variant' => 'dual',
+                    'primary_label' => $ctas['primary']['label'],
+                    'primary_url' => '/contact#book',
+                    'waitlist_label' => $ctas['secondary']['waitlist']['label'],
+                    'waitlist_url' => '/contact#waitlist',
+                    'show_consultation_link' => true,
+                    'consultation_prefix' => $ctas['tertiary_prefix'],
+                    'consultation_label' => $ctas['tertiary_label'],
+                    'consultation_url' => '/contact#consultation',
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                ],
+            ],
+            'CTA — start with conversation' => [
+                'section_type' => 'cta',
+                'heading' => 'Begin with a Private Wellness Conversation',
+                'description' => 'Why HeartWell page CTA.',
+                'content' => [
+                    'body' => 'We would love to hear your story and help you find the right support.',
+                    'variant' => 'dual',
+                    'show_consultation_link' => true,
+                    'consultation_prefix' => $ctas['tertiary_prefix'],
+                    'consultation_label' => $ctas['tertiary_label'],
                     'consultation_url' => '/contact#consultation',
                     'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
                 ],
@@ -438,28 +665,23 @@ class ClientCopyCatalog
                 'section_type' => 'forms',
                 'heading' => 'How Would You Like to Experience HeartWell?',
                 'description' => 'Waitlist, consultation, booking, and group inquiry forms.',
-                'content' => [
+                'content' => array_merge(self::contactFormsDefaults(), [
                     'section_subtitle' => 'Please select the option below that best fits what you are looking for.',
-                    'waitlist_title' => 'Join the Waitlist',
-                    'waitlist_subtitle' => 'Be notified when private consultation openings or mobile visit availability becomes available in your area.',
-                    'consultation_title' => 'Request a Private Mobile Visit',
-                    'consultation_subtitle' => 'For women interested in personalized, one-on-one mobile wellness support in the privacy of home, a quiet office, or another appropriate private location.',
-                    'group_title' => 'Plan a Wellness Gathering',
-                    'group_subtitle' => 'For friends, boutique studios, salons, women\'s groups, workplaces, or community partners interested in hosting a private HeartWell wellness gathering.',
                     'forms' => ['waitlist', 'consultation', 'group_inquiry'],
-                    'contact_disclaimer' => config('heartwell.compliance.contact_disclaimer'),
-                    'privacy_summary' => config('heartwell.compliance.privacy_summary'),
-                    'clinical_portal_note' => 'To support your safety and privacy, all clients must complete a secure intake, health history review, consent forms, and provider screening through HeartWell\'s HIPAA-compliant medical intake portal before receiving services. Clinical clearance is required before care is provided.',
-                    'group_intake_note' => config('heartwell.compliance.group_intake_note'),
+                    'pre_form_guidance' => self::PRE_FORM_GUIDANCE,
+                    'contact_disclaimer' => self::complianceDefaults()['contact_disclaimer'],
+                    'privacy_summary' => self::complianceDefaults()['privacy_summary'],
+                    'clinical_portal_note' => self::complianceDefaults()['clinical_portal_note'],
+                    'group_intake_note' => self::GROUP_INTAKE_GUESTS,
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
-                ],
+                ]),
             ],
             'Intro — safety and clinical care' => [
                 'section_type' => 'intro',
                 'heading' => 'Safety and clinical care',
                 'description' => 'Clinical safety intro for Your Experience.',
                 'content' => [
-                    'body' => self::COMPLIANCE_INTAKE,
+                    'body' => self::CLINICAL_SAFETY_ONE_LINER,
                     'layout' => ['container_width' => 'narrow', 'background' => 'white'],
                 ],
             ],
@@ -498,13 +720,13 @@ class ClientCopyCatalog
                     'design_variant' => 'default',
                     'body' => "Whether you're feeling depleted, stuck, or simply unlike yourself, support is available.",
                     'variant' => 'dual',
-                    'primary_label' => 'Book a Visit',
+                    'primary_label' => $ctas['primary']['label'],
                     'primary_url' => '/contact#book',
-                    'waitlist_label' => 'Join the Waitlist',
+                    'waitlist_label' => $ctas['secondary']['waitlist']['label'],
                     'waitlist_url' => '/contact#waitlist',
                     'show_consultation_link' => true,
-                    'consultation_prefix' => 'Prefer to talk first?',
-                    'consultation_label' => 'Request Consultation',
+                    'consultation_prefix' => $ctas['tertiary_prefix'],
+                    'consultation_label' => $ctas['tertiary_label'],
                     'consultation_url' => '/contact#consultation',
                     'layout' => ['container_width' => 'default', 'section_padding' => 'spacious', 'background' => 'cream'],
                 ],
@@ -515,6 +737,7 @@ class ClientCopyCatalog
                 'description' => 'Home page founder teaser with photo and bio.',
                 'content' => [
                     'design_variant' => 'photo_left',
+                    'show_eyebrow' => true,
                     'body' => 'Jacquie Wilson, BSN, RN, MBA founded HeartWell to offer thoughtful, nurse-led wellness support for women who feel depleted, stuck, or unlike themselves — with care that feels calm, personal, and trustworthy.',
                     'credentials' => ['BSN', 'RN', 'MBA'],
                     'pronunciation' => 'Pronounced Jack-Kwa',
@@ -549,6 +772,7 @@ class ClientCopyCatalog
                     'design_variant' => 'minimal',
                     'show_pathway_bar' => false,
                     'show_consultation_link' => false,
+                    'show_cta_buttons' => false,
                     'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
@@ -566,10 +790,7 @@ class ClientCopyCatalog
 
     public static function defaultPrivacyPolicyHtml(): string
     {
-        $summary = config('heartwell.compliance.privacy_summary');
-        $body = config('heartwell.compliance.privacy_policy_body');
-
-        return '<p>'.e($summary).'</p>'.$body;
+        return self::privacyPolicyBodyHtml();
     }
 
     /**

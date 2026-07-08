@@ -18,10 +18,16 @@
         @endphp
         <div class="{{ $gridClass }}">
             @foreach($features as $feature)
-                <div class="p-6 rounded-xl border border-hw-border bg-hw-taupe-light/30">
-                    <h3 class="font-heading text-lg text-hw-heading">{{ $feature['title'] ?? '' }}</h3>
+                @php
+                    $anchor = $feature['anchor'] ?? null;
+                    $title = $feature['title'] ?? '';
+                @endphp
+                <div @class(['p-6 rounded-xl border border-hw-border bg-hw-taupe-light/30', 'scroll-mt-header' => filled($anchor)]) @if(filled($anchor)) id="{{ $anchor }}" @endif>
+                    @if(filled($title))
+                        <h3 class="font-heading text-lg text-hw-heading">{{ $title }}</h3>
+                    @endif
                     @if(! empty($feature['body']))
-                        <p class="text-hw-text mt-3 text-base leading-loose">{{ $feature['body'] }}</p>
+                        <p @class(['text-hw-text text-base leading-loose', 'mt-3' => filled($title)])>{{ $feature['body'] }}</p>
                     @endif
                 </div>
             @endforeach

@@ -66,16 +66,16 @@ class SupportPathwaysPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('Thoughtful Wellness Support, Guided by Your Goals');
         $response->assertSee('Required Clinical Intake');
-        $response->assertSee('New Jersey medical regulations');
+        $response->assertSee('Hydreight clinical workflow');
         $response->assertSee('Precision Glow Therapy');
         $response->assertSee('Specialized Support');
-        $response->assertSee('What you may see in the secure medical intake portal');
-        $response->assertSee('Secure Hydreight Portal');
+        $response->assertSee('What you may see in the Hydreight clinical workflow');
+        $response->assertSee('Hydreight Clinical Workflow');
         $response->assertDontSee('Confidence & Aesthetic Support');
         $response->assertDontSee('Advanced Cellular Support');
         $response->assertSee('hw-hero--minimal', false);
-        $response->assertSee('HeartWell pathways are designed to help you choose', false);
-        $response->assertSee('After choosing a HeartWell pathway', false);
+        $response->assertSee('HeartWell Support Pathways are designed to help you begin', false);
+        $response->assertDontSee('After choosing a HeartWell pathway', false);
         $response->assertDontSee('Hero image placeholder', false);
         $response->assertSee('hw-page-sections', false);
     }

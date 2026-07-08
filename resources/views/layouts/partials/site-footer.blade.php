@@ -83,7 +83,7 @@
                         @foreach($pathways as $pathway)
                             <li>
                                 <a href="{{ route('support-pathways') }}#{{ $pathway->slug }}">
-                                    {{ preg_replace('/\s+Support$/', '', $pathway->title) }}
+                                    {{ $pathway->title }}
                                 </a>
                             </li>
                         @endforeach

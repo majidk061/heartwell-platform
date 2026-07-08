@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Domains\Content\Models\Faq;
 use App\Domains\Content\Models\Page;
 use App\Domains\Content\Models\PageSection;
 use App\Domains\Content\Models\SectionTemplate;
+use App\Domains\Content\Models\SiteSetting;
 use App\Domains\Content\Models\SupportPathway;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -158,5 +160,72 @@ class SyncClientCopyCommandTest extends TestCase
         $template = SectionTemplate::query()->where('name', 'Hero — why heartwell')->first();
 
         $this->assertSame('minimal', $template?->content['design_variant'] ?? null);
+    }
+
+    public function test_sync_updates_site_settings_navigation_and_ctas(): void
+    {
+        SiteSetting::query()->create([
+            'key' => 'navigation',
+            'value' => [['label' => 'Old Nav', 'route' => 'home']],
+        ]);
+
+        $this->artisan('heartwell:sync-client-copy')
+            ->assertSuccessful();
+
+        $navigation = SiteSetting::query()->where('key', 'navigation')->value('value');
+
+        $this->assertIsArray($navigation);
+        $this->assertContains('Meet Jacquie', collect($navigation)->pluck('label')->all());
+        $this->assertNotContains('Wellness Journey', collect($navigation)->pluck('label')->all());
+
+        $ctas = SiteSetting::query()->where('key', 'ctas')->value('value');
+        $this->assertSame('Request a Private Mobile Visit', $ctas['primary']['label'] ?? null);
+    }
+
+    public function test_sync_replaces_wellness_journey_faqs_with_eight_final_questions(): void
+    {
+        Faq::query()->create([
+            'question' => 'Placeholder FAQ question?',
+            'answer' => 'Placeholder answer.',
+            'page_slug' => 'wellness-journey',
+            'sort_order' => 99,
+            'is_published' => true,
+        ]);
+
+        $this->artisan('heartwell:sync-client-copy')
+            ->assertSuccessful();
+
+        $this->assertSame(8, Faq::query()->where('page_slug', 'wellness-journey')->count());
+        $this->assertDatabaseHas('content_faqs', [
+            'question' => 'What happens during a Private Wellness Conversation?',
+        ]);
+        $this->assertDatabaseMissing('content_faqs', [
+            'question' => 'Placeholder FAQ question?',
+        ]);
+    }
+
+    public function test_sync_creates_home_full_bleed_overlay_template_without_forcing_variant(): void
+    {
+        SectionTemplate::query()->create([
+            'name' => 'Hero — full bleed overlay',
+            'section_type' => 'hero',
+            'heading' => 'Custom Home Hero',
+            'content' => [
+                'design_variant' => 'full_bleed_overlay',
+                'intro_question' => 'Old question?',
+            ],
+            'is_published' => true,
+        ]);
+
+        $this->artisan('heartwell:sync-client-copy')
+            ->assertSuccessful();
+
+        $template = SectionTemplate::query()->where('name', 'Hero — full bleed overlay')->first();
+
+        $this->assertSame('full_bleed_overlay', $template?->content['design_variant'] ?? null);
+        $this->assertSame(
+            'Feeling exhausted? Stuck? Not feeling like yourself?',
+            $template?->content['intro_question'] ?? null
+        );
     }
 }

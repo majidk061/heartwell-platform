@@ -61,8 +61,13 @@
             </div>
             @if($showConsultation)
                 <p class="mt-4 text-sm text-hw-muted">
-                    Prefer to talk first?
-                    <a href="{{ route('contact') }}#consultation" class="text-hw-dusty-blue font-medium hover:text-hw-heading transition-colors">{{ ($siteSettings['ctas']['secondary']['consultation']['label'] ?? null) ?: config('heartwell.ctas.secondary.consultation.label') }} →</a>
+                    @php
+                        $ctas = $siteSettings['ctas'] ?? config('heartwell.ctas');
+                        $tertiaryPrefix = $ctas['tertiary_prefix'] ?? 'Prefer to talk first?';
+                        $tertiaryLabel = $ctas['tertiary_label'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Begin with a Private Wellness Conversation');
+                    @endphp
+                    {{ $tertiaryPrefix }}
+                    <a href="{{ route('contact') }}#consultation" class="text-hw-dusty-blue font-medium hover:text-hw-heading transition-colors">{{ $tertiaryLabel }} →</a>
                 </p>
             @endif
         </div>

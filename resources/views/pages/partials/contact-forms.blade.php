@@ -1,4 +1,5 @@
 @php
+    use App\Domains\Content\Support\ClientCopyCatalog;
     use App\Domains\Content\Support\SectionLayout;
 
     $formsContent = ($formsSection ?? null)?->content ?? [];
@@ -7,21 +8,25 @@
     $activeForms = $formsContent['forms'] ?? ['waitlist', 'consultation', 'book', 'group_inquiry'];
     $ctas = $ctas ?? ($siteSettings['ctas'] ?? config('heartwell.ctas'));
     $compliance = $compliance ?? ($siteSettings['compliance'] ?? config('heartwell.compliance'));
-    $forms = array_merge($siteSettings['contact_forms'] ?? [], [
+    $contactFormDefaults = config('heartwell.contact_forms', []);
+    $forms = array_merge($contactFormDefaults, $siteSettings['contact_forms'] ?? [], [
         'waitlist_title' => $formsContent['waitlist_title'] ?? ($siteSettings['contact_forms']['waitlist_title'] ?? 'Join the Waitlist'),
-        'waitlist_subtitle' => $formsContent['waitlist_subtitle'] ?? ($siteSettings['contact_forms']['waitlist_subtitle'] ?? 'Be the first to know when appointments open in your area.'),
-        'consultation_title' => $formsContent['consultation_title'] ?? ($siteSettings['contact_forms']['consultation_title'] ?? 'Request a Consultation'),
-        'consultation_subtitle' => $formsContent['consultation_subtitle'] ?? ($siteSettings['contact_forms']['consultation_subtitle'] ?? 'Tell us a little about yourself — we will reach out personally.'),
-        'group_title' => $formsContent['group_title'] ?? ($siteSettings['contact_forms']['group_title'] ?? 'Group Wellness Gathering'),
-        'group_subtitle' => $formsContent['group_subtitle'] ?? ($siteSettings['contact_forms']['group_subtitle'] ?? 'Planning a group experience? Start here.'),
+        'waitlist_subtitle' => $formsContent['waitlist_subtitle'] ?? ($siteSettings['contact_forms']['waitlist_subtitle'] ?? 'Receive updates about Private Wellness Conversation openings and mobile visit availability.'),
+        'consultation_title' => $formsContent['consultation_title'] ?? ($siteSettings['contact_forms']['consultation_title'] ?? 'Begin with a Private Wellness Conversation'),
+        'consultation_subtitle' => $formsContent['consultation_subtitle'] ?? ($siteSettings['contact_forms']['consultation_subtitle'] ?? 'Start with a low-pressure conversation about your general goals, questions, and where you may want to begin.'),
+        'book_subtitle' => $formsContent['book_subtitle'] ?? ($siteSettings['contact_forms']['book_subtitle'] ?? 'Share your general interest and location so HeartWell can follow up regarding availability and next steps.'),
+        'group_title' => $formsContent['group_title'] ?? ($siteSettings['contact_forms']['group_title'] ?? 'Plan a Wellness Gathering'),
+        'group_subtitle' => $formsContent['group_subtitle'] ?? ($siteSettings['contact_forms']['group_subtitle'] ?? 'Explore a private wellness experience for a small group or community.'),
     ]);
+    $preFormGuidance = $formsContent['pre_form_guidance'] ?? ClientCopyCatalog::PRE_FORM_GUIDANCE;
     $contactDisclaimer = $formsContent['contact_disclaimer'] ?? ($compliance['contact_disclaimer'] ?? config('heartwell.compliance.contact_disclaimer'));
     $privacySummary = $formsContent['privacy_summary'] ?? ($compliance['privacy_summary'] ?? null);
     $clinicalPortalNote = $formsContent['clinical_portal_note'] ?? ($compliance['clinical_portal_note'] ?? config('heartwell.compliance.clinical_portal_note'));
     $groupIntakeNote = $formsContent['group_intake_note'] ?? ($compliance['group_intake_note'] ?? config('heartwell.compliance.group_intake_note'));
-    // Site-wide CTAs deep-link to /contact#book — always render the book panel (even when
-    // "Book appointment" is unchecked in Section Library → Forms to show).
     $bookPanelEnabled = true;
+    $bookTitle = $ctas['primary']['label'] ?? 'Request a Private Mobile Visit';
+    $tertiaryPrefix = $ctas['tertiary_prefix'] ?? 'Prefer to talk first?';
+    $tertiaryLabel = $ctas['tertiary_label'] ?? ($ctas['secondary']['consultation']['label'] ?? 'Begin with a Private Wellness Conversation');
     $acuityEnabled = filled(config('integrations.acuity.embed_url'));
     $defaultTab = $acuityEnabled
         ? 'book'
@@ -75,25 +80,17 @@
             @if($sectionSubtitle)
                 <p class="text-hw-muted text-base md:text-lg max-w-2xl mx-auto mt-3">{{ $sectionSubtitle }}</p>
             @endif
-            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                @if($bookPanelEnabled)
-                    <a href="#book" @click.prevent="setTab('book')" class="btn-primary sm:w-auto">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
-                @endif
-                <a href="#waitlist" @click.prevent="setTab('waitlist')" class="btn-secondary sm:w-auto">{{ $forms['waitlist_title'] }}</a>
-                <a href="#consultation" @click.prevent="setTab('consultation')" class="btn-secondary sm:w-auto">{{ $forms['consultation_title'] }}</a>
-            </div>
-            <p class="text-xs text-hw-muted mt-4 max-w-xl mx-auto">Not sure where to start? Join the waitlist — no commitment required.</p>
         </div>
 
-        <nav class="hw-contact-nav mb-6 lg:hidden" aria-label="Contact sections">
+        <nav class="hw-contact-nav hw-contact-nav--stacked mb-6 lg:hidden" aria-label="Contact sections">
             @if(in_array('waitlist', $activeForms, true))
                 <a href="#waitlist" @click.prevent="setTab('waitlist')" :class="activeTab === 'waitlist' ? 'hw-contact-tab--active' : ''">{{ $forms['waitlist_title'] }}</a>
             @endif
+            @if($bookPanelEnabled)
+                <a href="#book" @click.prevent="setTab('book')" :class="activeTab === 'book' ? 'hw-contact-tab--active' : ''">{{ $bookTitle }}</a>
+            @endif
             @if(in_array('consultation', $activeForms, true))
                 <a href="#consultation" @click.prevent="setTab('consultation')" :class="activeTab === 'consultation' ? 'hw-contact-tab--active' : ''">{{ $forms['consultation_title'] }}</a>
-            @endif
-            @if($bookPanelEnabled)
-                <a href="#book" @click.prevent="setTab('book')" :class="activeTab === 'book' ? 'hw-contact-tab--active' : ''">{{ $ctas['primary']['label'] ?? 'Book a Visit' }}</a>
             @endif
             @if(in_array('group_inquiry', $activeForms, true))
                 <a href="#group-inquiry" @click.prevent="setTab('group-inquiry')" :class="activeTab === 'group-inquiry' ? 'hw-contact-tab--active' : ''">{{ $forms['group_title'] }}</a>
@@ -103,23 +100,24 @@
         <div class="grid lg:grid-cols-12 gap-6 lg:gap-10 text-left">
             <div class="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
                 @if(in_array('waitlist', $activeForms, true))
-                    <x-contact-option-card id="waitlist" :title="$forms['waitlist_title']" description="Be first to know when appointments open." icon="bell" :featured="false" />
-                @endif
-                @if(in_array('consultation', $activeForms, true))
-                    <x-contact-option-card id="consultation" :title="$forms['consultation_title']" description="Tell us about yourself — we will be in touch." icon="chat" />
+                    <x-contact-option-card id="waitlist" :title="$forms['waitlist_title']" :description="$forms['waitlist_subtitle']" icon="bell" :featured="false" />
                 @endif
                 @if($bookPanelEnabled)
-                    <x-contact-option-card id="book" :title="$ctas['primary']['label'] ?? 'Book a Visit'" description="Schedule your individual wellness visit." icon="calendar" :featured="false" />
+                    <x-contact-option-card id="book" :title="$bookTitle" :description="$forms['book_subtitle']" icon="calendar" :featured="false" />
+                @endif
+                @if(in_array('consultation', $activeForms, true))
+                    <x-contact-option-card id="consultation" :title="$forms['consultation_title']" :description="$forms['consultation_subtitle']" icon="chat" />
                 @endif
                 @if(in_array('group_inquiry', $activeForms, true))
-                    <x-contact-option-card id="group-inquiry" :title="$forms['group_title']" description="Host a private wellness experience." icon="users" />
+                    <x-contact-option-card id="group-inquiry" :title="$forms['group_title']" :description="$forms['group_subtitle']" icon="users" />
                 @endif
             </div>
 
-            <div id="contact-panel" class="lg:col-span-7 scroll-mt-24">
+            <div id="contact-panel" class="lg:col-span-7 scroll-mt-header">
                 @if(in_array('waitlist', $activeForms, true))
                 <div x-show="activeTab === 'waitlist'" x-cloak class="hw-contact-panel" :class="activeTab === 'waitlist' ? 'hw-contact-panel--active' : ''">
                     <x-layout.section-heading :title="$forms['waitlist_title']" :subtitle="$forms['waitlist_subtitle']" />
+                    <p class="mt-4 text-sm text-hw-muted leading-relaxed">{{ $preFormGuidance }}</p>
                     <form method="POST" action="{{ route('contact.waitlist') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4 mt-6" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
@@ -149,6 +147,7 @@
                 @if(in_array('consultation', $activeForms, true))
                 <div x-show="activeTab === 'consultation'" x-cloak class="hw-contact-panel" :class="activeTab === 'consultation' ? 'hw-contact-panel--active' : ''">
                     <x-layout.section-heading :title="$forms['consultation_title']" :subtitle="$forms['consultation_subtitle']" />
+                    <p class="mt-4 text-sm text-hw-muted leading-relaxed">{{ $preFormGuidance }}</p>
                     <form method="POST" action="{{ route('contact.consultation') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4 mt-6" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
@@ -171,7 +170,7 @@
                         <x-forms.avatar-selector />
                         <div class="md:col-span-2">
                             <button type="submit" class="btn-primary w-full sm:w-auto" :disabled="loading">
-                                <span x-show="!loading">{{ $ctas['secondary']['consultation']['label'] ?? 'Request Consultation' }}</span>
+                                <span x-show="!loading">{{ $ctas['secondary']['consultation']['label'] ?? 'Begin with a Private Wellness Conversation' }}</span>
                                 <span x-show="loading" x-cloak>Submitting…</span>
                             </button>
                         </div>
@@ -181,10 +180,10 @@
 
                 @if($bookPanelEnabled)
                 <div x-show="activeTab === 'book'" class="hw-contact-panel hw-contact-panel--featured" :class="activeTab === 'book' ? 'hw-contact-panel--active' : ''">
-                    <x-layout.section-heading :title="$ctas['primary']['label'] ?? 'Book a Visit'" subtitle="Schedule your individual wellness visit." />
+                    <x-layout.section-heading :title="$bookTitle" :subtitle="$forms['book_subtitle']" />
                     @if($acuityEnabled)
                         <div class="mt-6 w-full overflow-hidden rounded-xl shadow-md border border-hw-border">
-                            <iframe src="{{ config('integrations.acuity.embed_url') }}" class="w-full min-h-[400px] md:min-h-[600px] border-0" title="Book a Visit"></iframe>
+                            <iframe src="{{ config('integrations.acuity.embed_url') }}" class="w-full min-h-[400px] md:min-h-[600px] border-0" title="{{ $bookTitle }}"></iframe>
                         </div>
                         <p class="mt-4 text-sm text-hw-muted leading-relaxed">
                             {{ $clinicalPortalNote }}
@@ -193,7 +192,7 @@
                     @else
                         <div class="rounded-lg border border-hw-border bg-hw-dusty-blue-light px-5 py-6 text-center space-y-3 mt-6">
                             <p class="font-heading text-lg text-hw-heading">Online scheduling is coming soon</p>
-                            <p class="text-hw-muted text-base">Join the waitlist or request a consultation — we will reach out to help you book your visit.</p>
+                            <p class="text-hw-muted text-base">Join the waitlist or begin with a private wellness conversation — we will reach out to help you with next steps.</p>
                             <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                                 @if(in_array('waitlist', $activeForms, true))
                                     <button type="button" @click="setTab('waitlist')" class="btn-primary sm:w-auto">{{ $forms['waitlist_title'] }}</button>
@@ -215,7 +214,8 @@
                             {{ $groupIntakeNote }}
                         </div>
                     @endif
-                    <form method="POST" action="{{ route('contact.group-inquiry') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4" x-data="{ loading: false }" @submit="loading = true">
+                    <p class="text-sm text-hw-muted leading-relaxed">{{ $preFormGuidance }}</p>
+                    <form method="POST" action="{{ route('contact.group-inquiry') }}" class="hw-form-group md:grid md:grid-cols-2 md:gap-x-4 mt-6" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
                         <div>
@@ -239,7 +239,10 @@
                             <textarea name="message" id="group_details" rows="3" required class="hw-form-field min-h-[100px]">{{ old('message') }}</textarea>
                         </div>
                         <div class="md:col-span-2">
-                            <button type="submit" class="btn-primary w-full sm:w-auto" :disabled="loading">Submit Group Inquiry</button>
+                            <button type="submit" class="btn-primary w-full sm:w-auto" :disabled="loading">
+                                <span x-show="!loading">{{ $ctas['secondary']['gathering']['label'] ?? 'Plan a Wellness Gathering' }}</span>
+                                <span x-show="loading" x-cloak>Submitting…</span>
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -4,6 +4,7 @@
     use App\Domains\Content\Support\CmsImage;
 
     $content = $section?->content ?? [];
+    $showEyebrow = $content['show_eyebrow'] ?? true;
     $eyebrow = $section?->heading ?? 'Meet the Founder';
     $name = $content['name'] ?? $section?->subheading ?? 'Jacquie Wilson';
     $creds = ! empty($credentials) ? $credentials : ($content['credentials'] ?? []);
@@ -29,8 +30,10 @@
                 @endif
             </div>
             <div class="text-center lg:text-left {{ $textCol }}">
-                <p class="hw-founder-eyebrow uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
-                <h2 class="hw-section-title mt-2">{{ $displayName }}</h2>
+                @if($showEyebrow)
+                    <p class="hw-founder-eyebrow uppercase tracking-wider text-sm font-semibold">{{ $eyebrow }}</p>
+                @endif
+                <h2 @class(['hw-section-title', 'mt-2' => $showEyebrow])>{{ $displayName }}</h2>
                 @if($pronunciation)
                     <p class="text-hw-muted mt-1 text-sm italic">{{ $pronunciation }}</p>
                 @endif

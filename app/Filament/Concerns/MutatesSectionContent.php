@@ -59,7 +59,9 @@ trait MutatesSectionContent
                 ->columnSpanFull(),
             Forms\Components\RichEditor::make('content_rich_body')
                 ->label('Content')
-                ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList'])
+                ->toolbarButtons(['h2', 'bold', 'italic', 'link', 'bulletList', 'orderedList'])
+                ->extraInputAttributes(['class' => 'prose prose-hw'])
+                ->helperText('Headings, paragraph spacing, and lists match the public site preview.')
                 ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['rich_text', 'group_individual']))
                 ->columnSpanFull(),
             Forms\Components\FileUpload::make('content_image')

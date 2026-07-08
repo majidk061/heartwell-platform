@@ -19,7 +19,7 @@
                 </li>
                 <li class="flex gap-3 rounded-lg border border-hw-border p-4">
                     <span class="font-heading text-hw-dusty-blue">2</span>
-                    <span class="text-hw-text">Continue to our HIPAA-compliant secure clinical portal.</span>
+                    <span class="text-hw-text">Continue to the Hydreight clinical workflow to complete required intake and screening.</span>
                 </li>
                 <li class="flex gap-3 rounded-lg border border-hw-border p-4">
                     <span class="font-heading text-hw-dusty-blue">3</span>

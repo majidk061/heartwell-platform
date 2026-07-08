@@ -33,7 +33,7 @@
                     $ctaLabel = $pathway->cta_label ?? ($ctas['primary']['label'] ?? 'Book a Visit');
                     $imageUrl = CmsImage::url($pathway->image_path);
                 @endphp
-                <article class="hw-pathway-card" id="{{ $pathway->slug }}">
+                <article class="hw-pathway-card scroll-mt-header" id="{{ $pathway->slug }}">
                     @if($imageUrl)
                         <img
                             src="{{ $imageUrl }}"
@@ -76,7 +76,7 @@
 
                         @if($pathway->portal_cue)
                             <div class="hw-portal-cue">
-                                <p class="hw-portal-cue__label">What you may see in the secure medical intake portal</p>
+                                <p class="hw-portal-cue__label">What you may see in the Hydreight clinical workflow</p>
                                 <p class="hw-portal-cue__text">{!! nl2br(e($pathway->portal_cue)) !!}</p>
                             </div>
                         @endif

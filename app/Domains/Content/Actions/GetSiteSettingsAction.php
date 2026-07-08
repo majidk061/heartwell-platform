@@ -31,7 +31,7 @@ class GetSiteSettingsAction
             'footer' => ['email' => null, 'phone' => null, 'address' => null],
             'footer_columns' => config('heartwell.footer_columns'),
             'social' => [],
-            'contact_forms' => [],
+            'contact_forms' => config('heartwell.contact_forms', []),
             'home' => [],
             'theme' => [
                 'site_width' => 'standard',

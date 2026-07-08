@@ -15,7 +15,7 @@
         <img src="{{ $richImage }}" alt="" class="mb-8 rounded-lg w-full max-h-96 object-cover">
     @endif
     @if(! empty($sectionContent['body']))
-        <div class="prose prose-hw max-w-none text-hw-text leading-relaxed">
+        <div class="prose prose-hw max-w-none text-hw-text leading-relaxed hw-prose-narrow">
             {!! $sectionContent['body'] !!}
         </div>
     @endif

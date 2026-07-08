@@ -1113,6 +1113,66 @@
     scrollbar-width: none;
   }
 
+  .hw-contact-nav--stacked {
+    @apply flex-col overflow-visible mx-0 px-0 gap-2;
+  }
+
+  .hw-contact-nav--stacked a {
+    @apply w-full shrink-0 justify-center text-center;
+    white-space: normal;
+  }
+
+  .scroll-mt-header {
+    scroll-margin-top: var(--header-height);
+  }
+
+  .hw-prose-narrow {
+    max-width: var(--content-prose);
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .prose.prose-hw {
+    font-size: var(--text-base);
+  }
+
+  @media (min-width: 768px) {
+    .prose.prose-hw {
+      font-size: var(--text-lg);
+    }
+  }
+
+  .hw-page-sections--privacy > section.hw-hero.hw-hero--minimal {
+    padding-bottom: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .hw-page-sections--privacy > section.hw-rich-text-section {
+    padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .hw-page-sections--home .hw-section--padding-spacious {
+    --section-padding-y: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .hw-page-sections--home .hw-pathways-teaser-section {
+    padding-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .hw-page-sections--home .hw-founder-eyebrow {
+    margin-bottom: 0.25rem;
+  }
+
+  .hw-founder-teaser-section.hw-section--padding-spacious,
+  .hw-page-sections .hw-rich-text-section.hw-section--padding-spacious {
+    --section-padding-y: clamp(2.75rem, 5vw, 4rem);
+  }
+
+  @media (min-width: 1024px) {
+    .hw-meet-founder-page .hw-founder-teaser-section {
+      padding-top: clamp(2rem, 4vw, 3rem);
+    }
+  }
+
   .hw-contact-nav::-webkit-scrollbar {
     display: none;
   }

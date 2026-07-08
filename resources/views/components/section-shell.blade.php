@@ -25,9 +25,13 @@
 
     $sectionClass = SectionLayout::sectionClasses($layout);
     $containerWidth = $layout['container_width'];
+
+    if (($section->section_type ?? null) === 'rich_text') {
+        $sectionClass .= ' hw-rich-text-section';
+    }
 @endphp
 
-<section {{ $attributes->merge(['class' => $sectionClass]) }}>
+<section {{ $attributes->merge(['class' => trim($sectionClass)]) }}>
     @if($wrapContainer)
         <x-layout.page-container :width="$containerWidth">
             {{ $slot }}

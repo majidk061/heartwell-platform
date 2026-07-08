@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Domains\Content\Actions\ShowPageAction;
+use App\Domains\Content\Support\ClientCopyCatalog;
 use App\Domains\CRM\Actions\CreateConsultationRequestAction;
 use App\Domains\CRM\Actions\CreateGroupInquiryAction;
 use App\Domains\CRM\Actions\CreateWaitlistEntryAction;
@@ -26,7 +27,7 @@ class ContactController extends Controller
     ): RedirectResponse {
         $action->execute($request->validated());
 
-        return back()->with('success', 'Thank you for joining the waitlist. We will be in touch soon.');
+        return back()->with('success', ClientCopyCatalog::FORM_THANK_YOU);
     }
 
     public function storeConsultation(
@@ -35,7 +36,7 @@ class ContactController extends Controller
     ): RedirectResponse {
         $action->execute($request->validated());
 
-        return back()->with('success', 'Your consultation request has been received. We will contact you shortly.');
+        return back()->with('success', ClientCopyCatalog::FORM_THANK_YOU);
     }
 
     public function storeGroupInquiry(
@@ -44,6 +45,6 @@ class ContactController extends Controller
     ): RedirectResponse {
         $action->execute($request->validated());
 
-        return back()->with('success', 'Your group inquiry has been submitted. Our team will follow up soon.');
+        return back()->with('success', ClientCopyCatalog::FORM_THANK_YOU);
     }
 }
