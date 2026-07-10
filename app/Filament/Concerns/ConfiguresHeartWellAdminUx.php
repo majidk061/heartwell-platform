@@ -26,9 +26,14 @@ trait ConfiguresHeartWellAdminUx
         ];
     }
 
+    public static function sectionImageMaxSizeKb(): int
+    {
+        return 10240;
+    }
+
     public static function imageUploadHelper(): string
     {
-        return 'Crop to 4:3 (1200×900) for hero sections. JPG or WebP, max 2 MB.';
+        return 'Crop to 4:3 (1200×900) for hero sections. PNG, JPG, or WebP, max 10 MB.';
     }
 
     public static function logoUploadHelper(): string

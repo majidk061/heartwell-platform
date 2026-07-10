@@ -93,11 +93,7 @@ class SectionLayout
 
     public static function defaultWidthForType(?string $sectionType): string
     {
-        return match ($sectionType) {
-            'intro', 'rich_text', 'faq' => 'narrow',
-            'forms' => 'default',
-            default => 'default',
-        };
+        return 'default';
     }
 
     public static function defaultBackgroundForType(?string $sectionType): string

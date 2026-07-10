@@ -7,7 +7,7 @@
     $introImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null));
 @endphp
 
-<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="dusty_blue">
+<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-background="dusty_blue">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
         <div>
             @if($section->heading)

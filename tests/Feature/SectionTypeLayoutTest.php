@@ -26,7 +26,7 @@ class SectionTypeLayoutTest extends TestCase
             'features two_column' => ['features', 'two_column', 'hw-features-two-col', 'Two Col Feature'],
             'rich_text default' => ['rich_text', 'default', 'prose prose-hw', 'Rich text body'],
             'rich_text image_inset' => ['rich_text', 'image_inset', 'hw-rich-text-inset', 'Inset body copy'],
-            'intro default' => ['intro', 'default', 'hw-container-narrow', 'Intro default copy'],
+            'intro default' => ['intro', 'default', 'hw-container', 'Intro default copy'],
             'intro image_side' => ['intro', 'image_side', 'md:grid-cols-2', 'Intro side copy'],
             'intro image_below' => ['intro', 'image_below', 'Intro below copy', 'Intro below copy'],
         ];
@@ -103,11 +103,12 @@ class SectionTypeLayoutTest extends TestCase
             'journey narrow' => ['journey', 'narrow', 'hw-container-narrow'],
             'features wide' => ['features', 'wide', 'hw-container-wide'],
             'rich_text extra_wide' => ['rich_text', 'extra_wide', 'hw-container-extra-wide'],
+            'rich_text editorial_bridge comfortable' => ['rich_text', 'comfortable', 'hw-bridge-permission__wrap', 'editorial_bridge'],
         ];
     }
 
     #[DataProvider('layoutWidthCases')]
-    public function test_section_layout_container_width_reflects_for_type(string $sectionType, string $width, string $expectedClass): void
+    public function test_section_layout_container_width_reflects_for_type(string $sectionType, string $width, string $expectedClass, string $designVariant = 'default'): void
     {
         $page = Page::query()->create([
             'slug' => 'why-heartwell',
@@ -124,6 +125,13 @@ class SectionTypeLayoutTest extends TestCase
             'content' => match ($sectionType) {
                 'journey' => ['steps' => [['title' => 'Step', 'description' => 'Desc']]],
                 'features' => ['features' => [['title' => 'Feature', 'body' => 'Body']]],
+                'rich_text' => array_filter([
+                    'design_variant' => $designVariant !== 'default' ? $designVariant : null,
+                    'intro_text' => $designVariant === 'editorial_bridge' ? 'Bridge intro' : null,
+                    'accent_line' => $designVariant === 'editorial_bridge' ? 'Bridge accent' : null,
+                    'headline' => $designVariant === 'editorial_bridge' ? 'Bridge headline' : null,
+                    'body' => $designVariant === 'editorial_bridge' ? null : '<p>Rich text</p>',
+                ]),
                 default => ['body' => '<p>Rich text</p>'],
             },
             'layout' => ['container_width' => $width],

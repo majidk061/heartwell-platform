@@ -7,7 +7,7 @@
     $richImage = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null));
 @endphp
 
-<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-align="left">
+<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-align="left">
     @if($section->heading)
         <x-layout.section-heading :title="$section->heading" />
     @endif

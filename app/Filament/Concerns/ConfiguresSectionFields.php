@@ -25,7 +25,7 @@ trait ConfiguresSectionFields
                 Forms\Components\Select::make('layout_container_width')
                     ->label('Container width')
                     ->options(static::layoutSelectOptions())
-                    ->placeholder('Use site default'),
+                    ->placeholder('Standard (site default — 72rem)'),
                 Forms\Components\Select::make('layout_section_padding')
                     ->label('Section padding')
                     ->options([
@@ -63,7 +63,9 @@ trait ConfiguresSectionFields
      */
     protected static function mergeLayoutIntoContent(array $data): array
     {
-        $layout = [];
+        $content = is_array($data['content'] ?? null) ? $data['content'] : [];
+        $layout = is_array($content['layout'] ?? null) ? $content['layout'] : [];
+        $changed = false;
 
         foreach ([
             'container_width' => 'layout_container_width',
@@ -71,16 +73,28 @@ trait ConfiguresSectionFields
             'background' => 'layout_background',
             'text_align' => 'layout_text_align',
         ] as $layoutKey => $formKey) {
-            if (! empty($data[$formKey])) {
+            if (! array_key_exists($formKey, $data)) {
+                continue;
+            }
+
+            $changed = true;
+
+            if (filled($data[$formKey])) {
                 $layout[$layoutKey] = $data[$formKey];
+            } else {
+                unset($layout[$layoutKey]);
             }
         }
 
-        if ($layout !== []) {
-            $content = is_array($data['content'] ?? null) ? $data['content'] : [];
-            $content['layout'] = array_merge($content['layout'] ?? [], $layout);
+        if ($changed) {
+            if ($layout === []) {
+                unset($content['layout']);
+            } else {
+                $content['layout'] = $layout;
+            }
+
             $data['content'] = $content;
-            $data['layout'] = $content['layout'];
+            $data['layout'] = $layout;
         }
 
         unset(

@@ -72,7 +72,7 @@ trait MutatesSectionContent
                 ->image()
                 ->imageEditor()
                 ->imageEditorAspectRatios(['4:3', '1:1'])
-                ->maxSize(2048)
+                ->maxSize(static::sectionImageMaxSizeKb())
                 ->helperText(static::imageUploadHelper())
                 ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text'])
                     && ! ($get('section_type') === 'hero' && $get('content_design_variant') === 'minimal'))
@@ -125,6 +125,86 @@ trait MutatesSectionContent
                 ])
                 ->maxItems(2)
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'group_individual')
+                ->columnSpanFull(),
+            Forms\Components\Repeater::make('content_narrative_columns')
+                ->label('Narrative columns')
+                ->schema([
+                    Forms\Components\TextInput::make('title')->required(),
+                    Forms\Components\TextInput::make('anchor')->label('Anchor ID (optional)'),
+                    Forms\Components\RichEditor::make('body')->toolbarButtons(['bold', 'italic', 'link', 'bulletList'])->required(),
+                ])
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'rich_text' && $get('content_design_variant') === 'three_column_narrative')
+                ->columnSpanFull(),
+            Forms\Components\Toggle::make('content_show_floating_quotes')
+                ->label('Overlay floating quotes on hero image')
+                ->helperText('Leave off when the uploaded hero image already includes quote artwork (client composite). Enable only with a photo-only image.')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+            Forms\Components\Repeater::make('content_quotes')
+                ->label('Floating quotes')
+                ->schema([
+                    Forms\Components\Textarea::make('text')->required()->rows(2),
+                    Forms\Components\Select::make('position')
+                        ->options([
+                            'center-left' => 'Center left',
+                            'top-right' => 'Top right',
+                            'bottom-right' => 'Bottom right',
+                        ])
+                        ->required(),
+                ])
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'
+                    && $get('content_design_variant') === 'split_image_quotes'
+                    && (bool) $get('content_show_floating_quotes'))
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_title_lead')
+                ->label('Title — lead text')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+            Forms\Components\TextInput::make('content_title_emphasis')
+                ->label('Title — emphasized phrase')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+            Forms\Components\TextInput::make('content_title_tail')
+                ->label('Title — closing phrase')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+            Forms\Components\TextInput::make('content_lower_heading')
+                ->label('Lower block heading')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes')
+                ->columnSpanFull(),
+            Forms\Components\RichEditor::make('content_lower_body')
+                ->label('Lower block body')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_secondary_label')
+                ->label('Secondary button label')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+            Forms\Components\TextInput::make('content_secondary_url')
+                ->label('Secondary button URL')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+            Forms\Components\Textarea::make('content_intro_text')
+                ->label('Bridge intro line')
+                ->rows(2)
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'rich_text' && $get('content_design_variant') === 'editorial_bridge')
+                ->columnSpanFull(),
+            Forms\Components\Textarea::make('content_accent_line')
+                ->label('Bridge accent line')
+                ->rows(2)
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'rich_text' && $get('content_design_variant') === 'editorial_bridge')
+                ->columnSpanFull(),
+            Forms\Components\Textarea::make('content_headline')
+                ->label('Bridge headline')
+                ->rows(2)
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'rich_text' && $get('content_design_variant') === 'editorial_bridge')
+                ->columnSpanFull(),
+            Forms\Components\Textarea::make('content_emphasis_line')
+                ->label('Bridge emphasis line')
+                ->rows(2)
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'rich_text' && $get('content_design_variant') === 'editorial_bridge')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_closing_line')
+                ->label('Closing line')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'features' && $get('content_design_variant') === 'five_column_dividers')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_closing_emphasis')
+                ->label('Closing emphasis line')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'features' && $get('content_design_variant') === 'five_column_dividers')
                 ->columnSpanFull(),
             Forms\Components\TagsInput::make('content_credentials')
                 ->label('Credentials (e.g. BSN, RN, MBA)')
@@ -369,6 +449,18 @@ trait MutatesSectionContent
             $content['columns'] = $data['content_columns'];
         }
 
+        if (! empty($data['content_narrative_columns'])) {
+            $content['columns'] = $data['content_narrative_columns'];
+        }
+
+        if (! empty($data['content_quotes'])) {
+            $content['quotes'] = $data['content_quotes'];
+        }
+
+        if (! empty($data['content_lower_body'])) {
+            $content['lower_body'] = $data['content_lower_body'];
+        }
+
         if (! empty($data['content_credentials'])) {
             $content['credentials'] = $data['content_credentials'];
         }
@@ -417,6 +509,7 @@ trait MutatesSectionContent
             'waitlist_label' => 'content_waitlist_label',
             'waitlist_url' => 'content_waitlist_url',
             'show_consultation_link' => 'content_show_consultation_link',
+            'show_floating_quotes' => 'content_show_floating_quotes',
             'consultation_prefix' => 'content_consultation_prefix',
             'consultation_label' => 'content_consultation_label',
             'consultation_url' => 'content_consultation_url',
@@ -438,6 +531,18 @@ trait MutatesSectionContent
             'carousel_visible' => 'content_carousel_visible',
             'carousel_autoplay' => 'content_carousel_autoplay',
             'carousel_interval' => 'content_carousel_interval',
+            'title_lead' => 'content_title_lead',
+            'title_emphasis' => 'content_title_emphasis',
+            'title_tail' => 'content_title_tail',
+            'lower_heading' => 'content_lower_heading',
+            'secondary_label' => 'content_secondary_label',
+            'secondary_url' => 'content_secondary_url',
+            'intro_text' => 'content_intro_text',
+            'accent_line' => 'content_accent_line',
+            'headline' => 'content_headline',
+            'emphasis_line' => 'content_emphasis_line',
+            'closing_line' => 'content_closing_line',
+            'closing_emphasis' => 'content_closing_emphasis',
         ] as $contentKey => $formKey) {
             if (! array_key_exists($formKey, $data)) {
                 continue;
@@ -563,6 +668,25 @@ trait MutatesSectionContent
         } else {
             $data['content_columns'] = [];
         }
+
+        $data['content_narrative_columns'] = ($data['section_type'] ?? '') === 'rich_text'
+            ? (is_array($content['columns'] ?? null) ? $content['columns'] : [])
+            : [];
+        $data['content_quotes'] = is_array($content['quotes'] ?? null) ? $content['quotes'] : [];
+        $data['content_show_floating_quotes'] = (bool) ($content['show_floating_quotes'] ?? false);
+        $data['content_lower_body'] = $content['lower_body'] ?? null;
+        $data['content_title_lead'] = $content['title_lead'] ?? null;
+        $data['content_title_emphasis'] = $content['title_emphasis'] ?? null;
+        $data['content_title_tail'] = $content['title_tail'] ?? null;
+        $data['content_lower_heading'] = $content['lower_heading'] ?? null;
+        $data['content_secondary_label'] = $content['secondary_label'] ?? null;
+        $data['content_secondary_url'] = $content['secondary_url'] ?? null;
+        $data['content_intro_text'] = $content['intro_text'] ?? null;
+        $data['content_accent_line'] = $content['accent_line'] ?? null;
+        $data['content_headline'] = $content['headline'] ?? null;
+        $data['content_emphasis_line'] = $content['emphasis_line'] ?? null;
+        $data['content_closing_line'] = $content['closing_line'] ?? null;
+        $data['content_closing_emphasis'] = $content['closing_emphasis'] ?? null;
 
         $data['content_credentials'] = is_array($content['credentials'] ?? null) ? $content['credentials'] : [];
         $data['content_founder_name'] = $content['name'] ?? 'Jacquie Wilson';

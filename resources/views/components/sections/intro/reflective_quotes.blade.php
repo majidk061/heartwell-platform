@@ -5,7 +5,7 @@
     $quotes = $sectionContent['quotes'] ?? [];
 @endphp
 
-<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="white">
+<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-background="white">
     @if(! empty($quotes))
         <div class="hw-reflective-quotes" role="list">
             @foreach($quotes as $quote)

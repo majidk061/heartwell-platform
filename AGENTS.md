@@ -12,8 +12,10 @@ composer install
 npm install && npm run build
 cp .env.example .env && php artisan key:generate
 php artisan migrate --seed
-php artisan serve
+./scripts/serve-dev.sh
 ```
+
+Section image uploads need PHP `upload_max_filesize` ≥ 12M — run `./scripts/serve-dev.sh` (not plain `php artisan serve`, which keeps system defaults, often 2M).
 
 Admin: `/admin` — `admin@heartwellwellness.com` / `password`
 

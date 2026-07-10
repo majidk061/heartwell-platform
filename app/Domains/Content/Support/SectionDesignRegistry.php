@@ -18,6 +18,7 @@ class SectionDesignRegistry
                 'centered_overlay' => 'Centered text over image',
                 'minimal' => 'Minimal — text only band',
                 'responsive_art' => 'Responsive artwork — desktop/mobile hero',
+                'split_image_quotes' => 'Split hero with floating quotes (Why HeartWell)',
             ],
             'avatar_intro' => [
                 'default' => 'Vertical portrait cards (classic)',
@@ -65,6 +66,7 @@ class SectionDesignRegistry
             'features' => [
                 'default' => 'Three-column grid',
                 'two_column' => 'Two-column large cards',
+                'five_column_dividers' => 'Five columns with dividers (Why HeartWell)',
             ],
             'testimonials' => [
                 'default' => 'Grid or carousel',
@@ -78,6 +80,8 @@ class SectionDesignRegistry
                 'journey_step' => 'Journey step prose',
                 'image_feature' => 'Prose with feature image',
                 'warm_close' => 'Warm closing prose',
+                'editorial_bridge' => 'Editorial bridge — centered accent lines',
+                'three_column_narrative' => 'Three-column narrative with dividers',
             ],
             'group_individual' => [
                 'default' => 'Side-by-side columns',

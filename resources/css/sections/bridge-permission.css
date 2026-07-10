@@ -1,0 +1,140 @@
+/**
+ * Why HeartWell — bridge permission section (client mock).
+ */
+
+:root {
+  --font-bridge-intro: 'Lora', Georgia, 'Times New Roman', serif;
+}
+
+section.hw-bridge-permission.hw-section {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  text-align: center;
+}
+
+section.hw-bridge-permission.hw-section--padding-spacious,
+section.hw-bridge-permission.hw-section--padding-normal,
+section.hw-bridge-permission.hw-section--padding-compact,
+section.hw-bridge-permission.hw-section--padding-none {
+  padding: 0;
+}
+
+section.hw-bridge-permission.bg-hw-white,
+section.hw-bridge-permission[class*='bg-hw-'] {
+  background-color: transparent;
+}
+
+.hw-bridge-permission__wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 920px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  padding-top: clamp(2rem, 5vw, 2.8125rem);
+  padding-bottom: clamp(2rem, 5vw, 2.8125rem);
+  text-align: center;
+}
+
+.hw-bridge-permission__intro,
+.hw-bridge-permission__accent,
+.hw-bridge-permission__headline,
+.hw-bridge-permission__emphasis {
+  margin-inline: auto;
+  padding: 0;
+}
+
+.hw-bridge-permission__intro {
+  margin-block: 0;
+  font-family: var(--font-bridge-intro);
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: #000000;
+}
+
+.hw-bridge-permission__accent {
+  margin-block: 0.375rem 0;
+  font-family: var(--font-bridge-intro);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: #c98c8c;
+}
+
+.hw-bridge-permission__divider {
+  display: block;
+  width: 520px;
+  max-width: 94%;
+  height: 1px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  margin-inline: auto;
+  padding: 0;
+  border: 0;
+  background-color: #e7e2de;
+}
+
+.hw-bridge-permission__headline {
+  margin-block: 0;
+  max-width: 100%;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 3.5vw, 1.875rem);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.22;
+  letter-spacing: 0;
+  color: #23336a;
+}
+
+.hw-bridge-permission__emphasis {
+  margin-block: 0;
+  max-width: 100%;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 3.5vw, 2.25rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: #c89c9b;
+}
+
+@media (width >= 1024px) {
+  .hw-bridge-permission__wrap {
+    padding-inline: 0;
+    max-width: 1060px;
+    padding-top: 45px;
+    padding-bottom: 45px;
+  }
+
+  .hw-bridge-permission__intro {
+    font-size: 20px;
+    white-space: nowrap;
+  }
+
+  .hw-bridge-permission__accent {
+    margin-top: 6px;
+    font-size: 24px;
+  }
+
+  .hw-bridge-permission__divider {
+    width: 935px;
+    max-width: 94%;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .hw-bridge-permission__headline {
+    font-size: 30px;
+  }
+
+  .hw-bridge-permission__emphasis {
+    margin-top: 0;
+    font-size: 36px;
+    font-weight: 600;
+  }
+}

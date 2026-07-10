@@ -14,7 +14,7 @@ class WhyHeartWellPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_why_heartwell_page_renders_client_stack_and_anchors(): void
+    public function test_why_heartwell_page_renders_client_mock_layout(): void
     {
         $page = Page::query()->create([
             'slug' => 'why-heartwell',
@@ -52,16 +52,28 @@ class WhyHeartWellPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('hw-page-sections--why-heartwell', false);
-        $response->assertSee('hw-hero-eyebrow', false);
-        $response->assertSee('Why HeartWell');
-        $response->assertSee('I slept, but I still feel tired.');
-        $response->assertSee('Because &ldquo;I&rsquo;m Fine&rdquo; Can Mean So Many Things', false);
+        $response->assertSee('hw-hero--split-quotes', false);
+        $response->assertSee('hw-hero--why-banner__photo', false);
+        $response->assertSee('for the Moments', false);
+        $response->assertSee('Explore Support Pathways');
+        $response->assertSee('Can Mean So Many Things', false);
+        $response->assertSee('hw-editorial-bridge', false);
+        $response->assertSee('hw-bridge-permission', false);
+        $response->assertSee('hw-bridge-permission__headline', false);
+        $response->assertSee('hw-rich-text-section--bridge', false);
+        $response->assertSee('That is part of why HeartWell was created.');
+        $response->assertSee('You can just start with what you are noticing.');
+        $response->assertSee('hw-three-column-narrative', false);
+        $response->assertSee('Why HeartWell Was Created');
+        $response->assertSee('Compassion Is Not Separate from Good Care');
+        $response->assertSee('Guided by Nursing Experience');
+        $response->assertSee('hw-features-five-col', false);
         $response->assertSee('What You Can Expect from HeartWell');
-        $response->assertSee('Personalized Attention');
-        $response->assertSee('Begin with a Private Wellness Conversation');
+        $response->assertSee('You just have to be willing to listen to what you are noticing.');
         $response->assertSee('id="compassion-care"', false);
         $response->assertSee('id="nursing-experience"', false);
         $response->assertSee('id="personalized-attention"', false);
         $response->assertSee('id="safe-compliant-care"', false);
+        $response->assertSee('Begin with a Private Wellness Conversation');
     }
 }

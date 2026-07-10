@@ -6,7 +6,7 @@
     $sectionContent = $section->content ?? [];
 @endphp
 
-<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="dusty_blue">
+<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-background="dusty_blue">
     @if($section->heading)
         <x-layout.section-heading :title="$section->heading" />
     @endif

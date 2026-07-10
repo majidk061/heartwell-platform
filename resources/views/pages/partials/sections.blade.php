@@ -218,7 +218,7 @@
 
         @case('faq')
             @if($faqs->isNotEmpty())
-                <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-background="taupe">
+                <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-background="taupe">
                     <x-layout.section-heading :title="$section->heading ?? 'Frequently Asked Questions'" centered />
                     @if(! empty($sectionContent['faq_subtitle']))
                         <p class="text-hw-muted mt-3 text-base">{{ $sectionContent['faq_subtitle'] }}</p>
@@ -275,7 +275,7 @@
             @break
 
         @default
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow">
+            <x-section-shell :section="$section" :theme-defaults="$themeDefaults">
                 @if($section->heading)
                     <x-layout.section-heading :title="$section->heading" />
                 @endif

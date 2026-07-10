@@ -8,7 +8,7 @@
     $extraClass = $sectionContent['section_class'] ?? '';
 @endphp
 
-<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-width="narrow" default-align="left" :class="$extraClass">
+<x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-align="left" :class="$extraClass">
     @if($section->heading)
         <x-layout.section-heading :title="$section->heading" />
     @endif

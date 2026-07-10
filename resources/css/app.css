@@ -1,4 +1,5 @@
 @import './tokens/index.css';
+@import './sections/bridge-permission.css';
 
 @tailwind base;
 @tailwind components;
@@ -1163,7 +1164,7 @@
   }
 
   .hw-founder-teaser-section.hw-section--padding-spacious,
-  .hw-page-sections .hw-rich-text-section.hw-section--padding-spacious {
+  .hw-page-sections .hw-rich-text-section.hw-section--padding-spacious:not(.hw-rich-text-section--editorial-bridge):not(.hw-rich-text-section--bridge) {
     --section-padding-y: clamp(2.75rem, 5vw, 4rem);
   }
 
@@ -1809,6 +1810,228 @@
   .hw-page-sections--why-heartwell .hw-rich-text-section--bridge,
   .hw-page-sections--why-heartwell .hw-rich-text-section--closing {
     text-align: center;
+  }
+
+  .hw-page-sections--why-heartwell .hw-hero--split-quotes {
+    padding-bottom: 0;
+  }
+
+  .hw-hero--why-banner__photo {
+    object-fit: cover;
+    object-position: 72% center;
+  }
+
+  .hw-hero--why-banner__scrim {
+    background: linear-gradient(
+      to right,
+      rgb(255 255 255 / 1) 0%,
+      rgb(255 255 255 / 0.99) 32%,
+      rgb(255 255 255 / 0.92) 42%,
+      rgb(255 255 255 / 0.55) 52%,
+      transparent 62%
+    );
+    pointer-events: none;
+  }
+
+  .hw-hero-split-quotes__copy {
+    max-width: min(100%, 34rem);
+  }
+
+  @media (width >= 768px) {
+    .hw-hero--why-banner__photo {
+      object-position: 68% center;
+    }
+  }
+
+  @media (width >= 1024px) {
+    .hw-hero-split-quotes__copy {
+      max-width: min(100%, 36rem);
+    }
+
+    .hw-hero--why-banner__photo {
+      object-position: 65% center;
+    }
+
+    .hw-hero--why-banner__scrim {
+      background: linear-gradient(
+        to right,
+        rgb(255 255 255 / 1) 0%,
+        rgb(255 255 255 / 0.99) 36%,
+        rgb(255 255 255 / 0.88) 46%,
+        rgb(255 255 255 / 0.35) 56%,
+        transparent 66%
+      );
+    }
+  }
+
+  .hw-hero-split-quotes__title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.85rem, 3.2vw, 2.75rem);
+    line-height: 1.16;
+    color: var(--color-heading);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .hw-hero-split-quotes__title-line,
+  .hw-hero-split-quotes__title-emphasis {
+    display: block;
+  }
+
+  .hw-hero-split-quotes__title-emphasis {
+    font-style: italic;
+    color: var(--color-accent-warm, #9a7b6f);
+    font-weight: 400;
+  }
+
+  .hw-hero-split-quotes__lower {
+    margin-top: clamp(2.5rem, 4.5vw, 3.75rem);
+  }
+
+  .hw-hero-split-quotes__lower-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    line-height: 1.28;
+    color: var(--color-heading);
+    margin: 0;
+    font-weight: 600;
+    max-width: 26rem;
+  }
+
+  .hw-hero-split-quotes__lower-title::after {
+    content: '';
+    display: block;
+    width: 2.75rem;
+    height: 2px;
+    margin-top: 0.75rem;
+    background: color-mix(in srgb, var(--color-accent-warm, #9a7b6f) 75%, transparent);
+  }
+
+  .hw-page-sections--why-heartwell .hw-hero--split-quotes .btn-primary {
+    background-color: var(--color-accent-warm, #9a7b6f);
+    border-color: var(--color-accent-warm, #9a7b6f);
+    color: var(--color-white);
+  }
+
+  .hw-page-sections--why-heartwell .hw-hero--split-quotes .btn-primary:hover {
+    background-color: color-mix(in srgb, var(--color-accent-warm, #9a7b6f) 85%, black);
+    border-color: color-mix(in srgb, var(--color-accent-warm, #9a7b6f) 85%, black);
+  }
+
+  .hw-page-sections--why-heartwell .hw-hero--split-quotes .btn-secondary {
+    color: var(--color-accent-warm, #9a7b6f);
+    border-color: color-mix(in srgb, var(--color-accent-warm, #9a7b6f) 80%, transparent);
+  }
+
+  .hw-page-sections--why-heartwell .hw-hero--split-quotes .btn-secondary:hover {
+    background-color: var(--color-ivory, #fcfbf8);
+    border-color: var(--color-accent-warm, #9a7b6f);
+    color: var(--color-accent-warm, #9a7b6f);
+  }
+
+  .hw-three-column-narrative {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .hw-three-column-narrative {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .hw-three-column-narrative__col + .hw-three-column-narrative__col {
+      border-left: 1px solid var(--color-border, #e5e0dc);
+      padding-left: 2rem;
+      margin-left: 2rem;
+    }
+  }
+
+  .hw-three-column-narrative__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: var(--color-heading);
+  }
+
+  .hw-three-column-narrative__body p {
+    margin: 0 0 0.85rem;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .hw-three-column-narrative__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .hw-features-five-col__heading {
+    margin: 0 0 2rem;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    line-height: 1.3;
+    color: var(--color-heading);
+  }
+
+  .hw-features-five-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .hw-features-five-col {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .hw-features-five-col__item + .hw-features-five-col__item {
+      border-left: 1px solid var(--color-border, #e5e0dc);
+      padding-left: 1.25rem;
+      margin-left: 1.25rem;
+    }
+  }
+
+  .hw-features-five-col__title {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    line-height: 1.35;
+    color: var(--color-heading);
+    text-align: center;
+  }
+
+  .hw-features-five-col__body {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    text-align: center;
+  }
+
+  .hw-features-five-col__closing {
+    margin-top: 2.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .hw-features-five-col__closing-line {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+    line-height: 1.4;
+    color: var(--color-heading);
+  }
+
+  .hw-features-five-col__closing-emphasis {
+    margin: 0.85rem 0 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--color-taupe, #a69488);
   }
 
   .hw-page-sections--wellness-journey .hw-journey-step + .hw-journey-step {
