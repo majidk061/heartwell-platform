@@ -1,0 +1,183 @@
+/**
+ * Why HeartWell — What You Can Expect (five-column features, client mock).
+ * Container width comes from admin via section-shell / page-container — no inner max-width cap.
+ */
+
+section.hw-features-expect.hw-section {
+  background-color: transparent;
+}
+
+section.hw-features-expect.bg-hw-white,
+section.hw-features-expect[class*='bg-hw-'] {
+  background-color: transparent;
+}
+
+.hw-features-expect__inner {
+  width: 100%;
+  margin-inline: auto;
+}
+
+.hw-features-expect__heading-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  margin-bottom: 0;
+}
+
+.hw-features-expect__heading-rule {
+  flex: 1 1 0;
+  min-width: 1.5rem;
+  height: 1px;
+  background-color: #e7e2de;
+}
+
+.hw-features-expect__heading,
+.hw-features-five-col__heading {
+  flex: 0 1 auto;
+  margin: 0;
+  padding: 0 0.5rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.3;
+  color: #23336a;
+}
+
+.hw-features-expect__panel {
+  margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-top: 1px solid #e7e2de;
+  border-bottom: 1px solid #e7e2de;
+}
+
+.hw-features-five-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (width >= 768px) {
+  .hw-features-five-col {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.hw-features-five-col__item {
+  padding: 1.75rem 1.125rem;
+  text-align: center;
+}
+
+@media (width >= 768px) {
+  .hw-features-five-col__item + .hw-features-five-col__item {
+    border-left: 1px solid #e7e2de;
+  }
+}
+
+.hw-features-five-col__title {
+  margin: 0 0 0.625rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.35;
+  color: #23336a;
+  text-align: center;
+}
+
+.hw-features-five-col__body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: #2d2d2d;
+  text-align: center;
+}
+
+.hw-features-expect__closing,
+.hw-features-five-col__closing {
+  margin-top: 2rem;
+  padding-top: 0;
+  text-align: center;
+}
+
+.hw-features-five-col__closing-line {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.4;
+  color: #23336a;
+}
+
+.hw-features-five-col__closing-emphasis {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.35;
+  color: #c89c9b;
+}
+
+@media (width >= 1024px) {
+  .hw-features-expect__heading,
+  .hw-features-five-col__heading {
+    font-size: 28px;
+    white-space: nowrap;
+  }
+
+  .hw-features-expect__panel {
+    margin-top: 28px;
+  }
+
+  .hw-features-five-col__item {
+    padding: 2rem 1.25rem;
+  }
+
+  .hw-features-five-col__title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .hw-features-five-col__body {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .hw-features-expect__closing,
+  .hw-features-five-col__closing {
+    margin-top: 32px;
+  }
+
+  .hw-features-five-col__closing-line {
+    font-size: 22px;
+  }
+
+  .hw-features-five-col__closing-emphasis {
+    margin-top: 12px;
+    font-size: 28px;
+  }
+}
+
+@media (width < 768px) {
+  .hw-features-expect__heading-row {
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .hw-features-expect__heading-rule {
+    width: 100%;
+    flex: none;
+    min-width: 0;
+  }
+
+  .hw-features-expect__heading,
+  .hw-features-five-col__heading {
+    white-space: normal;
+    padding-inline: 0;
+  }
+}

@@ -104,6 +104,7 @@ class SectionTypeLayoutTest extends TestCase
             'features wide' => ['features', 'wide', 'hw-container-wide'],
             'rich_text extra_wide' => ['rich_text', 'extra_wide', 'hw-container-extra-wide'],
             'rich_text editorial_bridge comfortable' => ['rich_text', 'comfortable', 'hw-bridge-permission__wrap', 'editorial_bridge'],
+            'features five_column extra_wide' => ['features', 'extra_wide', 'hw-container-extra-wide', 'five_column_dividers'],
         ];
     }
 
@@ -124,7 +125,10 @@ class SectionTypeLayoutTest extends TestCase
             'heading' => 'Layout width heading',
             'content' => match ($sectionType) {
                 'journey' => ['steps' => [['title' => 'Step', 'description' => 'Desc']]],
-                'features' => ['features' => [['title' => 'Feature', 'body' => 'Body']]],
+                'features' => array_filter([
+                    'design_variant' => $designVariant !== 'default' ? $designVariant : null,
+                    'features' => [['title' => 'Feature', 'body' => 'Body']],
+                ]),
                 'rich_text' => array_filter([
                     'design_variant' => $designVariant !== 'default' ? $designVariant : null,
                     'intro_text' => $designVariant === 'editorial_bridge' ? 'Bridge intro' : null,
