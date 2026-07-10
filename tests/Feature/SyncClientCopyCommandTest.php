@@ -57,8 +57,13 @@ class SyncClientCopyCommandTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('content_support_pathways', [
+            'slug' => 'individualized-collaborative-care',
+            'title' => 'Individualized & Collaborative Care',
+            'short_title' => 'Individualized',
+        ]);
+
+        $this->assertDatabaseMissing('content_support_pathways', [
             'slug' => 'specialized-support',
-            'title' => 'Specialized Support',
         ]);
 
         $this->assertDatabaseMissing('content_support_pathways', [
@@ -152,14 +157,15 @@ class SyncClientCopyCommandTest extends TestCase
         $this->assertSame('centered_overlay', $template?->content['design_variant'] ?? null);
     }
 
-    public function test_sync_sets_minimal_variant_for_inner_page_heroes_in_catalog(): void
+    public function test_sync_sets_split_hero_for_why_heartwell_in_catalog(): void
     {
         $this->artisan('heartwell:sync-client-copy')
             ->assertSuccessful();
 
         $template = SectionTemplate::query()->where('name', 'Hero — why heartwell')->first();
 
-        $this->assertSame('minimal', $template?->content['design_variant'] ?? null);
+        $this->assertSame('split_image_right', $template?->content['design_variant'] ?? null);
+        $this->assertSame('Why HeartWell', $template?->content['eyebrow'] ?? null);
     }
 
     public function test_sync_updates_site_settings_navigation_and_ctas(): void

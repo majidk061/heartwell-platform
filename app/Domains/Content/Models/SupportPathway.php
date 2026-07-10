@@ -18,6 +18,7 @@ class SupportPathway extends Model
     protected $fillable = [
         'slug',
         'title',
+        'short_title',
         'intro',
         'tagline',
         'options_may_include',
@@ -45,6 +46,15 @@ class SupportPathway extends Model
         'status' => ContentStatus::class,
         'avatar_type' => AvatarType::class,
     ];
+
+    public function displayTitle(bool $compact = false): string
+    {
+        if ($compact && filled($this->short_title)) {
+            return (string) $this->short_title;
+        }
+
+        return (string) $this->title;
+    }
 
     public function getBodyAttribute(): ?string
     {

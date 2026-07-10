@@ -14,6 +14,7 @@ class ApplyLaunchLayoutCommand extends Command
     protected $signature = 'heartwell:apply-launch-layout
                             {--dry-run : Show planned changes without writing}
                             {--force : Replace existing page sections (destructive — resets which sections are linked)}
+                            {--page= : Apply stack for a single page slug (why-heartwell, wellness-journey, support-pathways, privacy, home)}
                             {--home-stack= : Home stack: design (default) or launch — only used with --force}
                             {--skip-home : Do not touch the home page}
                             {--skip-privacy : Do not touch the privacy page}';
@@ -27,6 +28,29 @@ class ApplyLaunchLayoutCommand extends Command
 
         if ($dryRun) {
             $this->warn('Dry run — no database writes.');
+        }
+
+        $pageSlug = strtolower(trim((string) $this->option('page')));
+
+        if ($pageSlug !== '') {
+            $stacks = ClientCopyCatalog::pageSectionStacks();
+            if (! isset($stacks[$pageSlug])) {
+                $this->error("Unknown page slug for --page: {$pageSlug}");
+
+                return self::FAILURE;
+            }
+
+            if (! $force) {
+                $this->error('Pass --force when using --page to replace section links.');
+
+                return self::FAILURE;
+            }
+
+            $this->applyPageStack($pageSlug, $stacks[$pageSlug], $dryRun, force: true);
+
+            $this->info('Done.');
+
+            return self::SUCCESS;
         }
 
         if (! $this->option('skip-home') && $force) {

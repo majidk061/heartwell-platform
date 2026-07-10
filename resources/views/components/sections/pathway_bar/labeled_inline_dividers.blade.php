@@ -13,7 +13,7 @@
                     @endif
                     <a href="{{ route('support-pathways') }}#{{ $pathway->slug }}"
                        class="hw-pathway-bar__link">
-                        {{ $pathway->title }}
+                        {{ $pathway->displayTitle(compact: true) }}
                     </a>
                 @endforeach
             </div>

@@ -93,13 +93,7 @@ class SyncClientCopyCommand extends Command
 
     private function syncSupportPathways(bool $dryRun): void
     {
-        $imageMap = [
-            'recovery-hydration' => 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80',
-            'energy-wellness' => 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&q=80',
-            'metabolic-weight' => null,
-            'specialized-support' => null,
-            'precision-glow-therapy' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80',
-        ];
+        $imageMap = ClientCopyCatalog::pathwayImagePaths();
 
         foreach (ClientCopyCatalog::supportPathways() as $index => $pathway) {
             $migrateFrom = $pathway['migrate_from_slug'] ?? null;
@@ -123,7 +117,7 @@ class SyncClientCopyCommand extends Command
                 $attributes['common_support'] = null;
             }
 
-            if (($imageMap[$slug] ?? null) && blank($attributes['image_path'] ?? null)) {
+            if (filled($imageMap[$slug] ?? null)) {
                 $attributes['image_path'] = $imageMap[$slug];
             }
 
@@ -139,7 +133,7 @@ class SyncClientCopyCommand extends Command
 
         if (! $dryRun) {
             SupportPathway::query()
-                ->whereIn('slug', ['advanced-cellular', 'confidence-aesthetic'])
+                ->whereIn('slug', ['advanced-cellular', 'confidence-aesthetic', 'specialized-support'])
                 ->delete();
         }
     }
@@ -314,9 +308,17 @@ class SyncClientCopyCommand extends Command
 
     private function publishHomeTrustSection(bool $dryRun): void
     {
-        $template = SectionTemplate::query()->where('name', 'Testimonials — grid')->first();
+        $template = SectionTemplate::query()
+            ->whereIn('name', ['Features — home trust pillars', 'Testimonials — grid'])
+            ->orderByRaw("FIELD(name, 'Features — home trust pillars', 'Testimonials — grid')")
+            ->get()
+            ->first(function (SectionTemplate $candidate): bool {
+                $content = is_array($candidate->content) ? $candidate->content : [];
 
-        if (! $template || empty($template->content['trust_features'])) {
+                return ! empty($content['features']) || ! empty($content['trust_features']);
+            });
+
+        if (! $template) {
             return;
         }
 
@@ -336,7 +338,7 @@ class SyncClientCopyCommand extends Command
         }
 
         if ($dryRun) {
-            $this->line('Would publish home trust section (Testimonials — grid slot).');
+            $this->line('Would publish home trust section (Features — home trust pillars slot).');
 
             return;
         }

@@ -47,16 +47,16 @@ class ClientCopyCatalog
                     ['label' => 'Wellness Journey', 'route' => 'wellness-journey'],
                     ['label' => 'How It Works', 'route' => 'your-experience', 'anchor' => 'what-to-expect'],
                     ['label' => 'What to Expect', 'route' => 'your-experience', 'anchor' => 'what-to-expect'],
-                    ['label' => 'Safety & Standards', 'route' => 'why-heartwell', 'anchor' => 'clinically-supported'],
+                    ['label' => 'Safety & Standards', 'route' => 'why-heartwell', 'anchor' => 'safe-compliant-care'],
                 ],
             ],
             [
                 'title' => 'WHY HEARTWELL',
                 'links' => [
-                    ['label' => 'Whole-Person Care', 'route' => 'why-heartwell', 'anchor' => 'nurse-led-care'],
-                    ['label' => 'Our Approach', 'route' => 'why-heartwell', 'anchor' => 'compassion-at-the-center'],
-                    ['label' => 'Expert-Guided Care', 'route' => 'why-heartwell', 'anchor' => 'clinically-supported'],
-                    ['label' => 'Flexible & Convenient', 'route' => 'your-experience', 'anchor' => 'designed-around-real-life'],
+                    ['label' => 'Whole-Person Care', 'route' => 'why-heartwell', 'anchor' => 'personalized-attention'],
+                    ['label' => 'Our Approach', 'route' => 'why-heartwell', 'anchor' => 'compassion-care'],
+                    ['label' => 'Expert-Guided Care', 'route' => 'why-heartwell', 'anchor' => 'nursing-experience'],
+                    ['label' => 'Flexible & Convenient', 'route' => 'why-heartwell', 'anchor' => 'safe-compliant-care'],
                 ],
             ],
             [
@@ -212,21 +212,22 @@ HTML;
                 'cta_url' => '/contact#consultation',
             ],
             [
-                'slug' => 'specialized-support',
-                'title' => 'Specialized Support',
-                'tagline' => 'For more focused wellness goals that may require additional evaluation',
-                'intro' => 'This pathway is designed for women exploring more specialized wellness support beyond foundational hydration or nutrient-based care. Options are considered individually and depend on your goals, required clinical screening, provider review, and clinical appropriateness.',
+                'slug' => 'individualized-collaborative-care',
+                'title' => 'Individualized & Collaborative Care',
+                'short_title' => 'Individualized',
+                'tagline' => 'When your concerns do not fit neatly into one category',
+                'intro' => 'This pathway is designed for women whose wellness goals or concerns do not fit neatly into a single category. Together, we explore what matters most to you and identify a thoughtful place to begin with guided decision-making and nurse-led support.',
                 'options_may_include' => [
-                    'Consultation-based specialized wellness support',
+                    'Consultation-based individualized wellness support',
                     'NAD+ support when available and clinically appropriate',
-                    'A personalized approach guided by provider review',
+                    'A collaborative approach guided by provider review',
                 ],
                 'common_support' => null,
-                'portal_cue' => "This pathway may appear as NAD, NAD+, NAD IV, or NAD IM, depending on what is available through the Hydreight clinical workflow.\n\nSpecialized options may require additional screening or provider guidance before treatment is approved.",
+                'portal_cue' => "This pathway may appear as NAD, NAD+, NAD IV, or NAD IM, depending on what is available through the Hydreight clinical workflow.\n\nSome options may require additional screening or provider guidance before treatment is approved.",
                 'avatar_type' => AvatarType::Frustrated,
-                'cta_label' => 'Request a Private Mobile Visit',
-                'cta_url' => '/contact#book',
-                'migrate_from_slug' => 'advanced-cellular',
+                'cta_label' => 'Begin with a Private Wellness Conversation',
+                'cta_url' => '/contact#consultation',
+                'migrate_from_slug' => 'specialized-support',
             ],
             [
                 'slug' => 'precision-glow-therapy',
@@ -246,6 +247,20 @@ HTML;
                 'cta_url' => '/contact#book',
                 'migrate_from_slug' => 'confidence-aesthetic',
             ],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function pathwayImagePaths(): array
+    {
+        return [
+            'recovery-hydration' => 'cms/pathways/recovery-hydration.png',
+            'energy-wellness' => 'cms/pathways/energy-wellness.png',
+            'metabolic-weight' => 'cms/pathways/metabolic-weight.png',
+            'individualized-collaborative-care' => 'cms/pathways/individualized-collaborative-care.png',
+            'precision-glow-therapy' => 'cms/pathways/precision-glow-therapy.png',
         ];
     }
 
@@ -306,7 +321,7 @@ HTML;
             [
                 'key' => 'support-types',
                 'question' => 'What types of wellness support does HeartWell offer?',
-                'answer' => 'HeartWell offers nurse-led wellness support through pathways focused on Recovery & Hydration, Energy & Wellness, Metabolic & Weight Support, Specialized Support, and Precision Glow Therapy. Available options depend on required screening, provider review, and clinical appropriateness.',
+                'answer' => 'HeartWell offers nurse-led wellness support through pathways focused on Recovery & Hydration, Energy & Wellness, Metabolic & Weight Support, Individualized & Collaborative Care, and Precision Glow Therapy. Available options depend on required screening, provider review, and clinical appropriateness.',
                 'page_slug' => 'wellness-journey',
             ],
             [
@@ -351,6 +366,114 @@ HTML;
         $finalNoteBody = '<p>Your care is guided by your goals, health history, required clinical screening, and provider recommendations. Available options may vary based on individual needs and clinical appropriateness.</p>';
 
         $ctas = self::siteCtas();
+        $pathwayImages = self::pathwayImagePaths();
+
+        $whyBecauseImFineHtml = <<<'HTML'
+<h2>Because &ldquo;I&rsquo;m Fine&rdquo; Can Mean So Many Things</h2>
+<p>Sometimes &ldquo;I&rsquo;m fine&rdquo; is the answer we give before we have fully figured out how to explain what we are feeling.</p>
+<p>You may still be getting through the day. Still working. Still caring for everyone else. Still doing the things you have always done.</p>
+<p>And yet, somewhere underneath all of that, you may know that something feels different.</p>
+<p>Maybe you are more tired than you used to be.</p>
+<p>Maybe your body is not responding the way you expected.</p>
+<p>Maybe recovery takes longer.</p>
+<p>Maybe your weight, energy, sleep, skin, focus, or sense of well-being has changed in ways you were not prepared for.</p>
+<p>Or maybe you simply do not feel quite like yourself.</p>
+<p>That is part of why HeartWell was created.</p>
+HTML;
+
+        $whyBridgePermissionHtml = <<<'HTML'
+<p>You do not need to know exactly what you need before you begin.</p>
+<p>You can just start with what you are noticing.</p>
+HTML;
+
+        $whyCreatedHtml = <<<'HTML'
+<h2>Why HeartWell Was Created</h2>
+<p>HeartWell was created for the moments when something feels off, but you are not sure why.</p>
+<p>It was created for women who may still be functioning, still managing, and still showing up for everyone around them &mdash; while quietly wondering why they do not feel like themselves anymore.</p>
+<p>You deserve a place to be heard, to be supported, and to take the next step at a pace that feels right for you.</p>
+<p>At HeartWell, the goal is not to rush you toward a treatment or expect you to arrive already knowing what you need.</p>
+<p>The goal is to begin with what you are noticing, help you understand the options that may be available, and support you in deciding what feels appropriate for you.</p>
+HTML;
+
+        $whyCompassionHtml = <<<'HTML'
+<h2>Compassion Is Not Separate from Good Care</h2>
+<p>We listen without assuming.</p>
+<p>We explain without overwhelming.</p>
+<p>We respect what you are feeling without telling you what you should be feeling.</p>
+<p>Compassion does not replace clinical judgment. It shapes how care is delivered.</p>
+<p>That means making room for questions, recognizing that every woman brings a different history and set of priorities, and understanding that sometimes the most important first step is simply feeling heard.</p>
+HTML;
+
+        $whyNursingExperienceHtml = <<<'HTML'
+<h2>Guided by Nursing Experience</h2>
+<p>HeartWell is founded by Jacquie Wilson, BSN, RN, MBA.</p>
+<p>Nursing experience across a range of care settings shapes our approach to listening carefully, explaining clearly, supporting appropriate screening, and recognizing when another next step may be more appropriate.</p>
+<p>That experience also shapes something just as important: the understanding that good care is not only about what is offered.</p>
+<p>It is also about how a person is treated while receiving it.</p>
+<p>HeartWell brings together clinical awareness, thoughtful guidance, and a calm, personalized approach designed to help women feel supported rather than rushed.</p>
+HTML;
+
+        $whyClosingPermissionHtml = <<<'HTML'
+<h2>You Do Not Have to Have It All Figured Out</h2>
+<p>You do not have to have it all figured out to begin.</p>
+<p>You do not need to arrive with the right words.</p>
+<p>You do not need to know which service fits.</p>
+<p>You do not need to decide everything at once.</p>
+<p>You just have to be willing to listen to what you are noticing.</p>
+HTML;
+
+        $wjHeroMessageHtml = <<<'HTML'
+<h2>Your Wellness Journey Can Begin with One Simple Question</h2>
+<p class="hw-journey-lead-question">What have you been noticing?</p>
+<p>Maybe you only know that something has changed &mdash; your energy feels different, your weight is harder to manage, you need more time to recover after a busy day, or you simply do not feel quite like yourself.</p>
+<p>You do not need to diagnose yourself, choose a treatment, or arrive with the perfect words.</p>
+<p>You do not need to know exactly what you need before you begin.</p>
+<p>You can just start with what you are noticing.</p>
+HTML;
+
+        $wjStep1NoticingHtml = <<<'HTML'
+<p class="hw-journey-step-eyebrow">Step 1 &mdash; Start with What You Are Noticing</p>
+<p>You may not know exactly why you feel different. You may only know that something is no longer working the way you expected.</p>
+<p>Sometimes the first step is simply paying attention to the thoughts you keep coming back to:</p>
+<ul class="hw-reflective-quotes-list">
+<li>&ldquo;I&rsquo;m doing the things I thought would help, but my body still isn&rsquo;t responding the way I expected.&rdquo;</li>
+<li>&ldquo;I thought I would feel better by now.&rdquo;</li>
+<li>&ldquo;I look in the mirror and notice changes I wasn&rsquo;t prepared for.&rdquo;</li>
+</ul>
+<p>That is enough to begin.</p>
+HTML;
+
+        $wjStep2NotAloneHtml = <<<'HTML'
+<p class="hw-journey-step-eyebrow">Step 2 &mdash; You Do Not Have to Figure It Out Alone</p>
+<p>It&rsquo;s easy to live with changes in your body for so long that they simply become part of the background noise.</p>
+<p>You may get used to feeling tired, needing more time to recover, struggling with changes in your weight despite your efforts, or simply pushing through because life keeps moving.</p>
+<p>You might not have even thought of these changes as connected &mdash; or as something worth paying closer attention to.</p>
+<h3>When You Are Not Sure Where to Turn Next</h3>
+<p>Once you begin paying closer attention to how you feel, it can be overwhelming to figure out what matters, what is connected, or how to move forward.</p>
+<p>It&rsquo;s easy to find yourself researching endless supplements, comparing online services, reading conflicting advice, and trying to piece together your own plan &mdash; all while you are already tired of carrying the problem.</p>
+<p>You should not have to become your own investigator, care coordinator, and wellness expert just to figure out where to begin.</p>
+<h3>This Is Where the HeartWell Journey Becomes Different</h3>
+<p>We do not expect you to arrive with a diagnosis, a chosen treatment, or a perfectly organized explanation of what you have been experiencing.</p>
+<p>Instead, we meet you right where you are. Together, we will make sense of the subtle shifts you are noticing, honor what you have already tried on your own, and identify what feels most important to address first.</p>
+<p>From there, we help you explore which areas of support align with what you are experiencing and what matters most to you &mdash; guiding you toward the next step that best fits your goals.</p>
+<p>You are not expected to figure out the entire path before you begin. We are here to help you navigate it, one thoughtful step at a time.</p>
+HTML;
+
+        $wjStep5CareHtml = <<<'HTML'
+<p class="hw-journey-step-eyebrow">Step 5 &mdash; Your Care Comes to You</p>
+<p>Once you are ready to move forward, HeartWell brings your visit directly to you.</p>
+<p>Your experience is thoughtfully prepared around your needs, with time to ask questions, understand what is being provided, and receive care in a setting that feels private, comfortable, and personal.</p>
+<p>We take care of the details &mdash; from setup through follow-up &mdash; so you are not rushing to another appointment, navigating another waiting room, or trying to fit one more task into an already full day.</p>
+<p>Instead, you can focus on the experience in front of you, knowing you will be informed, supported, and cared for along the way.</p>
+HTML;
+
+        $wjStep6ConnectedHtml = <<<'HTML'
+<p class="hw-journey-step-eyebrow">Step 6 &mdash; We Stay Connected</p>
+<p>Your first visit is not where the HeartWell journey ends.</p>
+<p>We stay connected after your visit &mdash; checking in, listening to what you are noticing now, and helping you understand what may make sense as you move forward.</p>
+<p>Sometimes that means continuing in the same direction. Other times, new questions, priorities, or concerns may come into focus.</p>
+<p class="hw-journey-emphasis">What matters is that you are not left to figure out what comes next on your own.</p>
+HTML;
 
         return [
             'Hero — full bleed overlay' => [
@@ -384,7 +507,7 @@ HTML;
                     'show_pathway_bar' => false,
                     'pathway_bar_variant' => 'labeled_inline_dividers',
                     'pathway_bar_heading' => 'Support Pathways Include:',
-                    'body' => "HeartWell Support Pathways are designed to help you begin with how you feel and what you hope to address — not with a confusing treatment menu. Each pathway offers a starting point for exploring the type of support that may fit your goals. Final care options depend on required clinical intake, provider screening, and clinical appropriateness.",
+                    'body' => 'HeartWell Support Pathways are designed to help you begin with how you feel and what you hope to address — not with a confusing treatment menu. Each pathway offers a starting point for exploring the type of support that may fit your goals. Final care options depend on required clinical intake, provider screening, and clinical appropriateness.',
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
                 ],
             ],
@@ -487,14 +610,78 @@ HTML;
             ],
             'Hero — why heartwell' => [
                 'section_type' => 'hero',
-                'heading' => 'Why HeartWell',
-                'description' => 'Why HeartWell page hero — text-only minimal band.',
+                'heading' => 'Thoughtful Wellness Care for the Moments When Something Just Feels Off',
+                'description' => 'Why HeartWell page hero — split image right with client hero photo.',
                 'content' => [
-                    'design_variant' => 'minimal',
+                    'design_variant' => 'split_image_right',
+                    'eyebrow' => 'Why HeartWell',
                     'show_pathway_bar' => false,
-                    'show_consultation_link' => true,
-                    'body' => 'HeartWell was created for women who want care that feels personal, thoughtful, and clinically grounded. Our approach blends nurse-led wellness support with comfort, privacy, and a deep respect for each woman\'s story.',
-                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left'],
+                    'show_cta_buttons' => false,
+                    'show_consultation_link' => false,
+                    'image_url' => 'cms/sections/why-heartwell-hero.png',
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Intro — private thoughts' => [
+                'section_type' => 'intro',
+                'heading' => null,
+                'description' => 'Why HeartWell reflective private-thought quotes.',
+                'content' => [
+                    'design_variant' => 'reflective_quotes',
+                    'quotes' => [
+                        'I slept, but I still feel tired.',
+                        'I\'m doing what I always do, but something still feels off.',
+                        'I can handle what\'s already on my plate. I just don\'t have room for one more thing.',
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — because im fine' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Why HeartWell — Because I\'m Fine narrative.',
+                'content' => [
+                    'body' => $whyBecauseImFineHtml,
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            'Rich text — bridge permission' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Why HeartWell bridge — permission to begin without knowing.',
+                'content' => [
+                    'body' => $whyBridgePermissionHtml,
+                    'section_class' => 'hw-rich-text-section--bridge',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — why created' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Why HeartWell Was Created section.',
+                'content' => [
+                    'body' => $whyCreatedHtml,
+                    'layout' => ['container_width' => 'narrow', 'background' => 'dusty_blue', 'text_align' => 'left'],
+                ],
+            ],
+            'Rich text — compassion' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Why HeartWell — compassion and good care.',
+                'content' => [
+                    'body' => $whyCompassionHtml,
+                    'section_anchor' => 'compassion-care',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            'Rich text — nursing experience' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Why HeartWell — guided by nursing experience.',
+                'content' => [
+                    'body' => $whyNursingExperienceHtml,
+                    'section_anchor' => 'nursing-experience',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'taupe', 'text_align' => 'left'],
                 ],
             ],
             'Features — differentiators' => [
@@ -637,15 +824,14 @@ HTML;
             'CTA — start with conversation' => [
                 'section_type' => 'cta',
                 'heading' => 'Begin with a Private Wellness Conversation',
-                'description' => 'Why HeartWell page CTA.',
+                'description' => 'Why HeartWell page CTA — single consultation button.',
                 'content' => [
-                    'body' => 'We would love to hear your story and help you find the right support.',
-                    'variant' => 'dual',
-                    'show_consultation_link' => true,
-                    'consultation_prefix' => $ctas['tertiary_prefix'],
-                    'consultation_label' => $ctas['tertiary_label'],
-                    'consultation_url' => '/contact#consultation',
-                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
+                    'design_variant' => 'single_primary',
+                    'variant' => 'primary',
+                    'primary_label' => $ctas['secondary']['consultation']['label'],
+                    'primary_url' => '/contact#consultation',
+                    'show_consultation_link' => false,
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue', 'section_padding' => 'spacious'],
                 ],
             ],
             'Hero — contact' => [
@@ -685,10 +871,10 @@ HTML;
                     'layout' => ['container_width' => 'narrow', 'background' => 'white'],
                 ],
             ],
-            'Features — what you can expect' => [
+            'Features — home trust pillars' => [
                 'section_type' => 'features',
                 'heading' => 'What You Can Expect',
-                'description' => 'Trust-building pillars for the home page (replaces placeholder testimonials).',
+                'description' => 'Trust-building pillars for the home page.',
                 'content' => [
                     'features' => [
                         ['title' => 'Nurse-Led Care', 'body' => 'Every visit is guided by clinical experience, screening, and thoughtful support.'],
@@ -696,6 +882,216 @@ HTML;
                         ['title' => 'Support That Feels Personal', 'body' => 'Your wellness plan is shaped around your goals, your season of life, and how you are feeling.'],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'white'],
+                ],
+            ],
+            'Features — what you can expect' => [
+                'section_type' => 'features',
+                'heading' => 'What You Can Expect from HeartWell',
+                'description' => 'Five expectation pillars for Why HeartWell.',
+                'content' => [
+                    'design_variant' => 'two_column',
+                    'features' => [
+                        [
+                            'title' => 'Personalized Attention',
+                            'anchor' => 'personalized-attention',
+                            'body' => 'We take time to understand you as a whole person, not just a list of concerns. Your goals, preferences, health history, and what you are currently noticing all matter.',
+                        ],
+                        [
+                            'title' => 'Thoughtful Recommendations',
+                            'anchor' => 'thoughtful-recommendations',
+                            'body' => 'Care options are explained clearly so you can make informed choices. You will not be expected to know exactly what treatment you need before you begin.',
+                        ],
+                        [
+                            'title' => 'Safe, Compliant Care',
+                            'anchor' => 'safe-compliant-care',
+                            'body' => 'Clinical screening and clearance are always completed before treatment. '.self::CLINICAL_WORKFLOW_INTAKE,
+                        ],
+                        [
+                            'title' => 'Flexible Options',
+                            'anchor' => 'flexible-options',
+                            'body' => 'HeartWell is designed around real life. Care options may include private mobile visits, thoughtfully planned support, and group wellness gatherings in appropriate settings.',
+                        ],
+                        [
+                            'title' => 'Ongoing Support',
+                            'anchor' => 'ongoing-support',
+                            'body' => 'We stay connected to support your progress over time. Your needs may change, your goals may evolve, and your plan does not have to remain exactly the same simply because that is where you started.',
+                        ],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — closing permission' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Why HeartWell warm closing permission section.',
+                'content' => [
+                    'body' => $whyClosingPermissionHtml,
+                    'section_class' => 'hw-rich-text-section--closing',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'cream', 'text_align' => 'center', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Intro — wellness journey orientation' => [
+                'section_type' => 'intro',
+                'heading' => 'Wellness Journey',
+                'description' => 'Wellness Journey page orientation copy.',
+                'content' => [
+                    'content_eyebrow' => 'Wellness Journey',
+                    'body' => 'The journey is designed to help you move from uncertainty toward a clearer next step. You do not need to arrive knowing which treatment to choose, which service to request, or how to explain everything perfectly. The HeartWell Wellness Journey begins simply with what you are noticing. We are here to help you make sense of your concerns, identify what feels most important to address, and understand exactly where to begin.',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            'Hero — wellness journey artwork' => [
+                'section_type' => 'hero',
+                'heading' => null,
+                'description' => 'Wellness Journey responsive hero artwork — desktop and mobile, no text overlay.',
+                'content' => [
+                    'design_variant' => 'responsive_art',
+                    'show_pathway_bar' => false,
+                    'show_cta_buttons' => false,
+                    'show_consultation_link' => false,
+                    'image_url' => 'cms/sections/wellness-journey-hero-desktop.png',
+                    'image_url_mobile' => 'cms/sections/wellness-journey-hero-mobile.png',
+                    'image_url_clean' => 'cms/sections/wellness-journey-hero-clean.png',
+                    'layout' => ['container_width' => 'comfortable', 'background' => 'white', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — wellness journey hero message' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Wellness Journey hero copy block below artwork.',
+                'content' => [
+                    'body' => $wjHeroMessageHtml,
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left'],
+                ],
+            ],
+            'Rich text — step 1 noticing' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Wellness Journey Step 1 — start with what you are noticing.',
+                'content' => [
+                    'design_variant' => 'journey_step',
+                    'body' => $wjStep1NoticingHtml,
+                    'section_class' => 'hw-journey-step',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — step 2 not alone' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Wellness Journey Step 2 — you do not have to figure it out alone.',
+                'content' => [
+                    'design_variant' => 'journey_step',
+                    'body' => $wjStep2NotAloneHtml,
+                    'section_class' => 'hw-journey-step',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'cream', 'text_align' => 'left', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Pathways — wellness journey editorial' => [
+                'section_type' => 'pathways_teaser',
+                'heading' => 'Explore Where Support May Begin',
+                'description' => 'Wellness Journey Step 3 — light editorial pathway panels.',
+                'content' => [
+                    'design_variant' => 'editorial_panels',
+                    'intro' => 'Once you identify what you are noticing and what matters most, your next step isn\'t to choose a treatment. Instead, we help you step back and explore broader areas of support that naturally align with your daily life and personal wellness goals. Our Support Pathways are designed to give you a calm, clearer place to start — removing the pressure to diagnose yourself or decide on a specific service before you are ready. Depending on what you are noticing, what matters most to you, and where you feel ready to begin, one or more of these starting points may feel relevant.',
+                    'panels' => [
+                        [
+                            'title' => 'Recovery & Hydration',
+                            'body' => 'Designed for physical replenishment — helping your body rehydrate, recover, and regain a sense of balance after travel, demanding routines, or seasons of high stress.',
+                            'image_url' => $pathwayImages['recovery-hydration'],
+                        ],
+                        [
+                            'title' => 'Energy & Wellness',
+                            'body' => 'Designed for women who are tired of running on empty. When low energy affects your focus at work, your presence at home, and your ability to feel like yourself, this is where we begin looking at the bigger picture together.',
+                            'image_url' => $pathwayImages['energy-wellness'],
+                        ],
+                        [
+                            'title' => 'Metabolic & Weight Support',
+                            'body' => 'Designed for women navigating stubborn weight changes, stalled progress, or changes in how their body responds to food, movement, and previous weight-loss efforts.',
+                            'image_url' => $pathwayImages['metabolic-weight'],
+                        ],
+                        [
+                            'title' => 'Individualized & Collaborative Care',
+                            'body' => 'For concerns or wellness goals that do not fit neatly into a single category and deserve a more individualized conversation about what matters most and where to begin.',
+                            'image_url' => $pathwayImages['individualized-collaborative-care'],
+                        ],
+                        [
+                            'title' => 'Precision Glow Therapy',
+                            'body' => 'When your reflection catches you off guard, those unexpected changes can be frustrating. Precision Glow Therapy is designed for women navigating visible shifts in their skin, hair, or overall appearance, offering a thoughtful, individualized approach to the concerns they are noticing.',
+                            'image_url' => $pathwayImages['precision-glow-therapy'],
+                        ],
+                    ],
+                    'closing' => '<p><strong>&ldquo;I see myself in more than one of these. What is my next step?&rdquo;</strong></p><p>That is completely okay. Your concerns do not have to fit neatly into one category before you begin.</p><p>The next step is simply choosing how you would like to start.</p>',
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Group — step 4 start options' => [
+                'section_type' => 'group_individual',
+                'heading' => 'Choose How You\'d Like to Begin',
+                'description' => 'Wellness Journey Step 4 — dual balanced start options with exact CTAs.',
+                'content' => [
+                    'design_variant' => 'dual_start_options',
+                    'body' => '<p>You do not need to have everything figured out to take the next step.</p><p>Some women want a private, open space to talk through what they are experiencing before deciding on a direction. Others already have a clearer sense of what they need and feel ready to move forward.</p><p>Wherever you are in your journey, HeartWell meets you there.</p>',
+                    'columns' => [
+                        [
+                            'title' => 'Start with a Private Wellness Conversation',
+                            'subtitle' => 'For clarity, guidance, and peace of mind.',
+                            'body' => "If you aren't sure what you need yet, start here.\n\nThis is a private space to share what you've been noticing, what you've already tried, and how you hope to feel moving forward.\n\nNo pressure to have it all figured out — just a supportive conversation to answer your questions, help you make sense of your concerns, and guide you toward a clearer next step.",
+                            'cta_label' => 'Begin with a Private Wellness Conversation',
+                            'cta_url' => '/contact#consultation',
+                        ],
+                        [
+                            'title' => 'Request a Private Mobile Visit',
+                            'subtitle' => 'For personalized care delivered directly to you.',
+                            'body' => "If you feel ready to take the next step toward your wellness goals, you may request a private mobile visit.\n\nWe will guide you through the next steps, including your secure clinical intake, health history, required screening, and provider review through HeartWell's clinical portal, powered by Hydreight.\n\nOnce that process is complete, you will have a clearer understanding of the care options available to you and what comes next.",
+                            'cta_label' => 'Request a Private Mobile Visit',
+                            'cta_url' => '/contact#book',
+                        ],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — step 5 care comes to you' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Wellness Journey Step 5 — your care comes to you.',
+                'content' => [
+                    'design_variant' => 'image_feature',
+                    'body' => $wjStep5CareHtml,
+                    'image_url' => 'cms/sections/wellness-journey-care-comes-to-you.png',
+                    'section_class' => 'hw-journey-step hw-journey-step--image-feature',
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Rich text — step 6 stay connected' => [
+                'section_type' => 'rich_text',
+                'heading' => null,
+                'description' => 'Wellness Journey Step 6 — warm stay connected close.',
+                'content' => [
+                    'design_variant' => 'warm_close',
+                    'body' => $wjStep6ConnectedHtml,
+                    'section_class' => 'hw-journey-step hw-journey-step--warm-close',
+                    'layout' => ['container_width' => 'narrow', 'background' => 'cream', 'text_align' => 'left', 'section_padding' => 'spacious'],
+                ],
+            ],
+            'Group vs individual comparison' => [
+                'section_type' => 'group_individual',
+                'heading' => 'Individual visits vs group gatherings',
+                'description' => 'Two-column comparison for Your Experience.',
+                'content' => [
+                    'body' => '<p>Individual visits are one-on-one wellness support tailored to your goals. Group gatherings are private hosted experiences — each guest still completes their own required clinical intake.</p>',
+                    'columns' => [
+                        [
+                            'title' => 'Individual visit',
+                            'body' => 'A private, nurse-led wellness visit designed around your goals, questions, and what you hope to address. Care is brought to you in an appropriate private setting.',
+                            'image_url' => 'cms/sections/private-wellness-visit.png',
+                        ],
+                        [
+                            'title' => 'Group gathering',
+                            'body' => 'A thoughtfully planned wellness experience for a small group or community. Each guest completes their own required clinical intake and provider screening through the Hydreight clinical workflow before receiving services.',
+                            'image_url' => 'cms/sections/group-gathering.png',
+                        ],
+                    ],
+                    'layout' => ['container_width' => 'default', 'background' => 'dusty_blue'],
                 ],
             ],
             'Testimonials — grid' => [
@@ -819,7 +1215,7 @@ HTML;
             'Avatar intro block',
             'Intro — home nurse-led care',
             'Pathways teaser',
-            'Features — what you can expect',
+            'Features — home trust pillars',
             'Founder teaser',
             'CTA — client pre-footer band',
         ];
@@ -831,7 +1227,7 @@ HTML;
     public static function pageSectionStacks(): array
     {
         return [
-            'home' => self::homeLaunchStack(),
+            'home' => self::homeDesignStack(),
             'privacy' => [
                 'Hero — privacy',
                 'Rich text — privacy policy',
@@ -845,12 +1241,28 @@ HTML;
                 'Journey — Hydreight portal flow',
                 'CTA — support pathways',
             ],
+            'why-heartwell' => [
+                'Hero — why heartwell',
+                'Intro — private thoughts',
+                'Rich text — because im fine',
+                'Rich text — bridge permission',
+                'Rich text — why created',
+                'Rich text — compassion',
+                'Rich text — nursing experience',
+                'Features — what you can expect',
+                'Rich text — closing permission',
+                'CTA — start with conversation',
+            ],
             'wellness-journey' => [
-                'Hero — wellness journey',
-                'Rich text — wellness journey intro',
-                'Features — tailored to your life',
-                'FAQ block',
-                'CTA — wellness journey',
+                'Intro — wellness journey orientation',
+                'Hero — wellness journey artwork',
+                'Rich text — wellness journey hero message',
+                'Rich text — step 1 noticing',
+                'Rich text — step 2 not alone',
+                'Pathways — wellness journey editorial',
+                'Group — step 4 start options',
+                'Rich text — step 5 care comes to you',
+                'Rich text — step 6 stay connected',
             ],
         ];
     }

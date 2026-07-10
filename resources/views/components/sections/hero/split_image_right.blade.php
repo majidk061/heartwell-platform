@@ -7,5 +7,7 @@
     'section' => $section,
     'themeDefaults' => $themeDefaults,
     'showConsultation' => $showConsultation ?? false,
+    'showCtaButtons' => $showCtaButtons ?? false,
+    'eyebrow' => $eyebrow ?? null,
     'imageFirst' => false,
 ])

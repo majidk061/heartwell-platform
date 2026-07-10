@@ -51,7 +51,7 @@
                             <img
                                 src="{{ $imageUrl }}"
                                 alt=""
-                                class="mt-4 w-full max-h-56 object-cover rounded-lg"
+                                class="mt-4 w-full max-h-56 object-cover rounded-lg hw-pathway-card__image hw-pathway-card__image--{{ $pathway->slug }}"
                                 loading="lazy"
                                 decoding="async"
                             >

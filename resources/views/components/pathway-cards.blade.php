@@ -33,12 +33,12 @@
                     $ctaLabel = $pathway->cta_label ?? ($ctas['primary']['label'] ?? 'Book a Visit');
                     $imageUrl = CmsImage::url($pathway->image_path);
                 @endphp
-                <article class="hw-pathway-card scroll-mt-header" id="{{ $pathway->slug }}">
+                <article class="hw-pathway-card scroll-mt-header hw-pathway-card--{{ $pathway->slug }}" id="{{ $pathway->slug }}">
                     @if($imageUrl)
                         <img
                             src="{{ $imageUrl }}"
                             alt=""
-                            class="hw-pathway-card__image"
+                            class="hw-pathway-card__image hw-pathway-card__image--{{ $pathway->slug }}"
                             loading="lazy"
                             decoding="async"
                         >

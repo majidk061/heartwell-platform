@@ -29,9 +29,14 @@
     if (($section->section_type ?? null) === 'rich_text') {
         $sectionClass .= ' hw-rich-text-section';
     }
+
+    $sectionAnchor = ($section->content ?? [])['section_anchor'] ?? null;
 @endphp
 
-<section {{ $attributes->merge(['class' => trim($sectionClass)]) }}>
+<section
+    {{ $attributes->merge(['class' => trim($sectionClass)]) }}
+    @if(filled($sectionAnchor)) id="{{ $sectionAnchor }}" @endif
+>
     @if($wrapContainer)
         <x-layout.page-container :width="$containerWidth">
             {{ $slot }}

@@ -30,6 +30,8 @@
     'hw-page-sections--contact' => ($page?->slug ?? null) === 'contact',
     'hw-page-sections--home' => $isHome,
     'hw-page-sections--privacy' => ($page?->slug ?? null) === 'privacy',
+    'hw-page-sections--why-heartwell' => ($page?->slug ?? null) === 'why-heartwell',
+    'hw-page-sections--wellness-journey' => ($page?->slug ?? null) === 'wellness-journey',
     'hw-meet-founder-page' => ($page?->slug ?? null) === 'meet-the-founder',
 ])>
 @foreach($sections as $section)
@@ -56,6 +58,7 @@
                     'tagline' => $section->subheading ?? ($sectionContent['subheading'] ?? null),
                     'body' => $section->body ?? ($sectionContent['body'] ?? null),
                     'introQuestion' => $sectionContent['intro_question'] ?? null,
+                    'eyebrow' => $sectionContent['eyebrow'] ?? ($sectionContent['content_eyebrow'] ?? null),
                     'imageUrl' => CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null)),
                     'section' => $section,
                     'themeDefaults' => $themeDefaults,
@@ -127,29 +130,13 @@
             @break
 
         @case('group_individual')
-            <x-section-shell :section="$section" :theme-defaults="$themeDefaults" default-background="dusty_blue">
-                @if($section->heading)
-                    <x-layout.section-heading :title="$section->heading" centered />
-                @endif
-                @php $columns = $sectionContent['columns'] ?? []; @endphp
-                @if(! empty($columns))
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                        @foreach($columns as $column)
-                            <div class="p-6 md:p-8 rounded-xl border border-hw-border bg-hw-white">
-                                <h3 class="font-heading text-xl text-hw-heading">{{ $column['title'] ?? '' }}</h3>
-                                @if(! empty($column['body']))
-                                    <p class="text-hw-text mt-4 leading-relaxed whitespace-pre-line">{{ $column['body'] }}</p>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-                @if(! empty($sectionContent['body']))
-                    <div class="prose prose-hw max-w-none mt-8 text-hw-text leading-relaxed text-left hw-prose-narrow">
-                        {!! $sectionContent['body'] !!}
-                    </div>
-                @endif
-            </x-section-shell>
+            @php $groupView = section_view('group_individual', $sectionContent); @endphp
+            @if($groupView)
+                @include($groupView, [
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @endif
             @break
 
         @case('rich_text')
@@ -212,18 +199,20 @@
             @break
 
         @case('pathways_teaser')
-            @if($pathways->isNotEmpty())
-                @php $pathwaysView = section_view('pathways_teaser', $sectionContent); @endphp
-                @if($pathwaysView)
-                    @include($pathwaysView, [
-                        'pathways' => $pathways,
-                        'title' => $section->heading,
-                        'section' => $section,
-                        'themeDefaults' => $themeDefaults,
-                    ])
-                @else
-                    <x-pathway-accordion :pathways="$pathways" :title="$section->heading" :section="$section" :theme-defaults="$themeDefaults" />
-                @endif
+            @php
+                $pathwaysView = section_view('pathways_teaser', $sectionContent);
+                $editorialPanels = ($sectionContent['design_variant'] ?? null) === 'editorial_panels'
+                    || ! empty($sectionContent['panels']);
+            @endphp
+            @if($pathwaysView && ($editorialPanels || $pathways->isNotEmpty()))
+                @include($pathwaysView, [
+                    'pathways' => $pathways,
+                    'title' => $section->heading,
+                    'section' => $section,
+                    'themeDefaults' => $themeDefaults,
+                ])
+            @elseif($pathways->isNotEmpty())
+                <x-pathway-accordion :pathways="$pathways" :title="$section->heading" :section="$section" :theme-defaults="$themeDefaults" />
             @endif
             @break
 

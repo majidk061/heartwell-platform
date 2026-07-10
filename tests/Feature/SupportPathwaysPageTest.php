@@ -68,7 +68,7 @@ class SupportPathwaysPageTest extends TestCase
         $response->assertSee('Required Clinical Intake');
         $response->assertSee('Hydreight clinical workflow');
         $response->assertSee('Precision Glow Therapy');
-        $response->assertSee('Specialized Support');
+        $response->assertSee('Individualized & Collaborative Care');
         $response->assertSee('What you may see in the Hydreight clinical workflow');
         $response->assertSee('Hydreight Clinical Workflow');
         $response->assertDontSee('Confidence & Aesthetic Support');

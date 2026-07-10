@@ -17,6 +17,7 @@ class SectionDesignRegistry
                 'full_bleed_overlay' => 'Full-width image with text overlay',
                 'centered_overlay' => 'Centered text over image',
                 'minimal' => 'Minimal — text only band',
+                'responsive_art' => 'Responsive artwork — desktop/mobile hero',
             ],
             'avatar_intro' => [
                 'default' => 'Vertical portrait cards (classic)',
@@ -49,11 +50,13 @@ class SectionDesignRegistry
                 'compliance_callout' => 'Clinical intake & clearance callout',
                 'image_side' => 'Text and image side by side',
                 'image_below' => 'Image below text',
+                'reflective_quotes' => 'Reflective private thoughts',
             ],
             'pathways_teaser' => [
                 'accordion' => 'Accordion list (classic)',
                 'pathway_cards' => 'Guided pathway cards (Support Pathways page)',
                 'compact_list' => 'Compact linked list',
+                'editorial_panels' => 'Editorial pathway panels (Wellness Journey)',
             ],
             'journey' => [
                 'default' => 'Horizontal numbered cards',
@@ -72,9 +75,13 @@ class SectionDesignRegistry
             'rich_text' => [
                 'default' => 'Prose block',
                 'image_inset' => 'Image inset left',
+                'journey_step' => 'Journey step prose',
+                'image_feature' => 'Prose with feature image',
+                'warm_close' => 'Warm closing prose',
             ],
             'group_individual' => [
                 'default' => 'Side-by-side columns',
+                'dual_start_options' => 'Dual balanced start options',
             ],
             'forms' => [
                 'default' => 'Tabbed contact forms',

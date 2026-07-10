@@ -57,28 +57,12 @@ class HeartWellSeeder extends Seeder
             'home' => [
                 'title' => 'Home',
                 'sort_order' => 1,
-                'templates' => [
-                    'Hero — home banner',
-                    'Avatar intro block',
-                    'Intro — home nurse-led care',
-                    'Pathways teaser',
-                    'Features — what you can expect',
-                    'Founder teaser',
-                    'CTA — client pre-footer band',
-                ],
+                'templates' => ClientCopyCatalog::pageSectionStacks()['home'],
             ],
             'support-pathways' => [
                 'title' => 'Support Pathways',
                 'sort_order' => 2,
-                'templates' => [
-                    'Hero — support pathways',
-                    'Intro — clinical intake clearance',
-                    'Rich text — IV injection add-ons',
-                    'Pathways teaser — guided cards',
-                    'Rich text — final treatment selection',
-                    'Journey — Hydreight portal flow',
-                    'CTA — support pathways',
-                ],
+                'templates' => ClientCopyCatalog::pageSectionStacks()['support-pathways'],
             ],
             'your-experience' => [
                 'title' => 'Your Experience',
@@ -94,22 +78,12 @@ class HeartWellSeeder extends Seeder
             'why-heartwell' => [
                 'title' => 'Why HeartWell',
                 'sort_order' => 4,
-                'templates' => [
-                    'Hero — why heartwell',
-                    'Features — differentiators',
-                    'CTA — start with conversation',
-                ],
+                'templates' => ClientCopyCatalog::pageSectionStacks()['why-heartwell'],
             ],
             'wellness-journey' => [
                 'title' => 'Wellness Journey',
                 'sort_order' => 5,
-                'templates' => [
-                    'Hero — wellness journey',
-                    'Rich text — wellness journey intro',
-                    'Features — tailored to your life',
-                    'FAQ block',
-                    'CTA — wellness journey',
-                ],
+                'templates' => ClientCopyCatalog::pageSectionStacks()['wellness-journey'],
             ],
             'meet-the-founder' => [
                 'title' => 'Meet the Founder',
@@ -131,10 +105,7 @@ class HeartWellSeeder extends Seeder
             'privacy' => [
                 'title' => 'Privacy Policy',
                 'sort_order' => 8,
-                'templates' => [
-                    'Hero — privacy',
-                    'Rich text — privacy policy',
-                ],
+                'templates' => ClientCopyCatalog::pageSectionStacks()['privacy'],
             ],
         ];
 

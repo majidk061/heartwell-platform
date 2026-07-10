@@ -1,4 +1,4 @@
-@props(['headline', 'tagline' => null, 'body' => null, 'introQuestion' => null, 'imageUrl' => null, 'section' => null, 'themeDefaults' => null, 'showConsultation' => true, 'imageFirst' => false])
+@props(['headline', 'tagline' => null, 'body' => null, 'introQuestion' => null, 'imageUrl' => null, 'section' => null, 'themeDefaults' => null, 'showConsultation' => true, 'showCtaButtons' => true, 'eyebrow' => null, 'imageFirst' => false])
 
 @php
     use App\Domains\Content\Support\SectionLayout;
@@ -25,6 +25,9 @@
     <x-layout.page-container :width="$layout['container_width']">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
             <div class="{{ $textOrder }}">
+                @if($eyebrow)
+                    <p class="hw-hero-eyebrow text-sm font-semibold uppercase tracking-wide text-hw-dusty-blue mb-3">{{ $eyebrow }}</p>
+                @endif
                 <h1 class="hw-page-title">{{ $headline }}</h1>
                 @if($tagline)
                     <p class="hw-hero-tagline font-heading text-xl md:text-2xl lg:text-3xl italic mt-3">{{ $tagline }}</p>
@@ -39,10 +42,12 @@
                         @endforeach
                     </div>
                 @endif
-                <div class="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ ($siteSettings['ctas']['primary']['label'] ?? null) ?: config('heartwell.ctas.primary.label') }}</a>
-                    <a href="{{ route('contact') }}#waitlist" class="btn-secondary sm:w-auto">{{ ($siteSettings['ctas']['secondary']['waitlist']['label'] ?? null) ?: config('heartwell.ctas.secondary.waitlist.label') }}</a>
-                </div>
+                @if($showCtaButtons)
+                    <div class="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <a href="{{ route('contact') }}#book" class="btn-primary sm:w-auto">{{ ($siteSettings['ctas']['primary']['label'] ?? null) ?: config('heartwell.ctas.primary.label') }}</a>
+                        <a href="{{ route('contact') }}#waitlist" class="btn-secondary sm:w-auto">{{ ($siteSettings['ctas']['secondary']['waitlist']['label'] ?? null) ?: config('heartwell.ctas.secondary.waitlist.label') }}</a>
+                    </div>
+                @endif
                 @if($showConsultation)
                     <p class="mt-4 text-sm text-hw-muted">
                         Prefer to talk first?

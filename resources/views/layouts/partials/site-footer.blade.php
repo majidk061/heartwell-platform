@@ -83,7 +83,7 @@
                         @foreach($pathways as $pathway)
                             <li>
                                 <a href="{{ route('support-pathways') }}#{{ $pathway->slug }}">
-                                    {{ $pathway->title }}
+                                    {{ $pathway->displayTitle(compact: true) }}
                                 </a>
                             </li>
                         @endforeach

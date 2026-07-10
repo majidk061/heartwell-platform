@@ -56,6 +56,11 @@ class SupportPathwayResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->prefixIcon('heroicon-o-book-open'),
+                    Forms\Components\TextInput::make('short_title')
+                        ->label('Short title')
+                        ->maxLength(64)
+                        ->helperText('Compact label for footer and pathway bar when space is tight (e.g. Individualized).')
+                        ->prefixIcon('heroicon-o-minus'),
                     Forms\Components\Textarea::make('intro')
                         ->rows(4)
                         ->helperText('Overview paragraph shown on pathway cards.')

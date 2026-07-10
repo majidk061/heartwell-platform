@@ -1686,4 +1686,101 @@
     line-height: 1.65;
     color: var(--color-text);
   }
+
+  .hw-reflective-quotes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    text-align: center;
+  }
+
+  .hw-reflective-quotes__line {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-heading);
+  }
+
+  .hw-hero-eyebrow {
+    letter-spacing: 0.08em;
+  }
+
+  .hw-hero--responsive-art {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .hw-hero-artwork__image {
+    display: block;
+    max-height: min(72vh, 42rem);
+    object-fit: contain;
+    margin-inline: auto;
+  }
+
+  .hw-pathway-editorial__panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .hw-pathway-editorial__panel {
+      grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  .hw-pathway-editorial__image {
+    width: 100%;
+    height: 12rem;
+    object-fit: cover;
+    border-radius: var(--radius-lg, 0.75rem);
+  }
+
+  .hw-pathway-editorial__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: var(--color-heading);
+  }
+
+  .hw-pathway-editorial__text {
+    margin: 0.75rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .hw-pathway-card__image--recovery-hydration,
+  .hw-pathway-card__image--energy-wellness {
+    object-position: center 35%;
+  }
+
+  .hw-pathway-card__image--metabolic-weight {
+    object-position: center 20%;
+  }
+
+  .hw-pathway-card__image--individualized-collaborative-care {
+    object-position: center 30%;
+  }
+
+  .hw-pathway-card__image--precision-glow-therapy {
+    object-position: center 25%;
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--bridge,
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing {
+    text-align: center;
+  }
+
+  .hw-page-sections--wellness-journey .hw-journey-step + .hw-journey-step {
+    margin-top: 0;
+  }
+
+  .hw-rich-text-feature__image {
+    max-height: 28rem;
+  }
 }
