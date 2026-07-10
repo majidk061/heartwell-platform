@@ -1524,6 +1524,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
+    align-items: stretch;
   }
 
   @media (min-width: 768px) {
@@ -1547,6 +1548,8 @@
   .hw-pathway-card {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    min-height: 100%;
     border: 1px solid var(--color-border, #e8e0da);
     border-radius: var(--radius-lg, 0.75rem);
     background: var(--color-white, #fff);
@@ -1554,10 +1557,42 @@
     box-shadow: 0 1px 3px rgb(45 55 72 / 0.04);
   }
 
-  .hw-pathway-card__image {
+  .hw-pathway-card__media {
     width: 100%;
-    max-height: 10rem;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+    .hw-pathway-card__media {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  .hw-pathway-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: none;
     object-fit: cover;
+    object-position: center;
+  }
+
+  .hw-pathway-accordion__media {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    background: var(--color-white, #fff);
+  }
+
+  .hw-pathway-accordion__image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
   }
 
   .hw-pathway-card__body {
@@ -1756,19 +1791,19 @@
 
   .hw-pathway-card__image--recovery-hydration,
   .hw-pathway-card__image--energy-wellness {
-    object-position: center 35%;
+    object-position: center center;
   }
 
   .hw-pathway-card__image--metabolic-weight {
-    object-position: center 20%;
+    object-position: center center;
   }
 
   .hw-pathway-card__image--individualized-collaborative-care {
-    object-position: center 30%;
+    object-position: center center;
   }
 
   .hw-pathway-card__image--precision-glow-therapy {
-    object-position: center 25%;
+    object-position: center center;
   }
 
   .hw-page-sections--why-heartwell .hw-rich-text-section--bridge,

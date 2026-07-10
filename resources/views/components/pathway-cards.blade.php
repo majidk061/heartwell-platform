@@ -35,13 +35,15 @@
                 @endphp
                 <article class="hw-pathway-card scroll-mt-header hw-pathway-card--{{ $pathway->slug }}" id="{{ $pathway->slug }}">
                     @if($imageUrl)
-                        <img
-                            src="{{ $imageUrl }}"
-                            alt=""
-                            class="hw-pathway-card__image hw-pathway-card__image--{{ $pathway->slug }}"
-                            loading="lazy"
-                            decoding="async"
-                        >
+                        <div class="hw-pathway-card__media">
+                            <img
+                                src="{{ $imageUrl }}"
+                                alt=""
+                                class="hw-pathway-card__image hw-pathway-card__image--{{ $pathway->slug }}"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        </div>
                     @endif
                     <div class="hw-pathway-card__body">
                         <h3 class="hw-pathway-card__title">{{ $pathway->title }}</h3>

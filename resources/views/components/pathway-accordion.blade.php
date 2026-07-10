@@ -46,18 +46,21 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="isOpen('{{ $pathwayKey }}')" x-cloak class="px-4 md:px-5 pb-4 md:pb-5 border-t border-hw-border">
+                    <div x-show="isOpen('{{ $pathwayKey }}')" x-cloak class="border-t border-hw-border">
                         @if($imageUrl)
-                            <img
-                                src="{{ $imageUrl }}"
-                                alt=""
-                                class="mt-4 w-full max-h-56 object-cover rounded-lg hw-pathway-card__image hw-pathway-card__image--{{ $pathway->slug }}"
-                                loading="lazy"
-                                decoding="async"
-                            >
+                            <div class="hw-pathway-accordion__media hw-pathway-accordion__media--{{ $pathway->slug }}">
+                                <img
+                                    src="{{ $imageUrl }}"
+                                    alt=""
+                                    class="hw-pathway-accordion__image hw-pathway-accordion__image--{{ $pathway->slug }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            </div>
                         @endif
+                        <div class="px-4 md:px-5 pb-4 md:pb-5 {{ $imageUrl ? 'pt-4' : 'pt-4 md:pt-5' }}">
                         @if($pathway->intro && $hasAccordionPanels)
-                            <p class="text-hw-text text-base mt-4">{{ $pathway->intro }}</p>
+                            <p class="text-hw-text text-base">{{ $pathway->intro }}</p>
                         @endif
                         @if(count($panels) > 0)
                             <div class="mt-4 space-y-2" x-data="pathwayAccordion(null)">
@@ -89,6 +92,7 @@
                             :cta-label="$ctaLabel"
                             class="mt-6 md:mt-8"
                         />
+                        </div>
                     </div>
                 </div>
             @endforeach
