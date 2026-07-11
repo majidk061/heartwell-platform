@@ -135,10 +135,24 @@ trait MutatesSectionContent
                 ])
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'rich_text' && $get('content_design_variant') === 'three_column_narrative')
                 ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_eyebrow')
+                ->label('Eyebrow label')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'journey_split_hero')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_hero_title')
+                ->label('Hero title')
+                ->helperText('Also editable via Section headline above.')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'journey_split_hero')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('content_lead_question')
+                ->label('Lead question (italic line)')
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'journey_split_hero')
+                ->columnSpanFull(),
             Forms\Components\Toggle::make('content_show_floating_quotes')
                 ->label('Overlay floating quotes on hero image')
                 ->helperText('Leave off when the uploaded hero image already includes quote artwork (client composite). Enable only with a photo-only image.')
-                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero' && $get('content_design_variant') === 'split_image_quotes'),
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'
+                    && in_array($get('content_design_variant'), ['split_image_quotes', 'journey_split_hero'], true)),
             Forms\Components\Repeater::make('content_quotes')
                 ->label('Floating quotes')
                 ->schema([
@@ -152,7 +166,7 @@ trait MutatesSectionContent
                         ->required(),
                 ])
                 ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'
-                    && $get('content_design_variant') === 'split_image_quotes'
+                    && in_array($get('content_design_variant'), ['split_image_quotes', 'journey_split_hero'], true)
                     && (bool) $get('content_show_floating_quotes'))
                 ->columnSpanFull(),
             Forms\Components\TextInput::make('content_title_lead')
@@ -543,6 +557,9 @@ trait MutatesSectionContent
             'emphasis_line' => 'content_emphasis_line',
             'closing_line' => 'content_closing_line',
             'closing_emphasis' => 'content_closing_emphasis',
+            'eyebrow' => 'content_eyebrow',
+            'hero_title' => 'content_hero_title',
+            'lead_question' => 'content_lead_question',
         ] as $contentKey => $formKey) {
             if (! array_key_exists($formKey, $data)) {
                 continue;
@@ -569,6 +586,10 @@ trait MutatesSectionContent
 
         if (($data['section_type'] ?? '') === 'avatar_intro') {
             unset($content['columns']);
+        }
+
+        if (($content['design_variant'] ?? null) === 'journey_split_hero' && filled($data['heading'] ?? null)) {
+            $content['hero_title'] = $data['heading'];
         }
 
         $data['content'] = $content;
@@ -687,6 +708,9 @@ trait MutatesSectionContent
         $data['content_emphasis_line'] = $content['emphasis_line'] ?? null;
         $data['content_closing_line'] = $content['closing_line'] ?? null;
         $data['content_closing_emphasis'] = $content['closing_emphasis'] ?? null;
+        $data['content_eyebrow'] = $content['eyebrow'] ?? null;
+        $data['content_hero_title'] = $content['hero_title'] ?? null;
+        $data['content_lead_question'] = $content['lead_question'] ?? null;
 
         $data['content_credentials'] = is_array($content['credentials'] ?? null) ? $content['credentials'] : [];
         $data['content_founder_name'] = $content['name'] ?? 'Jacquie Wilson';

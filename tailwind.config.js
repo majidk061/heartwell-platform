@@ -11,6 +11,7 @@ export default {
     extend: {
       colors: {
         'hw-white': 'var(--color-white)',
+        'hw-cream': 'var(--color-cream)',
         'hw-text': 'var(--color-text)',
         'hw-heading': 'var(--color-heading)',
         'hw-blush': 'var(--color-blush)',

@@ -11,7 +11,7 @@ class SectionLayout
     public const SECTION_PADDINGS = ['none', 'compact', 'normal', 'spacious'];
 
     /** @var list<string> */
-    public const BACKGROUNDS = ['white', 'blush', 'dusty_blue', 'taupe', 'transparent'];
+    public const BACKGROUNDS = ['white', 'cream', 'blush', 'dusty_blue', 'taupe', 'transparent'];
 
     /** @var list<string> */
     public const TEXT_ALIGNS = ['left', 'center'];
@@ -77,6 +77,7 @@ class SectionLayout
         };
 
         $classes[] = match ($layout['background']) {
+            'cream' => 'bg-hw-cream',
             'blush' => 'bg-hw-blush-light/40',
             'dusty_blue' => 'bg-hw-dusty-blue-light/40',
             'taupe' => 'bg-hw-taupe-light/30',
@@ -94,6 +95,22 @@ class SectionLayout
     public static function defaultWidthForType(?string $sectionType): string
     {
         return 'default';
+    }
+
+    public static function containerWidthToken(string $width): string
+    {
+        return match ($width) {
+            'full' => '100%',
+            'near_full' => 'var(--container-near-full)',
+            'extra_wide' => 'var(--container-extra-wide)',
+            'expanded' => 'var(--container-expanded)',
+            'wide' => 'var(--container-wide)',
+            'comfortable' => 'var(--container-comfortable)',
+            'narrow' => 'var(--content-narrow)',
+            'form' => 'var(--content-form)',
+            'prose' => 'var(--content-narrow)',
+            default => 'var(--container-max)',
+        };
     }
 
     public static function defaultBackgroundForType(?string $sectionType): string

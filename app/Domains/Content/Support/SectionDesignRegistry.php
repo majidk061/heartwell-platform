@@ -19,6 +19,7 @@ class SectionDesignRegistry
                 'minimal' => 'Minimal — text only band',
                 'responsive_art' => 'Responsive artwork — desktop/mobile hero',
                 'split_image_quotes' => 'Split hero with floating quotes (Why HeartWell)',
+                'journey_split_hero' => 'Split hero — wellness journey (copy + quotes)',
             ],
             'avatar_intro' => [
                 'default' => 'Vertical portrait cards (classic)',
@@ -58,6 +59,7 @@ class SectionDesignRegistry
                 'pathway_cards' => 'Guided pathway cards (Support Pathways page)',
                 'compact_list' => 'Compact linked list',
                 'editorial_panels' => 'Editorial pathway panels (Wellness Journey)',
+                'journey_pathway_grid' => 'Bordered pathway grid (Wellness Journey)',
             ],
             'journey' => [
                 'default' => 'Horizontal numbered cards',
@@ -80,12 +82,15 @@ class SectionDesignRegistry
                 'journey_step' => 'Journey step prose',
                 'image_feature' => 'Prose with feature image',
                 'warm_close' => 'Warm closing prose',
+                'journey_expect_split' => 'Split copy + expect panel (Wellness Journey)',
+                'journey_cta_split' => 'Split copy + CTA panel (Wellness Journey)',
                 'editorial_bridge' => 'Editorial bridge — centered accent lines',
                 'three_column_narrative' => 'Three-column narrative with dividers',
             ],
             'group_individual' => [
                 'default' => 'Side-by-side columns',
                 'dual_start_options' => 'Dual balanced start options',
+                'dual_start_cream' => 'Dual start options — cream band (Wellness Journey)',
             ],
             'forms' => [
                 'default' => 'Tabbed contact forms',

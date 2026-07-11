@@ -39,6 +39,7 @@ trait ConfiguresSectionFields
                     ->label('Background')
                     ->options([
                         'white' => 'White',
+                        'cream' => 'Cream',
                         'blush' => 'Blush',
                         'dusty_blue' => 'Dusty blue',
                         'taupe' => 'Taupe',

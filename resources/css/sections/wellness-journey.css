@@ -1,0 +1,613 @@
+/**
+ * Wellness Journey page — client desktop mock.
+ */
+
+/* ── Hero (split copy + image + floating quotes) ── */
+
+section.hw-wj-hero.hw-section {
+  padding: 0;
+  background-color: var(--color-white);
+  text-align: left;
+}
+
+section.hw-wj-hero.hw-section--padding-spacious,
+section.hw-wj-hero.hw-section--padding-normal,
+section.hw-wj-hero.hw-section--padding-compact {
+  padding: 0;
+}
+
+.hw-page-sections--wellness-journey > section.hw-wj-hero {
+  border-bottom: none;
+}
+
+.hw-wj-hero__shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+@media (width >= 1024px) {
+  .hw-wj-hero__shell {
+    grid-template-columns: minmax(0, 41%) minmax(0, 59%);
+    min-height: clamp(22rem, 42vw, 34rem);
+  }
+}
+
+.hw-wj-hero__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(1.75rem, 4vw, 3rem)
+    max(var(--container-padding), env(safe-area-inset-right, 0px))
+    clamp(1.75rem, 4vw, 3rem)
+    max(var(--container-padding), env(safe-area-inset-left, 0px));
+  text-align: left;
+}
+
+@media (width >= 1024px) {
+  .hw-wj-hero__copy {
+    align-self: stretch;
+    position: relative;
+    z-index: 2;
+    background-color: var(--color-white);
+    box-shadow: 22px 0 42px -12px rgba(27, 43, 75, 0.32);
+    padding-left: max(
+      var(--container-padding),
+      calc((78vw - min(100vw, var(--hw-wj-hero-container, var(--container-max)))) / 2 + var(--container-padding))
+    );
+    padding-right: clamp(1.25rem, 2.5vw, 2rem);
+  }
+}
+
+.hw-wj-hero__copy-inner {
+  width: 100%;
+  max-width: 30rem;
+}
+
+.hw-wj-hero__eyebrow {
+  margin: 0 0 0.875rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: #333333;
+}
+
+.hw-wj-hero__title {
+  font-family: var(--font-heading);
+  color: #1a2b56;
+  margin: 0;
+  font-size: clamp(1.875rem, 3.4vw, 2.625rem);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.hw-wj-hero__lead {
+  font-family: var(--font-heading);
+  color: var(--color-tagline, var(--color-taupe));
+  margin: 0.75rem 0 0;
+  font-size: clamp(1.125rem, 2.1vw, 1.7rem);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.hw-wj-hero__body {
+  margin-top: 1.25rem;
+}
+
+.hw-wj-hero__body p {
+  font-family: var(--font-body);
+  color: #333;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.hw-wj-hero__media {
+  position: relative;
+  min-height: clamp(18rem, 52vw, 24rem);
+  overflow: hidden;
+}
+
+@media (width >= 1024px) {
+  .hw-wj-hero__media {
+    min-height: 100%;
+    box-shadow: inset 32px 0 48px -20px rgba(27, 43, 75, 0.38);
+  }
+
+  .hw-wj-hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: 3;
+    width: clamp(2rem, 3.5vw, 3.5rem);
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      rgba(27, 43, 75, 0.24) 0%,
+      rgba(27, 43, 75, 0.1) 55%,
+      rgba(27, 43, 75, 0) 100%
+    );
+  }
+}
+
+.hw-wj-hero__picture,
+.hw-wj-hero__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.hw-wj-hero__photo {
+  min-height: inherit;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hw-wj-hero__quote {
+  display: none;
+  margin: 0;
+  font-family: 'Lora', var(--font-heading);
+  font-size: clamp(1rem, 1.8vw, 1.1875rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #3d5a8a;
+}
+
+@media (width >= 1024px) {
+  .hw-wj-hero__quote {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    max-width: 14rem;
+  }
+
+  .hw-wj-hero__quote--1 {
+    top: 14%;
+    right: 18%;
+  }
+
+  .hw-wj-hero__quote--2 {
+    bottom: 22%;
+    right: 8%;
+  }
+}
+
+/* ── Journey steps (centered prose) ── */
+
+section.hw-wj-step.hw-section {
+  padding-block: clamp(2rem, 4vw, 2.75rem);
+}
+
+.hw-wj-step__prose {
+  max-width: 42rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.hw-wj-step__prose .hw-journey-step-eyebrow {
+  margin: 0 0 1rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-heading);
+}
+
+.hw-wj-step__prose p {
+  margin: 0 0 0.875rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.hw-wj-step__prose p:last-child {
+  margin-bottom: 0;
+}
+
+.hw-wj-step__prose h3 {
+  margin: 1.5rem 0 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-heading);
+}
+
+.hw-wj-step__prose .hw-journey-lead-question {
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--color-heading);
+}
+
+.hw-wj-step__prose .hw-journey-emphasis {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.hw-wj-step__prose .hw-reflective-quotes-list {
+  margin: 0.75rem auto 1rem;
+  padding: 0;
+  list-style: none;
+  max-width: 36rem;
+  text-align: center;
+}
+
+.hw-wj-step__prose .hw-reflective-quotes-list li {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-heading);
+  font-size: clamp(0.9375rem, 1.8vw, 1.0625rem);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-heading);
+}
+
+.hw-wj-step__prose .hw-reflective-quotes-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Step 3 — pathway grid ── */
+
+section.hw-wj-pathways.hw-section {
+  padding-block: clamp(2rem, 4vw, 2.75rem);
+}
+
+.hw-wj-pathways__heading {
+  margin: 0 auto 1rem;
+  max-width: 42rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-heading);
+}
+
+.hw-wj-pathways__intro {
+  max-width: 46rem;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+}
+
+.hw-wj-pathways__intro p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.hw-wj-pathways__intro p:last-child {
+  margin-bottom: 0;
+}
+
+.hw-wj-pathways__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.875rem;
+  margin-top: 1.25rem;
+}
+
+@media (width >= 640px) {
+  .hw-wj-pathways__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 1024px) {
+  .hw-wj-pathways__grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+.hw-wj-pathways__card {
+  padding: 1.125rem 0.875rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-white);
+  text-align: center;
+}
+
+.hw-wj-pathways__card-title {
+  margin: 0 0 0.625rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-heading);
+}
+
+.hw-wj-pathways__card-body {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.hw-wj-pathways__closing {
+  max-width: 36rem;
+  margin: 1.5rem auto 0;
+  text-align: center;
+}
+
+.hw-wj-pathways__closing p {
+  margin: 0 0 0.625rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.hw-wj-pathways__closing p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Step 4 — dual start (cream) ── */
+
+section.hw-wj-dual-start.hw-section {
+  padding-block: clamp(2rem, 4vw, 2.75rem);
+}
+
+section.hw-wj-dual-start.bg-hw-cream,
+section.hw-wj-dual-start[class*='bg-hw-cream'] {
+  background-color: var(--color-cream);
+}
+
+.hw-wj-dual-start__heading {
+  margin: 0 auto 0.875rem;
+  max-width: 42rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-heading);
+}
+
+.hw-wj-dual-start__intro {
+  max-width: 42rem;
+  margin: 0 auto 1.25rem;
+  text-align: center;
+}
+
+.hw-wj-dual-start__intro p {
+  margin: 0 0 0.625rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.hw-wj-dual-start__intro p:last-child {
+  margin-bottom: 0;
+}
+
+.hw-wj-dual-start__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (width >= 768px) {
+  .hw-wj-dual-start__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.hw-wj-dual-start__card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-white);
+}
+
+.hw-wj-dual-start__option {
+  margin: 0 0 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-tagline);
+}
+
+.hw-wj-dual-start__card-title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-heading);
+}
+
+.hw-wj-dual-start__card-body {
+  flex: 1 1 auto;
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.hw-wj-dual-start__cta {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* ── Step 5 — expect split ── */
+
+section.hw-wj-expect-split.hw-section {
+  padding-block: clamp(2rem, 4vw, 2.75rem);
+}
+
+.hw-wj-expect-split__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (width >= 1024px) {
+  .hw-wj-expect-split__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+}
+
+.hw-wj-expect-split__copy .hw-wj-step__prose {
+  max-width: none;
+  text-align: left;
+}
+
+.hw-wj-expect-split__photo {
+  display: none;
+}
+
+.hw-wj-expect-split__panel {
+  padding: 1.25rem 1.125rem;
+  background-color: var(--color-taupe-light);
+  border: 1px solid var(--color-border);
+}
+
+.hw-wj-expect-split__panel-title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-heading);
+}
+
+.hw-wj-expect-split__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hw-wj-expect-split__item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  gap: 0.75rem 1rem;
+  padding-block: 0.875rem;
+  border-bottom: 1px solid #d8d2cc;
+}
+
+.hw-wj-expect-split__item:first-child {
+  padding-top: 0;
+}
+
+.hw-wj-expect-split__item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.hw-wj-expect-split__item-title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-heading);
+}
+
+.hw-wj-expect-split__item-body {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+@media (width < 640px) {
+  .hw-wj-expect-split__item {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+/* ── Step 6 — CTA split ── */
+
+section.hw-wj-cta-split.hw-section {
+  padding-block: clamp(2rem, 4vw, 2.75rem);
+}
+
+section.hw-wj-cta-split.bg-hw-cream,
+section.hw-wj-cta-split[class*='bg-hw-cream'] {
+  background-color: var(--color-cream);
+}
+
+.hw-wj-cta-split__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+@media (width >= 1024px) {
+  .hw-wj-cta-split__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+}
+
+.hw-wj-cta-split__copy .hw-wj-step__prose {
+  max-width: none;
+  text-align: left;
+}
+
+.hw-wj-cta-split__panel {
+  padding: 1.5rem 1.25rem;
+  background-color: var(--color-taupe-light);
+  border: 1px solid var(--color-border);
+}
+
+.hw-wj-cta-split__title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-heading);
+}
+
+.hw-wj-cta-split__body {
+  margin: 0 0 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.hw-wj-cta-split__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+@media (width >= 480px) {
+  .hw-wj-cta-split__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+.hw-wj-cta-split__consult {
+  margin: 1rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.hw-wj-cta-split__consult-link {
+  font-weight: 600;
+  color: var(--color-heading);
+  text-decoration: none;
+}
+
+.hw-wj-cta-split__consult-link:hover {
+  text-decoration: underline;
+}

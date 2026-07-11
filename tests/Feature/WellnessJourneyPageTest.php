@@ -14,7 +14,7 @@ class WellnessJourneyPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_wellness_journey_page_renders_guided_flow_and_editorial_pathways(): void
+    public function test_wellness_journey_page_renders_guided_flow_and_pathway_grid(): void
     {
         $page = Page::query()->create([
             'slug' => 'wellness-journey',
@@ -52,14 +52,22 @@ class WellnessJourneyPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('hw-page-sections--wellness-journey', false);
-        $response->assertSee('hw-hero--responsive-art', false);
-        $response->assertSee('Explore Where Support May Begin');
+        $response->assertSee('hw-wj-hero', false);
+        $response->assertSee('The HeartWell Wellness Journey');
+        $response->assertSee('Your Wellness Journey Can Begin with One Simple Question');
+        $response->assertSee('What have you been noticing?');
+        $response->assertSee('The journey is designed to help you move from uncertainty toward a clearer next step.');
+        $response->assertSee('Step 3 — Explore Where Support May Begin');
         $response->assertSee('Individualized & Collaborative Care');
         $response->assertSee('Precision Glow Therapy');
-        $response->assertSee("Choose How You'd Like to Begin");
+        $response->assertSee('hw-wj-pathways', false);
+        $response->assertSee("Step 4 — Choose How You'd Like to Begin");
         $response->assertSee('Begin with a Private Wellness Conversation');
         $response->assertSee('Request a Private Mobile Visit');
-        $response->assertSee('hw-pathway-editorial', false);
-        $response->assertSee('hw-dual-start-options', false);
+        $response->assertSee('hw-wj-dual-start', false);
+        $response->assertSee('What You Can Expect:', false);
+        $response->assertSee('hw-wj-expect-split', false);
+        $response->assertSee('You Deserve to Feel Like Yourself Again');
+        $response->assertSee('hw-wj-cta-split', false);
     }
 }

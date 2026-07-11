@@ -63,19 +63,20 @@ class EditSectionTemplate extends HeartWellEditRecord
      */
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $existingImage = is_array($this->record->content ?? null)
-            ? ($this->record->content['image_url'] ?? null)
-            : null;
+        $existing = is_array($this->record->content) ? $this->record->content : [];
 
-        if (blank($data['content_image'] ?? null) && filled($existingImage)) {
-            $data['content'] = array_merge(
-                is_array($this->record->content) ? $this->record->content : [],
-                ['image_url' => $existingImage],
-            );
+        $data['content'] = array_merge($existing, is_array($data['content'] ?? null) ? $data['content'] : []);
+
+        if (blank($data['content_image'] ?? null) && filled($existing['image_url'] ?? null)) {
+            $data['content']['image_url'] = $existing['image_url'];
         }
 
-        return $this->applyPendingContentStatus(
-            SectionTemplateResource::mutateTemplateData($data)
-        );
+        $data = SectionTemplateResource::mutateTemplateData($data);
+
+        if (($data['content']['design_variant'] ?? null) === 'journey_split_hero' && filled($data['heading'] ?? null)) {
+            $data['content']['hero_title'] = $data['heading'];
+        }
+
+        return $this->applyPendingContentStatus($data);
     }
 }

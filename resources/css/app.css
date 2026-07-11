@@ -1,6 +1,7 @@
 @import './tokens/index.css';
 @import './sections/bridge-permission.css';
 @import './sections/features-expect.css';
+@import './sections/wellness-journey.css';
 
 @tailwind base;
 @tailwind components;
