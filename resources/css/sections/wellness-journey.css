@@ -180,32 +180,60 @@ section.hw-wj-hero.hw-section--padding-compact {
   }
 }
 
-/* ── Journey steps (centered prose) ── */
+/* ── Journey steps (left editorial column) ── */
 
 section.hw-wj-step.hw-section {
-  padding-block: clamp(2rem, 4vw, 2.75rem);
+  padding-block: clamp(2.25rem, 4.5vw, 3.25rem);
+  text-align: left;
+}
+
+section.hw-wj-step.hw-section--padding-normal,
+section.hw-wj-step.hw-section--padding-spacious,
+section.hw-wj-step.hw-section--padding-compact {
+  padding-block: clamp(2.25rem, 4.5vw, 3.25rem);
+}
+
+section.hw-wj-step.hw-section.text-center {
+  text-align: left;
+}
+
+.hw-wj-step__inner {
+  width: 100%;
+  padding-inline: max(var(--container-padding), env(safe-area-inset-left, 0px))
+    max(var(--container-padding), env(safe-area-inset-right, 0px));
+}
+
+@media (width >= 1024px) {
+  .hw-wj-step__inner {
+    padding-left: max(
+      var(--container-padding),
+      calc((78vw - min(100vw, var(--hw-wj-step-container, var(--container-max)))) / 2 + var(--container-padding))
+    );
+    padding-right: max(var(--container-padding), env(safe-area-inset-right, 0px));
+  }
 }
 
 .hw-wj-step__prose {
-  max-width: 42rem;
-  margin-inline: auto;
-  text-align: center;
+  max-width: 40rem;
+  margin-inline: 0;
+  text-align: left;
 }
 
 .hw-wj-step__prose .hw-journey-step-eyebrow {
-  margin: 0 0 1rem;
+  margin: 0 0 1.125rem;
   font-family: var(--font-heading);
-  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
   font-weight: 500;
-  line-height: 1.3;
-  color: var(--color-heading);
+  line-height: 1.25;
+  color: #1a2b56;
 }
 
 .hw-wj-step__prose p {
-  margin: 0 0 0.875rem;
-  font-size: 0.9375rem;
-  line-height: 1.65;
-  color: var(--color-text);
+  font-family: var(--font-body);
+  color: #333;
+  margin: 0 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 .hw-wj-step__prose p:last-child {
@@ -213,12 +241,12 @@ section.hw-wj-step.hw-section {
 }
 
 .hw-wj-step__prose h3 {
-  margin: 1.5rem 0 0.75rem;
+  margin: 1.75rem 0 0.875rem;
   font-family: var(--font-body);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 700;
-  line-height: 1.4;
-  color: var(--color-heading);
+  line-height: 1.45;
+  color: #1a2b56;
 }
 
 .hw-wj-step__prose .hw-journey-lead-question {
@@ -226,33 +254,38 @@ section.hw-wj-step.hw-section {
   font-size: clamp(1.125rem, 2vw, 1.375rem);
   font-style: italic;
   font-weight: 500;
-  color: var(--color-heading);
+  color: #1a2b56;
 }
 
 .hw-wj-step__prose .hw-journey-emphasis {
   font-weight: 600;
-  color: var(--color-heading);
+  color: #1a2b56;
 }
 
 .hw-wj-step__prose .hw-reflective-quotes-list {
-  margin: 0.75rem auto 1rem;
+  margin: 0.875rem 0 1.125rem;
   padding: 0;
   list-style: none;
-  max-width: 36rem;
-  text-align: center;
+  max-width: 38rem;
+  text-align: left;
 }
 
 .hw-wj-step__prose .hw-reflective-quotes-list li {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.625rem;
   font-family: var(--font-heading);
-  font-size: clamp(0.9375rem, 1.8vw, 1.0625rem);
+  font-size: clamp(1rem, 1.8vw, 1.125rem);
   font-style: italic;
-  line-height: 1.5;
-  color: var(--color-heading);
+  line-height: 1.55;
+  color: #1a2b56;
 }
 
 .hw-wj-step__prose .hw-reflective-quotes-list li:last-child {
   margin-bottom: 0;
+}
+
+.hw-page-sections--wellness-journey .hw-journey-step + .hw-journey-step {
+  margin-top: 0;
+  background-color: var(--color-cream, #f7f4ef);
 }
 
 /* ── Step 3 — pathway grid ── */
@@ -262,14 +295,14 @@ section.hw-wj-pathways.hw-section {
 }
 
 .hw-wj-pathways__heading {
-  margin: 0 auto 1rem;
-  max-width: 42rem;
-  text-align: center;
+  text-align: left;
+  max-width: 96rem;
   font-family: var(--font-heading);
+  color: var(--color-heading);
+  margin: 0 auto 1rem;
   font-size: clamp(1.375rem, 2.4vw, 1.75rem);
   font-weight: 500;
   line-height: 1.3;
-  color: var(--color-heading);
 }
 
 .hw-wj-pathways__intro {
@@ -317,12 +350,12 @@ section.hw-wj-pathways.hw-section {
 }
 
 .hw-wj-pathways__card-title {
-  margin: 0 0 0.625rem;
   font-family: var(--font-heading);
-  font-size: 1rem;
+  color: var(--color-heading);
+  margin: 0 0 0.625rem;
+  font-size: 1.4rem;
   font-weight: 500;
   line-height: 1.35;
-  color: var(--color-heading);
 }
 
 .hw-wj-pathways__card-body {
@@ -339,10 +372,10 @@ section.hw-wj-pathways.hw-section {
 }
 
 .hw-wj-pathways__closing p {
-  margin: 0 0 0.625rem;
-  font-size: 0.9375rem;
-  line-height: 1.6;
   color: var(--color-text);
+  margin: 0 0 0;
+  font-size: 1.2rem;
+  line-height: 1.6;
 }
 
 .hw-wj-pathways__closing p:last-child {
@@ -361,27 +394,28 @@ section.hw-wj-dual-start[class*='bg-hw-cream'] {
 }
 
 .hw-wj-dual-start__heading {
-  margin: 0 auto 0.875rem;
-  max-width: 42rem;
-  text-align: center;
+  text-align: left;
+  max-width: 98rem;
   font-family: var(--font-heading);
+  color: var(--color-heading);
+  margin: 0 auto 0.875rem;
   font-size: clamp(1.375rem, 2.4vw, 1.75rem);
   font-weight: 500;
   line-height: 1.3;
-  color: var(--color-heading);
 }
 
 .hw-wj-dual-start__intro {
-  max-width: 42rem;
-  margin: 0 auto 1.25rem;
-  text-align: center;
+  max-width: 98rem;
+  margin: 0 auto 1.5rem;
+  text-align: left;
 }
 
 .hw-wj-dual-start__intro p {
-  margin: 0 0 0.625rem;
-  font-size: 0.9375rem;
-  line-height: 1.65;
   color: var(--color-text);
+  margin: 0 0 0;
+  font-size: 1.1rem;
+  line-height: 1.65;
+  text-align: left;
 }
 
 .hw-wj-dual-start__intro p:last-child {
@@ -391,53 +425,69 @@ section.hw-wj-dual-start[class*='bg-hw-cream'] {
 .hw-wj-dual-start__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 1.25rem;
+  max-width: 98rem;
+  margin-inline: auto;
 }
 
 @media (width >= 768px) {
   .hw-wj-dual-start__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 }
 
 .hw-wj-dual-start__card {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1.25rem;
+  align-items: center;
+  text-align: center;
+  padding: clamp(1.75rem, 3vw, 2.25rem) clamp(1.25rem, 2.5vw, 1.75rem);
   border: 1px solid var(--color-border);
   background-color: var(--color-white);
 }
 
 .hw-wj-dual-start__option {
-  margin: 0 0 0.375rem;
-  font-size: 0.6875rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-tagline);
 }
 
 .hw-wj-dual-start__card-title {
-  margin: 0 0 0.75rem;
+  max-width: 30rem;
   font-family: var(--font-heading);
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: 1.35;
   color: var(--color-heading);
+  margin: 0 0 1rem;
+  font-size: clamp(1.3125rem, 2.2vw, 1.5625rem);
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 .hw-wj-dual-start__card-body {
-  flex: 1 1 auto;
-  margin: 0 0 1.25rem;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  flex: auto;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 0 1.5rem;
+}
+
+.hw-wj-dual-start__card-body p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
   color: var(--color-text);
 }
 
+.hw-wj-dual-start__card-body p:last-child {
+  margin-bottom: 0;
+}
+
 .hw-wj-dual-start__cta {
-  align-self: flex-start;
+  align-self: center;
   margin-top: auto;
+  text-align: center;
 }
 
 /* ── Step 5 — expect split ── */
@@ -560,13 +610,15 @@ section.hw-wj-cta-split[class*='bg-hw-cream'] {
 }
 
 .hw-wj-cta-split__panel {
-  padding: 1.5rem 1.25rem;
+  padding: clamp(1.75rem, 3vw, 2.25rem) clamp(1.25rem, 2.5vw, 1.75rem);
   background-color: var(--color-taupe-light);
   border: 1px solid var(--color-border);
+  text-align: center;
 }
 
 .hw-wj-cta-split__title {
-  margin: 0 0 0.75rem;
+  margin: 0 auto 0.75rem;
+  max-width: 28rem;
   font-family: var(--font-heading);
   font-size: clamp(1.25rem, 2.2vw, 1.5rem);
   font-weight: 500;
@@ -575,7 +627,8 @@ section.hw-wj-cta-split[class*='bg-hw-cream'] {
 }
 
 .hw-wj-cta-split__body {
-  margin: 0 0 1.25rem;
+  margin: 0 auto 1.25rem;
+  max-width: 28rem;
   font-size: 0.9375rem;
   line-height: 1.6;
   color: var(--color-text);
@@ -584,6 +637,8 @@ section.hw-wj-cta-split[class*='bg-hw-cream'] {
 .hw-wj-cta-split__actions {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 0.625rem;
 }
 
@@ -591,15 +646,18 @@ section.hw-wj-cta-split[class*='bg-hw-cream'] {
   .hw-wj-cta-split__actions {
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.75rem;
   }
 }
 
 .hw-wj-cta-split__consult {
-  margin: 1rem 0 0;
+  margin: 1rem auto 0;
+  max-width: 28rem;
   font-size: 0.875rem;
   line-height: 1.5;
   color: var(--color-text);
+  text-align: center;
 }
 
 .hw-wj-cta-split__consult-link {

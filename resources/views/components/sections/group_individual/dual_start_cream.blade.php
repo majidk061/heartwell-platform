@@ -17,13 +17,23 @@
     @if(! empty($columns))
         <div class="hw-wj-dual-start__grid">
             @foreach($columns as $index => $column)
+                @php
+                    $bodyParagraphs = array_values(array_filter(array_map(
+                        static fn (string $paragraph): string => trim($paragraph),
+                        preg_split('/\n\s*\n/', trim((string) ($column['body'] ?? ''))) ?: []
+                    )));
+                @endphp
                 <div class="hw-wj-dual-start__card">
                     <p class="hw-wj-dual-start__option">Option {{ $index + 1 }}</p>
                     @if(! empty($column['title']))
                         <h3 class="hw-wj-dual-start__card-title">{{ $column['title'] }}</h3>
                     @endif
-                    @if(! empty($column['body']))
-                        <div class="hw-wj-dual-start__card-body">{!! nl2br(e($column['body'])) !!}</div>
+                    @if($bodyParagraphs !== [])
+                        <div class="hw-wj-dual-start__card-body">
+                            @foreach($bodyParagraphs as $paragraph)
+                                <p>{{ $paragraph }}</p>
+                            @endforeach
+                        </div>
                     @endif
                     @if(! empty($column['cta_label']) && ! empty($column['cta_url']))
                         @php

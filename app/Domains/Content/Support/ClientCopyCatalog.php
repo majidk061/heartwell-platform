@@ -1050,7 +1050,7 @@ HTML;
                     'design_variant' => 'journey_step',
                     'body' => $wjStep1NoticingHtml,
                     'section_class' => 'hw-journey-step',
-                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'center', 'section_padding' => 'spacious'],
+                    'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'normal'],
                 ],
             ],
             'Rich text — step 2 not alone' => [
@@ -1060,8 +1060,8 @@ HTML;
                 'content' => [
                     'design_variant' => 'journey_step',
                     'body' => $wjStep2NotAloneHtml,
-                    'section_class' => 'hw-journey-step',
-                    'layout' => ['container_width' => 'narrow', 'background' => 'white', 'text_align' => 'center', 'section_padding' => 'spacious'],
+                    'section_class' => 'hw-journey-step hw-wj-step--cream',
+                    'layout' => ['container_width' => 'default', 'background' => 'cream', 'text_align' => 'left', 'section_padding' => 'normal'],
                 ],
             ],
             'Pathways — wellness journey editorial' => [

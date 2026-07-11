@@ -1969,10 +1969,6 @@
     margin-bottom: 0;
   }
 
-  .hw-page-sections--wellness-journey .hw-journey-step + .hw-journey-step {
-    margin-top: 0;
-  }
-
   .hw-rich-text-feature__image {
     max-height: 28rem;
   }
