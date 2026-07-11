@@ -48,7 +48,6 @@ section.hw-features-expect[class*='bg-hw-'] {
 
 .hw-features-expect__panel {
   margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
-  border-top: 1px solid #e7e2de;
   border-bottom: 1px solid #e7e2de;
 }
 
@@ -61,6 +60,7 @@ section.hw-features-expect[class*='bg-hw-'] {
 @media (width >= 768px) {
   .hw-features-five-col {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding-bottom: 25px;
   }
 }
 
@@ -126,8 +126,9 @@ section.hw-features-expect[class*='bg-hw-'] {
 @media (width >= 1024px) {
   .hw-features-expect__heading,
   .hw-features-five-col__heading {
-    font-size: 28px;
     white-space: nowrap;
+    font-size: 30px;
+    font-weight: 600;
   }
 
   .hw-features-expect__panel {
@@ -139,12 +140,12 @@ section.hw-features-expect[class*='bg-hw-'] {
   }
 
   .hw-features-five-col__title {
-    font-size: 18px;
     margin-bottom: 10px;
+    font-size: 22px;
   }
 
   .hw-features-five-col__body {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.6;
   }
 
@@ -154,12 +155,14 @@ section.hw-features-expect[class*='bg-hw-'] {
   }
 
   .hw-features-five-col__closing-line {
-    font-size: 22px;
+    font-size: 30px;
+    font-weight: 600;
   }
 
   .hw-features-five-col__closing-emphasis {
-    margin-top: 12px;
-    font-size: 28px;
+    margin-top: 2px;
+    font-size: 38px;
+    font-weight: 700;
   }
 }
 
