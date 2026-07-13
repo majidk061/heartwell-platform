@@ -47,16 +47,15 @@ section.hw-wj-hero.hw-section--padding-compact {
 
 @media (width >= 1024px) {
   .hw-wj-hero__copy {
-    align-self: stretch;
-    position: relative;
     z-index: 2;
     background-color: var(--color-white);
-    box-shadow: 22px 0 42px -12px rgba(27, 43, 75, 0.32);
     padding-left: max(
       var(--container-padding),
       calc((78vw - min(100vw, var(--hw-wj-hero-container, var(--container-max)))) / 2 + var(--container-padding))
     );
+    align-self: stretch;
     padding-right: clamp(1.25rem, 2.5vw, 2rem);
+    position: relative;
   }
 }
 

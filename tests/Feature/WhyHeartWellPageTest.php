@@ -55,6 +55,9 @@ class WhyHeartWellPageTest extends TestCase
         $response->assertSee('hw-hero--split-quotes', false);
         $response->assertSee('hw-hero--why-banner__photo', false);
         $response->assertSee('for the Moments', false);
+        $response->assertSee('WHY HEARTWELL');
+        $response->assertSee('hw-reflective-quotes', false);
+        $response->assertSee('I slept, but I still feel tired.');
         $response->assertSee('Explore Support Pathways');
         $response->assertSee('Can Mean So Many Things', false);
         $response->assertSee('hw-editorial-bridge', false);
@@ -67,8 +70,14 @@ class WhyHeartWellPageTest extends TestCase
         $response->assertSee('Why HeartWell Was Created');
         $response->assertSee('Compassion Is Not Separate from Good Care');
         $response->assertSee('Guided by Nursing Experience');
+        $response->assertSee('how a person is treated while receiving it');
         $response->assertSee('hw-features-five-col', false);
         $response->assertSee('What You Can Expect from HeartWell');
+        $response->assertSee('secure clinical process');
+        $response->assertSee('thoughtfully planned support');
+        $response->assertSee('Your needs may change, your goals may evolve');
+        $response->assertSee('You Do Not Have to Have It All Figured Out');
+        $response->assertSee('You do not need to arrive with the right words.');
         $response->assertSee('You just have to be willing to listen to what you are noticing.');
         $response->assertSee('id="compassion-care"', false);
         $response->assertSee('id="nursing-experience"', false);

@@ -165,7 +165,7 @@ class SyncClientCopyCommandTest extends TestCase
         $template = SectionTemplate::query()->where('name', 'Hero — why heartwell')->first();
 
         $this->assertSame('split_image_quotes', $template?->content['design_variant'] ?? null);
-        $this->assertSame('Why HeartWell', $template?->content['eyebrow'] ?? null);
+        $this->assertSame('WHY HEARTWELL', $template?->content['eyebrow'] ?? null);
         $this->assertSame('Explore Support Pathways', $template?->content['primary_label'] ?? null);
     }
 

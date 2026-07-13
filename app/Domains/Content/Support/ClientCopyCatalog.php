@@ -372,8 +372,36 @@ HTML;
 <p>Sometimes &ldquo;I&rsquo;m fine&rdquo; is the answer we give before we have fully figured out how to explain what we are feeling.</p>
 <p>You may still be getting through the day. Still working. Still caring for everyone else. Still doing the things you have always done.</p>
 <p>And yet, somewhere underneath all of that, you may know that something feels different.</p>
-<p>Maybe you are more tired than you used to be. Maybe your body is not responding the way you expected. Maybe recovery takes longer. Maybe your weight, energy, sleep, skin, focus, or sense of well-being has changed in ways you were not prepared for.</p>
+<p>Maybe you are more tired than you used to be.</p>
+<p>Maybe your body is not responding the way you expected.</p>
+<p>Maybe recovery takes longer.</p>
+<p>Maybe your weight, energy, sleep, skin, focus, or sense of well-being has changed in ways you were not prepared for.</p>
 <p>Or maybe you simply do not feel quite like yourself.</p>
+<p>That is part of why HeartWell was created.</p>
+HTML;
+
+        $whyCreatedColumnHtml = <<<'HTML'
+<p>HeartWell was created for the moments when something feels off, but you are not sure why.</p>
+<p>It was created for women who may still be functioning, still managing, and still showing up for everyone around them &mdash; while quietly wondering why they do not feel like themselves anymore.</p>
+<p>You deserve a place to be heard, to be supported, and to take the next step at a pace that feels right for you.</p>
+<p>At HeartWell, the goal is not to rush you toward a treatment or expect you to arrive already knowing what you need.</p>
+<p>The goal is to begin with what you are noticing, help you understand the options that may be available, and support you in deciding what feels appropriate for you.</p>
+HTML;
+
+        $whyCompassionColumnHtml = <<<'HTML'
+<p>We listen without assuming.</p>
+<p>We explain without overwhelming.</p>
+<p>We respect what you are feeling without telling you what you should be feeling.</p>
+<p>Compassion does not replace clinical judgment. It shapes how care is delivered.</p>
+<p>That means making room for questions, recognizing that every woman brings a different history and set of priorities, and understanding that sometimes the most important first step is simply feeling heard.</p>
+HTML;
+
+        $whyNursingColumnHtml = <<<'HTML'
+<p>HeartWell is founded by Jacquie Wilson, BSN, RN, MBA.</p>
+<p>Nursing experience across a range of care settings shapes our approach to listening carefully, explaining clearly, supporting appropriate screening, and recognizing when another next step may be more appropriate.</p>
+<p>That experience also shapes something just as important: the understanding that good care is not only about what is offered.</p>
+<p>It is also about how a person is treated while receiving it.</p>
+<p>HeartWell brings together clinical awareness, thoughtful guidance, and a calm, personalized approach designed to help women feel supported rather than rushed.</p>
 HTML;
 
         $whyBecauseImFineHtml = <<<'HTML'
@@ -622,10 +650,10 @@ HTML;
                 'description' => 'Why HeartWell page hero — split layout with floating quotes and Because I\'m Fine lower block.',
                 'content' => [
                     'design_variant' => 'split_image_quotes',
+                    'eyebrow' => 'WHY HEARTWELL',
                     'title_lead' => 'Thoughtful Wellness Care',
                     'title_emphasis' => 'for the Moments',
                     'title_tail' => 'When Something Just Feels Off',
-                    'body' => "You may not know exactly what has changed. You may simply feel tired, frustrated, overwhelmed, or not quite like yourself.\n\nYour body may seem to be responding differently. You may be doing what you have always done and still wondering why something feels off.\n\nAnd you may not have the words for it yet.\n\nHeartWell was created to offer a thoughtful place to begin — with compassionate guidance, a personal approach, and a clear path toward an appropriate next step.",
                     'lower_heading' => 'Because "I\'m Fine" Can Mean So Many Things',
                     'lower_body' => $whyBecauseImFineLowerHtml,
                     'quotes' => [
@@ -674,8 +702,6 @@ HTML;
                 'description' => 'Why HeartWell bridge — permission to begin without knowing.',
                 'content' => [
                     'design_variant' => 'editorial_bridge',
-                    'intro_text' => 'Sometimes "I\'m fine" is the answer we give before we have fully figured out how to explain what we are feeling.',
-                    'accent_line' => 'That is part of why HeartWell was created.',
                     'headline' => 'You do not need to know exactly what you need before you begin.',
                     'emphasis_line' => 'You can just start with what you are noticing.',
                     'section_class' => 'hw-rich-text-section--bridge',
@@ -691,17 +717,17 @@ HTML;
                     'columns' => [
                         [
                             'title' => 'Why HeartWell Was Created',
-                            'body' => '<p>HeartWell was created because care should feel personal, thoughtful, and clear &mdash; especially when you have spent so long adapting to how you feel that you are no longer sure what is normal.</p><p>Too often, we normalize discomfort, adjust to our limits, and quietly carry on.</p><p>HeartWell was created to be a place where you feel truly heard, never dismissed, and supported in making sense of what you are noticing.</p><p>A place to gently open the door to another possibility: that things may not have to stay exactly as they are.</p><p>With the right support, there may be more to understand, more worth exploring, and possibilities you have not yet had the space to consider.</p>',
+                            'body' => $whyCreatedColumnHtml,
                         ],
                         [
                             'title' => 'Compassion Is Not Separate from Good Care',
                             'anchor' => 'compassion-care',
-                            'body' => '<p>We listen without assuming.</p><p>We explain without overwhelming.</p><p>We respect what you are feeling without telling you what you should be feeling.</p><p>And we recognize that two people with similar concerns may still need very different next steps.</p><p>Feeling cared for and receiving responsible care should never be treated as opposites.</p>',
+                            'body' => $whyCompassionColumnHtml,
                         ],
                         [
                             'title' => 'Guided by Nursing Experience',
                             'anchor' => 'nursing-experience',
-                            'body' => '<p>HeartWell is founded by Jacquie Wilson, BSN, RN, MBA.</p><p>Nursing experience across a range of care settings shapes our approach to listening carefully, explaining clearly, supporting appropriate screening, and recognizing when another next step may be more appropriate.</p><p>That clinical perspective helps guide a thoughtful process &mdash; one that values safety, clarity, and the individual behind the concern.</p>',
+                            'body' => $whyNursingColumnHtml,
                         ],
                     ],
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'spacious'],
@@ -946,31 +972,29 @@ HTML;
                         [
                             'title' => 'Personalized Attention',
                             'anchor' => 'personalized-attention',
-                            'body' => 'We take time to understand you as a whole person, not just a list of concerns.',
+                            'body' => 'We take time to understand you as a whole person, not just a list of concerns. Your goals, preferences, health history, and what you are currently noticing all matter.',
                         ],
                         [
                             'title' => 'Thoughtful Recommendations',
                             'anchor' => 'thoughtful-recommendations',
-                            'body' => 'Care options are explained clearly so you can make informed choices.',
+                            'body' => 'Care options are explained clearly so you can make informed choices. You will not be expected to know exactly what treatment you need before you begin.',
                         ],
                         [
                             'title' => 'Safe, Compliant Care',
                             'anchor' => 'safe-compliant-care',
-                            'body' => 'Clinical screening and clearance are always completed before treatment.',
+                            'body' => 'Clinical screening and clearance are always completed before treatment. When clinical services are appropriate, required intake, health history, consent, screening, and provider clearance are completed through HeartWell\'s secure clinical process.',
                         ],
                         [
                             'title' => 'Flexible Options',
                             'anchor' => 'flexible-options',
-                            'body' => 'Private visits, mobile care, and group wellness gatherings.',
+                            'body' => 'HeartWell is designed around real life. Care options may include private mobile visits, thoughtfully planned support, and group wellness gatherings in appropriate settings.',
                         ],
                         [
                             'title' => 'Ongoing Support',
                             'anchor' => 'ongoing-support',
-                            'body' => 'We stay connected to support your progress over time.',
+                            'body' => 'We stay connected to support your progress over time. Your needs may change, your goals may evolve, and your plan does not have to remain exactly the same simply because that is where you started.',
                         ],
                     ],
-                    'closing_line' => 'You do not have to have it all figured out to begin.',
-                    'closing_emphasis' => 'You just have to be willing to listen to what you are noticing.',
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'spacious'],
                 ],
             ],
@@ -1330,9 +1354,11 @@ HTML;
             ],
             'why-heartwell' => [
                 'Hero — why heartwell',
+                'Intro — private thoughts',
                 'Rich text — bridge permission',
                 'Rich text — three column narrative',
                 'Features — what you can expect',
+                'Rich text — closing permission',
                 'CTA — start with conversation',
             ],
             'wellness-journey' => [
