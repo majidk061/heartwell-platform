@@ -65,20 +65,22 @@ trait MutatesSectionContent
                 ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['rich_text', 'group_individual']))
                 ->columnSpanFull(),
             Forms\Components\FileUpload::make('content_image')
-                ->label('Section image')
+                ->label(fn (Forms\Get $get): string => $get('section_type') === 'hero' ? 'Desktop hero image' : 'Section image')
                 ->disk('public')
                 ->directory('cms/sections')
                 ->visibility('public')
                 ->image()
                 ->imageEditor()
-                ->imageEditorAspectRatios(['4:3', '1:1'])
+                ->imageEditorAspectRatios(['16:9', '4:3', '1:1'])
                 ->maxSize(static::sectionImageMaxSizeKb())
-                ->helperText(static::imageUploadHelper())
+                ->helperText(fn (Forms\Get $get): string => $get('section_type') === 'hero'
+                    ? static::heroDesktopImageHelper()
+                    : static::imageUploadHelper())
                 ->visible(fn (Forms\Get $get) => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text'])
                     && ! ($get('section_type') === 'hero' && $get('content_design_variant') === 'minimal'))
                 ->columnSpanFull(),
             Forms\Components\Placeholder::make('content_image_preview')
-                ->label('Current image')
+                ->label(fn (Forms\Get $get): string => $get('section_type') === 'hero' ? 'Current desktop image' : 'Current image')
                 ->content(function (?object $record): \Illuminate\Support\HtmlString {
                     $path = is_array($record?->content ?? null) ? ($record->content['image_url'] ?? null) : null;
 
@@ -99,6 +101,47 @@ trait MutatesSectionContent
                 })
                 ->visible(fn (Forms\Get $get, ?object $record): bool => in_array($get('section_type'), ['hero', 'intro', 'founder_teaser', 'rich_text'])
                     && ! ($get('section_type') === 'hero' && $get('content_design_variant') === 'minimal')
+                    && filled(is_array($record?->content ?? null) ? ($record->content['image_url'] ?? null) : null))
+                ->columnSpanFull(),
+            Forms\Components\FileUpload::make('content_image_mobile')
+                ->label('Mobile hero image')
+                ->disk('public')
+                ->directory('cms/sections')
+                ->visibility('public')
+                ->image()
+                ->imageEditor()
+                ->imageEditorAspectRatios(['4:5', '3:4', '1:1', '16:9'])
+                ->maxSize(static::sectionImageMaxSizeKb())
+                ->helperText(static::heroMobileImageHelper())
+                ->visible(fn (Forms\Get $get) => $get('section_type') === 'hero'
+                    && $get('content_design_variant') !== 'minimal')
+                ->columnSpanFull(),
+            Forms\Components\Placeholder::make('content_image_mobile_preview')
+                ->label('Current mobile image')
+                ->content(function (?object $record): \Illuminate\Support\HtmlString {
+                    $content = is_array($record?->content ?? null) ? $record->content : [];
+                    $path = $content['image_url_mobile'] ?? null;
+
+                    if (blank($path)) {
+                        $desktop = $content['image_url'] ?? null;
+
+                        return new \Illuminate\Support\HtmlString(
+                            blank($desktop)
+                                ? '<span class="text-sm text-gray-500">No mobile image — desktop image will be used on mobile.</span>'
+                                : '<span class="text-sm text-gray-500">No separate mobile image — desktop image is used on mobile.</span>'
+                        );
+                    }
+
+                    $url = CmsImage::url($path);
+
+                    return new \Illuminate\Support\HtmlString(
+                        '<div class="space-y-2">'
+                        .'<img src="'.e((string) $url).'" alt="" class="max-h-48 rounded-lg border border-gray-200 object-cover" />'
+                        .'</div>'
+                    );
+                })
+                ->visible(fn (Forms\Get $get, ?object $record): bool => $get('section_type') === 'hero'
+                    && $get('content_design_variant') !== 'minimal'
                     && filled(is_array($record?->content ?? null) ? ($record->content['image_url'] ?? null) : null))
                 ->columnSpanFull(),
             Forms\Components\Repeater::make('content_steps')
@@ -444,6 +487,15 @@ trait MutatesSectionContent
             $content['image_url'] = static::normalizeSectionStoragePath($content['image_url']);
         }
 
+        if (! empty($data['content_image_mobile'])) {
+            $mobilePath = is_array($data['content_image_mobile'])
+                ? ($data['content_image_mobile'][0] ?? null)
+                : $data['content_image_mobile'];
+            $content['image_url_mobile'] = static::normalizeSectionStoragePath($mobilePath);
+        } elseif (filled($content['image_url_mobile'] ?? null)) {
+            $content['image_url_mobile'] = static::normalizeSectionStoragePath($content['image_url_mobile']);
+        }
+
         if (! empty($data['content_steps'])) {
             $content['steps'] = collect($data['content_steps'])
                 ->map(fn (array $step) => [
@@ -603,6 +655,7 @@ trait MutatesSectionContent
             $data['content_body'],
             $data['content_rich_body'],
             $data['content_image'],
+            $data['content_image_mobile'],
             $data['content_steps'],
             $data['content_features'],
             $data['content_columns'],
@@ -681,6 +734,11 @@ trait MutatesSectionContent
             ? (CmsImage::isExternalUrl($content['image_url'])
                 ? []
                 : [static::normalizeSectionStoragePath($content['image_url'])])
+            : null;
+        $data['content_image_mobile'] = isset($content['image_url_mobile'])
+            ? (CmsImage::isExternalUrl($content['image_url_mobile'])
+                ? []
+                : [static::normalizeSectionStoragePath($content['image_url_mobile'])])
             : null;
         $data['content_steps'] = $content['steps'] ?? [];
         $data['content_features'] = $content['features'] ?? [];

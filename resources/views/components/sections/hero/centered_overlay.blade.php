@@ -1,21 +1,39 @@
 @props(['headline', 'tagline' => null, 'body' => null, 'introQuestion' => null, 'imageUrl' => null, 'section' => null, 'themeDefaults' => null])
 
 @php
+    use App\Domains\Content\Support\CmsImage;
     use App\Domains\Content\Support\SectionLayout;
 
-    $src = $imageUrl;
-    if ($src && ! str_starts_with($src, 'http')) {
-        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    $sectionContent = $section->content ?? [];
+    $desktopPath = $imageUrl ?? ($sectionContent['image_url'] ?? null);
+    $mobilePath = $sectionContent['image_url_mobile'] ?? null;
+    if (blank($mobilePath)) {
+        $mobilePath = $desktopPath;
+    }
+
+    $desktop = $desktopPath;
+    if ($desktop && ! str_starts_with($desktop, 'http')) {
+        $desktop = CmsImage::url($desktop);
+    }
+    $mobile = $mobilePath;
+    if ($mobile && ! str_starts_with($mobile, 'http')) {
+        $mobile = CmsImage::url($mobile);
     }
 
     $layout = $section
-        ? SectionLayout::resolve($section->content ?? [], $themeDefaults, 'hero', ['section_padding' => 'none'])
+        ? SectionLayout::resolve($sectionContent, $themeDefaults, 'hero', ['section_padding' => 'none'])
         : ['container_width' => 'full', 'section_padding' => 'none', 'background' => 'white', 'text_align' => 'center'];
 @endphp
 
 <section class="relative overflow-hidden min-h-[32rem] flex items-center justify-center text-center hw-hero hw-hero--centered">
-    @if($src)
-        <img src="{{ $src }}" alt="" class="absolute inset-0 w-full h-full object-cover" loading="eager">
+    @if($desktop || $mobile)
+        <div class="absolute inset-0">
+            <x-cms.responsive-hero-image
+                :desktop-url="$desktop"
+                :mobile-url="$mobile"
+                class="absolute inset-0 w-full h-full object-cover"
+            />
+        </div>
         <div class="absolute inset-0 bg-hw-navy/55" aria-hidden="true"></div>
     @else
         <div class="absolute inset-0 bg-hw-dusty-blue-light" aria-hidden="true"></div>

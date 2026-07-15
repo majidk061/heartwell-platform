@@ -71,6 +71,10 @@ class EditSectionTemplate extends HeartWellEditRecord
             $data['content']['image_url'] = $existing['image_url'];
         }
 
+        if (blank($data['content_image_mobile'] ?? null) && filled($existing['image_url_mobile'] ?? null)) {
+            $data['content']['image_url_mobile'] = $existing['image_url_mobile'];
+        }
+
         $data = SectionTemplateResource::mutateTemplateData($data);
 
         if (($data['content']['design_variant'] ?? null) === 'journey_split_hero' && filled($data['heading'] ?? null)) {

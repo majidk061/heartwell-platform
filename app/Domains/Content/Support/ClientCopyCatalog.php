@@ -670,6 +670,8 @@ HTML;
                     'show_consultation_link' => false,
                     'show_floating_quotes' => false,
                     'image_url' => 'cms/sections/why-heartwell-hero.png',
+                    // Until a dedicated mobile crop is provided, reuse the desktop banner on mobile.
+                    'image_url_mobile' => 'cms/sections/why-heartwell-hero.png',
                     'layout' => ['container_width' => 'extra_wide', 'background' => 'white', 'text_align' => 'left', 'section_padding' => 'none'],
                 ],
             ],
@@ -1028,7 +1030,8 @@ HTML;
                     'show_consultation_link' => false,
                     'image_url' => 'cms/sections/wellness-journey-hero-desktop.png',
                     'image_url_clean' => 'cms/sections/wellness-journey-hero-clean.png',
-                    'image_url_mobile' => 'cms/sections/wellness-journey-hero-mobile.png',
+                    // Until a dedicated mobile crop is provided, reuse the desktop banner on mobile.
+                    'image_url_mobile' => 'cms/sections/wellness-journey-hero-desktop.png',
                     'layout' => ['container_width' => 'default', 'background' => 'white', 'section_padding' => 'none', 'text_align' => 'left'],
                 ],
             ],
@@ -1052,7 +1055,8 @@ HTML;
                     'show_cta_buttons' => false,
                     'show_consultation_link' => false,
                     'image_url' => 'cms/sections/wellness-journey-hero-desktop.png',
-                    'image_url_mobile' => 'cms/sections/wellness-journey-hero-mobile.png',
+                    // Until a dedicated mobile crop is provided, reuse the desktop banner on mobile.
+                    'image_url_mobile' => 'cms/sections/wellness-journey-hero-desktop.png',
                     'image_url_clean' => 'cms/sections/wellness-journey-hero-clean.png',
                     'layout' => ['container_width' => 'comfortable', 'background' => 'white', 'section_padding' => 'spacious'],
                 ],

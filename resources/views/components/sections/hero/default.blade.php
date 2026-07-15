@@ -1,15 +1,27 @@
 @props(['headline', 'tagline' => null, 'body' => null, 'introQuestion' => null, 'imageUrl' => null, 'section' => null, 'themeDefaults' => null, 'showConsultation' => true, 'showCtaButtons' => true, 'eyebrow' => null, 'imageFirst' => false])
 
 @php
+    use App\Domains\Content\Support\CmsImage;
     use App\Domains\Content\Support\SectionLayout;
 
-    $src = $imageUrl;
-    if ($src && ! str_starts_with($src, 'http')) {
-        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    $sectionContent = $section->content ?? [];
+    $desktopPath = $imageUrl ?? ($sectionContent['image_url'] ?? null);
+    $mobilePath = $sectionContent['image_url_mobile'] ?? null;
+    if (blank($mobilePath)) {
+        $mobilePath = $desktopPath;
+    }
+
+    $desktop = $desktopPath;
+    if ($desktop && ! str_starts_with($desktop, 'http')) {
+        $desktop = CmsImage::url($desktop);
+    }
+    $mobile = $mobilePath;
+    if ($mobile && ! str_starts_with($mobile, 'http')) {
+        $mobile = CmsImage::url($mobile);
     }
 
     $layout = $section
-        ? SectionLayout::resolve($section->content ?? [], $themeDefaults, 'hero')
+        ? SectionLayout::resolve($sectionContent, $themeDefaults, 'hero')
         : ['container_width' => 'default', 'section_padding' => 'normal', 'background' => 'white', 'text_align' => 'left'];
 
     $sectionClass = SectionLayout::sectionClasses($layout);
@@ -56,8 +68,12 @@
                 @endif
             </div>
             <div class="{{ $imageOrder }} w-full">
-                @if($src)
-                    <img src="{{ $src }}" alt="" class="hw-hero__photo w-full h-auto rounded-lg object-cover aspect-[4/3]" loading="eager">
+                @if($desktop || $mobile)
+                    <x-cms.responsive-hero-image
+                        :desktop-url="$desktop"
+                        :mobile-url="$mobile"
+                        class="hw-hero__photo w-full h-auto rounded-lg object-cover aspect-[4/3]"
+                    />
                 @else
                     <div class="w-full aspect-[4/3] rounded-lg bg-hw-dusty-blue-light flex items-center justify-center">
                         <span class="text-hw-muted text-sm px-4 text-center">Hero image placeholder</span>

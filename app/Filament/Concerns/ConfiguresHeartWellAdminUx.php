@@ -36,6 +36,16 @@ trait ConfiguresHeartWellAdminUx
         return 'Crop to 4:3 (1200×900) for hero sections. PNG, JPG, or WebP, max 10 MB.';
     }
 
+    public static function heroDesktopImageHelper(): string
+    {
+        return 'Desktop (≥1024px). Recommended size: 1680×940 px (landscape ~16:9) for split heroes such as Wellness Journey; ~1450×1100 for full-bleed banners (Why HeartWell). PNG, JPG, or WebP, max 10 MB.';
+    }
+
+    public static function heroMobileImageHelper(): string
+    {
+        return 'Mobile (≤1023px). Recommended size when you have a dedicated crop: 1125×1400 px (portrait ~4:5). If empty, the desktop image is used on mobile. For now you can upload the same desktop file. PNG, JPG, or WebP, max 10 MB.';
+    }
+
     public static function logoUploadHelper(): string
     {
         return 'Upload the approved HeartWell logo PNG. Vertical stacked logos: use 3:4 or 2:3 — avoid cropping off text. Max 2 MB.';

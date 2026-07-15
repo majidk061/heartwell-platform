@@ -1809,9 +1809,81 @@
     object-position: center center;
   }
 
+  .hw-responsive-hero-picture {
+    display: contents;
+  }
+
   .hw-page-sections--why-heartwell .hw-rich-text-section--bridge,
   .hw-page-sections--why-heartwell .hw-rich-text-section--closing {
     text-align: center;
+  }
+
+  /* Pull closing section closer to the features panel divider */
+  .hw-page-sections--why-heartwell .hw-features-expect.hw-section {
+    padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing.hw-section {
+    padding-top: clamp(1.25rem, 3vw, 1.75rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing .prose {
+    margin-inline: auto;
+    max-width: 36rem;
+    text-align: center;
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing .prose h2 {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-heading, #1b2b4b);
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing .prose p {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.0625rem, 2vw, 1.2rem);
+    line-height: 1.55;
+    color: #3a3a3a;
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing .prose p + p {
+    margin-top: 0.7rem;
+  }
+
+  .hw-page-sections--why-heartwell .hw-rich-text-section--closing .prose p:last-child {
+    margin-top: 1.25rem;
+    font-size: clamp(1.15rem, 2.3vw, 1.4rem);
+    font-weight: 600;
+    font-style: italic;
+    color: #c89c9b;
+  }
+
+  /* Tighten gap between private thoughts and the bridge divider */
+  .hw-page-sections--why-heartwell .hw-section:has(.hw-reflective-quotes) {
+    padding-bottom: 0.5rem;
+  }
+
+  .hw-page-sections--why-heartwell .hw-bridge-permission__wrap {
+    padding-top: 0.75rem;
+  }
+
+  .hw-page-sections--why-heartwell .hw-bridge-permission__divider {
+    margin-top: 0.5rem;
+  }
+
+  @media (width >= 1024px) {
+    .hw-page-sections--why-heartwell .hw-section:has(.hw-reflective-quotes) {
+      padding-bottom: 0.75rem;
+    }
+
+    .hw-page-sections--why-heartwell .hw-bridge-permission__wrap {
+      padding-top: 0.75rem;
+    }
   }
 
   .hw-page-sections--why-heartwell .hw-hero--split-quotes {

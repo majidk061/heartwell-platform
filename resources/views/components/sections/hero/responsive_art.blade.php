@@ -8,30 +8,25 @@
     $layout = SectionLayout::resolve($sectionContent, $themeDefaults, 'hero', ['background' => 'white']);
     $sectionClass = SectionLayout::sectionClasses($layout).' hw-hero hw-hero--responsive-art';
 
-    $desktop = CmsImage::url($section->image_url ?? ($sectionContent['image_url'] ?? null));
-    $mobile = CmsImage::url($sectionContent['image_url_mobile'] ?? null);
-    $clean = CmsImage::url($sectionContent['image_url_clean'] ?? null);
-    $fallback = $mobile ?: $clean ?: $desktop;
+    $desktopPath = $section->image_url ?? ($sectionContent['image_url'] ?? null);
+    $mobilePath = $sectionContent['image_url_mobile'] ?? null;
+    if (blank($mobilePath)) {
+        $mobilePath = $desktopPath;
+    }
+    $desktop = CmsImage::url($desktopPath);
+    $mobile = CmsImage::url($mobilePath);
 @endphp
 
 <section class="{{ $sectionClass }}">
     <x-layout.page-container :width="$layout['container_width']">
-        @if($desktop || $mobile || $clean)
-            <picture class="hw-hero-artwork block w-full">
-                @if($desktop)
-                    <source media="(min-width: 1024px)" srcset="{{ $desktop }}">
-                @endif
-                @if($mobile)
-                    <source media="(max-width: 1023px)" srcset="{{ $mobile }}">
-                @endif
-                <img
-                    src="{{ $fallback }}"
-                    alt=""
+        @if($desktop || $mobile)
+            <div class="hw-hero-artwork block w-full">
+                <x-cms.responsive-hero-image
+                    :desktop-url="$desktop"
+                    :mobile-url="$mobile"
                     class="hw-hero-artwork__image w-full h-auto"
-                    loading="eager"
-                    decoding="async"
-                >
-            </picture>
+                />
+            </div>
         @endif
     </x-layout.page-container>
 </section>

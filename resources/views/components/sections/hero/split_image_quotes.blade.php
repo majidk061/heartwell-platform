@@ -7,6 +7,7 @@
 ])
 
 @php
+    use App\Domains\Content\Support\CmsImage;
     use App\Domains\Content\Support\SectionLayout;
 
     $sectionContent = $section->content ?? [];
@@ -16,9 +17,19 @@
     ]);
     $sectionClass = SectionLayout::sectionClasses($layout).' hw-hero hw-hero--split-quotes hw-hero--why-banner relative overflow-hidden';
 
-    $src = $imageUrl;
-    if ($src && ! str_starts_with($src, 'http')) {
-        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    $desktopPath = $imageUrl ?? ($section->image_url ?? ($sectionContent['image_url'] ?? null));
+    $mobilePath = $sectionContent['image_url_mobile'] ?? null;
+    if (blank($mobilePath)) {
+        $mobilePath = $desktopPath;
+    }
+
+    $desktop = $desktopPath;
+    if ($desktop && ! str_starts_with($desktop, 'http')) {
+        $desktop = CmsImage::url($desktop);
+    }
+    $mobile = $mobilePath;
+    if ($mobile && ! str_starts_with($mobile, 'http')) {
+        $mobile = CmsImage::url($mobile);
     }
 
     $titleLead = $sectionContent['title_lead'] ?? 'Thoughtful Wellness Care';
@@ -46,14 +57,14 @@
 @endphp
 
 <section class="{{ $sectionClass }}">
-    @if($src)
-        <img
-            src="{{ $src }}"
-            alt=""
-            class="hw-hero--why-banner__photo absolute inset-0 w-full h-full"
-            loading="eager"
-            decoding="async"
-        >
+    @if($desktop || $mobile)
+        <div class="absolute inset-0">
+            <x-cms.responsive-hero-image
+                :desktop-url="$desktop"
+                :mobile-url="$mobile"
+                class="hw-hero--why-banner__photo absolute inset-0 w-full h-full"
+            />
+        </div>
         <div class="hw-hero--why-banner__scrim absolute inset-0" aria-hidden="true"></div>
     @else
         <div class="absolute inset-0 bg-hw-white" aria-hidden="true"></div>

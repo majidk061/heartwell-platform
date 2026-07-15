@@ -1,16 +1,28 @@
 @props(['headline', 'tagline' => null, 'body' => null, 'introQuestion' => null, 'imageUrl' => null, 'section' => null, 'themeDefaults' => null, 'showConsultation' => true])
 
 @php
+    use App\Domains\Content\Support\CmsImage;
     use App\Domains\Content\Support\SectionLayout;
     use Illuminate\Support\Str;
 
-    $src = $imageUrl;
-    if ($src && ! str_starts_with($src, 'http')) {
-        $src = \App\Domains\Content\Support\CmsImage::url($src);
+    $sectionContent = $section->content ?? [];
+    $desktopPath = $imageUrl ?? ($sectionContent['image_url'] ?? null);
+    $mobilePath = $sectionContent['image_url_mobile'] ?? null;
+    if (blank($mobilePath)) {
+        $mobilePath = $desktopPath;
+    }
+
+    $desktop = $desktopPath;
+    if ($desktop && ! str_starts_with($desktop, 'http')) {
+        $desktop = CmsImage::url($desktop);
+    }
+    $mobile = $mobilePath;
+    if ($mobile && ! str_starts_with($mobile, 'http')) {
+        $mobile = CmsImage::url($mobile);
     }
 
     $layout = $section
-        ? SectionLayout::resolve($section->content ?? [], $themeDefaults, 'hero', ['section_padding' => 'none'])
+        ? SectionLayout::resolve($sectionContent, $themeDefaults, 'hero', ['section_padding' => 'none'])
         : ['container_width' => 'full', 'section_padding' => 'none', 'background' => 'white', 'text_align' => 'left'];
 
     $sectionClass = SectionLayout::sectionClasses($layout);
@@ -21,13 +33,14 @@
 @endphp
 
 <section class="{{ $sectionClass }} hw-hero hw-hero--overlay relative overflow-hidden min-h-[32rem] md:min-h-[36rem] lg:min-h-[34rem] flex items-center">
-    @if($src)
-        <img
-            src="{{ $src }}"
-            alt=""
-            class="hw-hero--overlay__photo absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-[78%_center]"
-            loading="eager"
-        >
+    @if($desktop || $mobile)
+        <div class="absolute inset-0">
+            <x-cms.responsive-hero-image
+                :desktop-url="$desktop"
+                :mobile-url="$mobile"
+                class="hw-hero--overlay__photo absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-[78%_center]"
+            />
+        </div>
         <div class="absolute inset-0 hw-hero--overlay__scrim" aria-hidden="true"></div>
     @else
         <div class="absolute inset-0 bg-hw-taupe-light" aria-hidden="true"></div>

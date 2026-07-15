@@ -23,7 +23,11 @@
         : ($section->image_url ?? ($sectionContent['image_url'] ?? null));
 
     $desktop = CmsImage::url($photoPath);
-    $mobile = CmsImage::url($sectionContent['image_url_mobile'] ?? null);
+    $mobilePath = $sectionContent['image_url_mobile'] ?? null;
+    if (blank($mobilePath)) {
+        $mobilePath = $photoPath;
+    }
+    $mobile = CmsImage::url($mobilePath);
     $fallback = $desktop ?: $mobile;
     $quotes = is_array($sectionContent['quotes'] ?? null) ? $sectionContent['quotes'] : [];
 
@@ -62,21 +66,11 @@
 
         @if($fallback)
             <div class="hw-wj-hero__media">
-                <picture class="hw-wj-hero__picture">
-                    @if($desktop)
-                        <source media="(min-width: 1024px)" srcset="{{ $desktop }}">
-                    @endif
-                    @if($mobile)
-                        <source media="(max-width: 1023px)" srcset="{{ $mobile }}">
-                    @endif
-                    <img
-                        src="{{ $fallback }}"
-                        alt=""
-                        class="hw-wj-hero__photo"
-                        loading="eager"
-                        decoding="async"
-                    >
-                </picture>
+                <x-cms.responsive-hero-image
+                    :desktop-url="$desktop"
+                    :mobile-url="$mobile"
+                    class="hw-wj-hero__photo"
+                />
                 @if($showFloatingQuotes)
                     @foreach($quotes as $index => $quote)
                         @if(filled($quote['text'] ?? null))
